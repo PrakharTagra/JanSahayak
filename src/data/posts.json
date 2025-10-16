@@ -1,0 +1,32 @@
+[
+  {
+    "id": "post-001",
+    "title": "Pothole near Rohini Sector 10",
+    "category": "Road",
+    "description": "Large pothole causing vehicle damage",
+    "volunteers": ["vol-001"],
+    "location": { "lat": 28.7125, "lng": 77.1100, "name": "Rohini Sector 10" },
+    "createdAt": "2025-10-10",
+    "photo": "/images/pothole.png"
+  },
+  {
+    "id": "post-002",
+    "title": "Overflowing drain in Janakpuri",
+    "category": "Sewer",
+    "description": "Drain clogged and overflowing",
+    "volunteers": [],
+    "location": { "lat": 28.6400, "lng": 77.1000, "name": "Janakpuri" },
+    "createdAt": "2025-10-12",
+    "photo": "/images/drain.png"
+  },
+  {
+    "id": "post-003",
+    "title": "Broken streetlight near Lajpat Nagar",
+    "category": "Electricity",
+    "description": "Streetlight not working for 2 weeks",
+    "volunteers": ["vol-002"],
+    "location": { "lat": 28.5730, "lng": 77.2380, "name": "Lajpat Nagar" },
+    "createdAt": "2025-10-13",
+    "photo": "/images/streetlight.png"
+  }
+]

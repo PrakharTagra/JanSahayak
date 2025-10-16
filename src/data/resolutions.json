@@ -1,0 +1,5 @@
+[
+  { "id": "res-001", "title": "Fix pothole Rohini Sector 10", "status": "Completed", "funds": 5000, "payment": "Paid to contractor ABC on 2025-10-11 (UTR: 1234)" },
+  { "id": "res-002", "title": "Drain clean Janakpuri", "status": "In Progress", "funds": 2000, "payment": "Pending" },
+  { "id": "res-003", "title": "Repair streetlight Lajpat Nagar", "status": "Pending", "funds": 1500, "payment": "Not paid" }
+]
