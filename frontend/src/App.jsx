@@ -9,7 +9,6 @@ import ReportIssue from "./pages/User/ReportIssue";
 import UserDashboard from "./pages/User/UserDashboard";
 import Feed from "./pages/User/Feed";
 import AuthorityDashboard from "./pages/Authority/AuthorityDashboard";
-import VolunteerForm from "./pages/User/VolunteerForm";
 import { VerifyEmail } from "./pages/Auth/VerifyEmail";
 
 function App() {
@@ -24,7 +23,6 @@ function App() {
         <Route path="/user/userdashboard" element={<UserDashboard />} />
         <Route path="/user/reportissue" element={<ReportIssue />} />
         <Route path="/user/feed" element={<Feed />} />
-        <Route path="/user/volunteerform" element={<VolunteerForm />} />
         <Route path="/authoritydashboard" element={<AuthorityDashboard />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
