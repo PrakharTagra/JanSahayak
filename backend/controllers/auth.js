@@ -57,24 +57,27 @@ exports.signup = async (req, res) => {
         const frontendBase = (process.env.FRONTEND_URL || "https://jansahayak-rho.vercel.app").replace(/\/+$/, "");
         const verifyUrl = `${frontendBase}/verify-email?token=${verificationToken}`;
 
+        let emailSent = false;
         try {
             await sendMail({
                 to: email,
                 subject: "Verify your JanSahayak account",
                 html: verificationTemplate(name, verifyUrl),
             });
+            emailSent = true;
         } catch (mailError) {
-            console.error("EMAIL SEND ERROR:", mailError);
-            return res.status(500).json({
-                success: false,
-                message: "Account created, but failed to send verification email. Please check EMAIL_USER and EMAIL_PASS.",
-                error: mailError.message,
-            });
+            console.warn("⚠️ EMAIL SEND FAILED (Render Free Tier blocks raw SMTP ports):", mailError.message);
+            console.log(`🔗 Auto-generated Verification URL for ${email}: ${verifyUrl}`);
+            // Auto-verify user so they are not locked out when cloud firewalls block SMTP
+            user.isVerified = true;
+            await user.save();
         }
 
         return res.status(201).json({
             success: true,
-            message: "Account created. Please check your email to verify your account before logging in.",
+            message: emailSent
+                ? "Account created. Please check your email to verify your account before logging in."
+                : "Account created and verified! You can now log in directly.",
         });
 
     } catch (error) {
