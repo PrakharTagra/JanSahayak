@@ -34,7 +34,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       form,
       {
         headers: form.getHeaders(),
-        timeout: 45000 // Render free tier can take a few seconds to respond
+        timeout: 60000 // 60s for Render free tier spin-up
       }
     );
 
@@ -48,9 +48,12 @@ router.post("/", upload.single("image"), async (req, res) => {
     });
   } catch (error) {
     console.error("Classification error:", error.message);
-    return res.status(500).json({
+    const isTimeout = error.code === "ECONNABORTED" || error.message.includes("timeout");
+    return res.status(503).json({
       success: false,
-      message: "Classification failed: " + (error.response?.data?.error || error.message),
+      message: isTimeout
+        ? "AI service is waking up on Render. Please try again in 30 seconds, or select category manually."
+        : "AI classification unavailable: " + (error.response?.data?.error || error.message),
     });
   } finally {
     // Ensure uploaded temp file is always cleaned up

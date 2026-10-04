@@ -1,6 +1,14 @@
 import { useState } from "react";
 import UserSidebar from "../../components/UserSidebar";
 
+const CATEGORIES = [
+  { value: "garbage", label: "Garbage & Waste Disposal", icon: "🗑️" },
+  { value: "bad_road", label: "Pothole & Bad Roads", icon: "🕳️" },
+  { value: "broken_light", label: "Broken Streetlight", icon: "💡" },
+  { value: "waterlogging", label: "Waterlogging & Drainage", icon: "🌊" },
+  { value: "other", label: "Other Civic Grievance", icon: "📌" },
+];
+
 export default function ReportIssue() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -12,17 +20,30 @@ export default function ReportIssue() {
   const [agreed, setAgreed] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [aiInfo, setAiInfo] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!agreed) {
-      alert("Please confirm the declaration before submitting.");
+      alert("Please confirm the citizen declaration before submitting.");
+      return;
+    }
+
+    if (!category) {
+      alert("Please select an issue category.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in first to file a complaint.");
+      window.location.href = "/login";
       return;
     }
 
     try {
-      setLoadingSubmit(true); // ✅ START LOADER
+      setLoadingSubmit(true);
 
       const formData = new FormData();
       formData.append("title", title);
@@ -34,28 +55,31 @@ export default function ReportIssue() {
         formData.append("photo", file);
       }
 
-      const token = localStorage.getItem("token");
-
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/complaint/create`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (err) {
+        throw new Error(`Server returned error (${response.status})`);
+      }
 
-      if (data.success) {
+      if (response.ok && data.success) {
         setSubmitted(true);
       } else {
-        alert(data.message);
+        alert(data.message || "Failed to submit complaint. Please check fields and try again.");
       }
 
     } catch (error) {
-      console.log("ERROR:", error);
-      alert("Submission failed");
+      console.error("ERROR:", error);
+      alert("Submission error: " + error.message);
     } finally {
       setLoadingSubmit(false);
     }
@@ -195,25 +219,50 @@ export default function ReportIssue() {
                     />
                     <p className="text-[10px] text-slate-600 font-mono-gov mt-1">{desc.length}/500 characters</p>
                   </div>
-                  <div className="w-full px-4 py-3 bg-[#060e1f] border border-white/10 text-sm font-mono-gov flex items-center gap-3">
-                    {loadingAI ? (
-                      <>
-                        {/* Spinner */}
-                        <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
 
-                        {/* Loading text */}
-                        <span className="text-amber-400 font-bold">
-                          Analyzing image...
+                  {/* Category Selection */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest block">
+                        Issue Category <span className="text-amber-500">*</span>
+                      </label>
+                      {loadingAI && (
+                        <span className="text-[10px] font-mono-gov text-amber-400 flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></span>
+                          AI analyzing...
                         </span>
-                      </>
-                    ) : (
-                      <span
-                        className={`font-bold transition-all duration-300 ${
-                          category ? "text-green-400 opacity-100" : "text-slate-500 opacity-70"
-                        }`}
-                      >
-                        {category || "Upload image to detect category"}
-                      </span>
+                      )}
+                    </div>
+
+                    <select
+                      value={category}
+                      onChange={(e) => {
+                        setCategory(e.target.value);
+                        setAiInfo(null);
+                      }}
+                      required
+                      className="w-full px-4 py-3 bg-[#060e1f] border border-white/10 focus:border-amber-600/60 text-white text-sm font-mono-gov transition"
+                    >
+                      <option value="" disabled className="bg-[#060e1f] text-slate-500">
+                        -- Select Issue Category (or upload photo for AI auto-detection) --
+                      </option>
+                      {CATEGORIES.map((cat) => (
+                        <option key={cat.value} value={cat.value} className="bg-[#0a1628] text-white">
+                          {cat.icon} {cat.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Status / AI result alert */}
+                    {aiInfo && (
+                      <div className={`mt-2 px-3 py-2 text-xs font-mono-gov border flex items-center gap-2 ${
+                        aiInfo.type === 'success' 
+                          ? "bg-green-950/40 border-green-700/50 text-green-300"
+                          : "bg-amber-950/40 border-amber-700/50 text-amber-300"
+                      }`}>
+                        <span>{aiInfo.type === 'success' ? '✨' : 'ℹ️'}</span>
+                        <span>{aiInfo.text}</span>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -298,30 +347,45 @@ export default function ReportIssue() {
 
                         try {
                           setLoadingAI(true);
+                          setAiInfo(null);
 
                           const formData = new FormData();
                           formData.append("image", selectedFile);
 
-                          // 👉 CALL YOUR ML API
+                          // 👉 CALL CLASSIFY API
                           const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/classify`, {
                             method: "POST",
                             body: formData,
                           });
 
                           const text = await res.text();
-
                           let data;
                           try {
                             data = JSON.parse(text);
                           } catch (err) {
                             console.error("Not JSON →", text);
-                            throw new Error("Invalid JSON from server");
+                            throw new Error("Invalid response from server");
                           }
-                          setCategory(data.category);
+
+                          if (res.ok && data.success && data.category) {
+                            setCategory(data.category);
+                            setAiInfo({
+                              type: "success",
+                              text: `AI auto-detected: ${data.category.toUpperCase().replace(/_/g, " ")} (${Math.round(data.confidence || 0)}% confidence). You can change this if needed.`
+                            });
+                          } else {
+                            setAiInfo({
+                              type: "warn",
+                              text: data.message || "AI service warming up. Please select category manually above."
+                            });
+                          }
 
                         } catch (err) {
-                          console.error("ML Error:", err);
-                          alert("AI analysis failed");
+                          console.warn("ML notice:", err);
+                          setAiInfo({
+                            type: "warn",
+                            text: "AI service warming up. Please select category manually above."
+                          });
                         } finally {
                           setLoadingAI(false);
                         }

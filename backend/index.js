@@ -85,6 +85,16 @@ app.get("/", (req, res) => {
   });
 });
 
+// Global error handling middleware (ensures all errors return clean JSON)
+app.use((err, req, res, next) => {
+  console.error("Unhandled Error:", err);
+  const status = err.status || err.statusCode || 500;
+  return res.status(status).json({
+    success: false,
+    message: err.message || "An unexpected internal server error occurred",
+  });
+});
+
 // Start server
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on PORT ${PORT}`);

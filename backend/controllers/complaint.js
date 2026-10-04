@@ -1,5 +1,6 @@
 const Complaint = require("../models/complaint");
 const User = require("../models/user");
+const { uploadToCloudinary } = require("../config/cloudinary");
 
 // ✅ Create Complaint
 exports.createComplaint = async (req, res) => {
@@ -9,11 +10,27 @@ exports.createComplaint = async (req, res) => {
         if (!title || !description || !location || !category) {
             return res.status(400).json({
                 success: false,
-                message: "All fields are required",
+                message: "All fields (title, description, location, category) are required",
             });
         }
 
-        const photo = req.file ? req.file.path : null;
+        let photo = null;
+
+        if (req.file) {
+            try {
+                const cldRes = await uploadToCloudinary(req.file.buffer);
+                photo = cldRes.secure_url;
+            } catch (cldErr) {
+                console.warn("[Cloudinary Upload Warning]:", cldErr.message);
+                // Safe fallback: If Cloudinary fails (e.g. 403 forbidden permissions or quota),
+                // preserve the photo via base64 data URI so the grievance evidence is not lost.
+                if (req.file.buffer && req.file.buffer.length <= 3 * 1024 * 1024) {
+                    const mime = req.file.mimetype || "image/jpeg";
+                    photo = `data:${mime};base64,${req.file.buffer.toString("base64")}`;
+                    console.log("Photo preserved via inline data URI fallback.");
+                }
+            }
+        }
 
         const complaint = await Complaint.create({
             title,
@@ -21,7 +38,7 @@ exports.createComplaint = async (req, res) => {
             category,
             location,
             photo,
-            postedBy: req.user?._id,
+            postedBy: req.user?._id || req.user?.id,
         });
 
         return res.status(201).json({
@@ -31,9 +48,10 @@ exports.createComplaint = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("Error creating complaint:", error);
         return res.status(500).json({
             success: false,
-            message: "Error creating complaint",
+            message: "Error creating complaint: " + error.message,
             error: error.message,
         });
     }
