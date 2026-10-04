@@ -57,27 +57,25 @@ exports.signup = async (req, res) => {
         const frontendBase = (process.env.FRONTEND_URL || "https://jansahayak-rho.vercel.app").replace(/\/+$/, "");
         const verifyUrl = `${frontendBase}/verify-email?token=${verificationToken}`;
 
-        let emailSent = false;
         try {
             await sendMail({
                 to: email,
                 subject: "Verify your JanSahayak account",
                 html: verificationTemplate(name, verifyUrl),
             });
-            emailSent = true;
         } catch (mailError) {
-            console.warn("⚠️ EMAIL SEND FAILED (Render Free Tier blocks raw SMTP ports):", mailError.message);
-            console.log(`🔗 Auto-generated Verification URL for ${email}: ${verifyUrl}`);
-            // Auto-verify user so they are not locked out when cloud firewalls block SMTP
-            user.isVerified = true;
-            await user.save();
+            console.error("EMAIL SEND ERROR:", mailError.message);
+            // Delete user record so user can retry with a valid email
+            await User.findByIdAndDelete(user._id);
+            return res.status(500).json({
+                success: false,
+                message: `Failed to send verification email (${mailError.message}). Please ensure an HTTP email provider like BREVO_API_KEY is configured on Render.`,
+            });
         }
 
         return res.status(201).json({
             success: true,
-            message: emailSent
-                ? "Account created. Please check your email to verify your account before logging in."
-                : "Account created and verified! You can now log in directly.",
+            message: "Account created. Please check your email to verify your account before logging in.",
         });
 
     } catch (error) {
