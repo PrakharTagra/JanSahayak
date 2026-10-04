@@ -22,6 +22,14 @@ exports.signup = async (req, res) => {
             });
         }
 
+        const mongoose = require("mongoose");
+        if (mongoose.connection.readyState !== 1) {
+            return res.status(503).json({
+                success: false,
+                message: "Database connection is not ready. Please verify MONGODB_URL in Render environment settings.",
+            });
+        }
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
@@ -46,13 +54,23 @@ exports.signup = async (req, res) => {
             verificationTokenExpiry,
         });
 
-        const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
+        const frontendBase = (process.env.FRONTEND_URL || "https://jansahayak-rho.vercel.app").replace(/\/+$/, "");
+        const verifyUrl = `${frontendBase}/verify-email?token=${verificationToken}`;
 
-        await sendMail({
-            to: email,
-            subject: "Verify your JanSahayak account",
-            html: verificationTemplate(name, verifyUrl),
-        });
+        try {
+            await sendMail({
+                to: email,
+                subject: "Verify your JanSahayak account",
+                html: verificationTemplate(name, verifyUrl),
+            });
+        } catch (mailError) {
+            console.error("EMAIL SEND ERROR:", mailError);
+            return res.status(500).json({
+                success: false,
+                message: "Account created, but failed to send verification email. Please check EMAIL_USER and EMAIL_PASS.",
+                error: mailError.message,
+            });
+        }
 
         return res.status(201).json({
             success: true,
@@ -60,7 +78,7 @@ exports.signup = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("SIGNUP ERROR:", error); // ← shows exact error in terminal
+        console.error("SIGNUP ERROR:", error);
         return res.status(500).json({
             success: false,
             message: "Signup failed",

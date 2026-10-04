@@ -60,11 +60,17 @@ app.use("/api/v1/government", require("./routes/government"));
 app.use("/api/v1/classify", require("./routes/classify"));
 app.use("/api/v1/reports", require("./routes/exportRoutes"));
 
+const mongoose = require("mongoose");
+
 // Health check endpoint (for Render health check & monitoring services)
 app.get("/health", (req, res) => {
+  const states = ["disconnected", "connected", "connecting", "disconnecting"];
+  const dbStatus = states[mongoose.connection.readyState] || "unknown";
+
   return res.status(200).json({
     status: "ok",
     service: "JanSahayak Backend",
+    database: dbStatus,
     uptime: Math.floor(process.uptime()),
     timestamp: new Date().toISOString(),
   });
