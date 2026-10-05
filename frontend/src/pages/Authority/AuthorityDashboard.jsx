@@ -1,4 +1,25 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
+import {
+  FileSpreadsheet,
+  LayoutDashboard,
+  Wrench,
+  Clock,
+  CheckCircle2,
+  Users,
+  FileText,
+  ShieldCheck,
+  MapPin,
+  Building2,
+  Phone,
+  Trash2,
+  Lightbulb,
+  Droplets,
+  AlertTriangle,
+  HardHat,
+  Activity,
+  Check,
+  ArrowRight
+} from "lucide-react";
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 const API = `${import.meta.env.VITE_API_URL}/api/v1`;
@@ -14,9 +35,13 @@ const statusColor = (s) => {
 };
 
 const categoryIcon = (c = "") => {
-  const map = { garbage:"🗑️", bad_road:"🛣️", broken_light:"💡", waterlogging:"💧", other:"📋" };
-  return map[c] || "📋";
+  if (c === "garbage") return <Trash2 className="w-4 h-4 text-gov-amber inline" />;
+  if (c === "bad_road") return <AlertTriangle className="w-4 h-4 text-gov-amber inline" />;
+  if (c === "broken_light") return <Lightbulb className="w-4 h-4 text-gov-amber inline" />;
+  if (c === "waterlogging") return <Droplets className="w-4 h-4 text-gov-amber inline" />;
+  return <FileText className="w-4 h-4 text-gov-amber inline" />;
 };
+
 const categoryLabel = (c = "") => {
   const map = { garbage:"Sanitation", bad_road:"Roads & PWD", broken_light:"Electricity", waterlogging:"Water Supply", other:"Other" };
   return map[c] || c;
@@ -107,11 +132,11 @@ const handleExcelExport = async () => {
 function Navbar({ active, setView, counts }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const items = [
-    { id:"dashboard", label:"Dashboard", icon:"⬡" },
-    { id:"assign",    label:"Assign",    icon:"👷", badge: counts.pending },
-    { id:"pending",   label:"In Progress", icon:"⏳", badge: counts.assigned },
-    { id:"resolved",  label:"Resolved",  icon:"✅" },
-    { id:"volunteers",label:"Volunteers",icon:"👥" },
+    { id:"dashboard", label:"Dashboard", icon: LayoutDashboard },
+    { id:"assign",    label:"Assign",    icon: Wrench, badge: counts.pending },
+    { id:"pending",   label:"In Progress", icon: Clock, badge: counts.assigned },
+    { id:"resolved",  label:"Resolved",  icon: CheckCircle2 },
+    { id:"volunteers",label:"Volunteers",icon: Users },
   ];
 
   return (
@@ -148,37 +173,67 @@ function Navbar({ active, setView, counts }) {
         {/* Emblem & Title */}
         <div style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer" }} onClick={() => setView("dashboard")}>
           <div className="w-8 h-8 rounded-full border border-gov-saffron bg-gov-saffron/10 flex items-center justify-center overflow-hidden shrink-0">
-            <img src="/favicon.png" alt="logo" className="w-5 h-5 object-cover" />
+            <img src="/favicon.png" alt="emblem" style={{ width:20, height:20, objectFit:"cover" }} />
           </div>
           <div>
-            <div style={{ fontSize:12, fontWeight:800, letterSpacing:"0.1em", textTransform:"uppercase", color:"white" }}>JanSahayak</div>
-            <div style={{ fontSize:9, color:"#FF9933", letterSpacing:"0.1em", fontFamily:"'JetBrains Mono',monospace" }}>MUNICIPAL AUTHORITY</div>
+            <div style={{ fontSize:13, fontWeight:700, color:"white", lineHeight:1.2 }} className="serif">
+              JanSahayak Authority
+            </div>
+            <div style={{ fontSize:9, color:"#FF9933", fontFamily:"'JetBrains Mono',monospace", letterSpacing:"0.05em" }}>
+              नागरिक शिकायत नियंत्रण कक्ष
+            </div>
           </div>
         </div>
 
-        {/* Responsive Nav Tabs */}
-        <div style={{ display:"flex", gap:4, overflowX:"auto", maxWidth:"100%", padding:"2px 0" }}>
-          {items.map(n => (
-            <button key={n.id} onClick={() => setView(n.id)} style={{
-              background: active===n.id ? "rgba(255,153,51,0.15)" : "transparent",
-              border: active===n.id ? "1px solid rgba(255,153,51,0.5)" : "1px solid transparent",
-              color: active===n.id ? "#FF9933" : "#94a3b8",
-              fontFamily:"'JetBrains Mono',monospace", fontSize:10, fontWeight:700,
-              textTransform:"uppercase", letterSpacing:"0.06em",
-              padding:"6px 12px", cursor:"pointer", transition:"all 0.15s",
-              display:"flex", alignItems:"center", gap:5, borderRadius:4, whiteSpace:"nowrap"
-            }}>
-              <span>{n.icon}</span>{n.label}
-              {n.badge > 0 && (
-                <span style={{ background:"#FF9933", color:"#050f1d", fontSize:8, fontWeight:900, borderRadius:6, padding:"1px 5px", marginLeft:2 }}>
-                  {n.badge}
-                </span>
-              )}
-            </button>
-          ))}
+        {/* Tab Buttons */}
+        <div style={{ display:"flex", alignItems:"center", gap:4, overflowX:"auto", maxWidth:"100%", padding:"2px 0" }}>
+          {items.map(it => {
+            const Icon = it.icon;
+            const isAct = active === it.id;
+            return (
+              <button
+                key={it.id}
+                onClick={() => setView(it.id)}
+                style={{
+                  background: isAct ? "rgba(255,153,51,0.15)" : "transparent",
+                  border: isAct ? "1px solid #FF9933" : "1px solid transparent",
+                  color: isAct ? "#FF9933" : "#94a3b8",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  padding: "6px 12px",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontFamily: "'JetBrains Mono',monospace",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s",
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{it.label}</span>
+                {it.badge > 0 && (
+                  <span style={{
+                    background: "#FF9933",
+                    color: "#050f1d",
+                    fontSize: 9,
+                    fontWeight: 900,
+                    padding: "1px 5px",
+                    borderRadius: 10,
+                    lineHeight: 1.2
+                  }}>
+                    {it.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Actions */}
+        {/* Right Actions */}
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <button
             onClick={handleExcelExport}
@@ -194,10 +249,14 @@ function Navbar({ active, setView, counts }) {
               cursor: "pointer",
               borderRadius: 4,
               fontFamily: "'JetBrains Mono',monospace",
-              whiteSpace: "nowrap"
+              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: 4
             }}
           >
-            📊 Export Excel
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>Export Excel</span>
           </button>
 
           <button
@@ -233,12 +292,12 @@ function DashboardView({ setView, complaints, volunteers }) {
   const activeVols = volunteers.filter(v => !v.volunteerDetails?.isAvailable);
 
   const stats = [
-    { label:"Total Complaints", value: complaints.length,  icon:"📋", color:"white",    sub:"Registered grievances" },
-    { label:"Resolved",         value: resolved.length,    icon:"✅", color:"#10B981",  sub:`${complaints.length ? Math.round(resolved.length/complaints.length*100) : 0}% redressal rate` },
-    { label:"Awaiting Action",  value: pending.length,     icon:"⏳", color:"#FF9933",  sub:"Unassigned grievances" },
-    { label:"Active Assigned",  value: assigned.length,    icon:"🔧", color:"#60a5fa",  sub:"Work crew in progress" },
-    { label:"Total Volunteers", value: volunteers.length,  icon:"👷", color:"#a78bfa",  sub:`${activeVols.length} active in field` },
-    { label:"Available Staff",  value: volunteers.length - activeVols.length, icon:"🟢", color:"#34d399", sub:"Ready for assignment" },
+    { label:"Total Complaints", value: complaints.length,  icon: FileText, color:"white",    sub:"Registered grievances" },
+    { label:"Resolved",         value: resolved.length,    icon: CheckCircle2, color:"#10B981",  sub:`${complaints.length ? Math.round(resolved.length/complaints.length*100) : 0}% redressal rate` },
+    { label:"Awaiting Action",  value: pending.length,     icon: Clock, color:"#FF9933",  sub:"Unassigned grievances" },
+    { label:"Active Assigned",  value: assigned.length,    icon: Wrench, color:"#60a5fa",  sub:"Work crew in progress" },
+    { label:"Total Volunteers", value: volunteers.length,  icon: HardHat, color:"#a78bfa",  sub:`${activeVols.length} active in field` },
+    { label:"Available Staff",  value: volunteers.length - activeVols.length, icon: Activity, color:"#34d399", sub:"Ready for assignment" },
   ];
 
   return (
@@ -246,36 +305,46 @@ function DashboardView({ setView, complaints, volunteers }) {
       <div style={{ marginBottom: 24 }}>
         <div className="section-label">Municipal Grievance Matrix</div>
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px, 1fr))", gap:14 }}>
-          {stats.map((s,i) => (
-            <div key={i} className="stat-card" style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
-              <span style={{ fontSize:22, marginTop:2 }}>{s.icon}</span>
-              <div>
-                <div style={{ fontSize:10, color:"#94a3b8", letterSpacing:"0.08em", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace", fontWeight:600 }}>{s.label}</div>
-                <div style={{ fontSize:28, fontWeight:900, color:s.color, fontFamily:"'JetBrains Mono',monospace", lineHeight:1.1, marginTop:2 }}>{s.value}</div>
-                <div style={{ fontSize:10, color:"#64748b", marginTop:3 }}>{s.sub}</div>
+          {stats.map((s,i) => {
+            const Icon = s.icon;
+            return (
+              <div key={i} className="stat-card" style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
+                <span style={{ marginTop:2, color: s.color }}>
+                  <Icon className="w-5 h-5" />
+                </span>
+                <div>
+                  <div style={{ fontSize:10, color:"#94a3b8", letterSpacing:"0.08em", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace", fontWeight:600 }}>{s.label}</div>
+                  <div style={{ fontSize:28, fontWeight:900, color:s.color, fontFamily:"'JetBrains Mono',monospace", lineHeight:1.1, marginTop:2 }}>{s.value}</div>
+                  <div style={{ fontSize:10, color:"#64748b", marginTop:3 }}>{s.sub}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px, 1fr))", gap:14, marginBottom: 24 }}>
         {[
-          { id:"assign",    icon:"👷", label:"Assign Field Tasks", sub:`${pending.length} awaiting deployment`,  color:"#FF9933" },
-          { id:"pending",   icon:"⏳", label:"Active Tasks in Progress", sub:`${assigned.length} currently active`, color:"#60a5fa" },
-          { id:"resolved",  icon:"✅", label:"Resolved History", sub:`${resolved.length} cases completed`,      color:"#10B981" },
-          { id:"volunteers",icon:"👥", label:"Volunteer Directory", sub:`${volunteers.length} verified members`,    color:"#a78bfa" },
-        ].map(n => (
-          <div key={n.id} className="card" onClick={() => setView(n.id)}
-            style={{ padding:18, cursor:"pointer", display:"flex", alignItems:"center", gap:16 }}>
-            <span style={{ fontSize:26 }}>{n.icon}</span>
-            <div style={{ flex:1 }}>
-              <div style={{ fontSize:13, fontWeight:700, color:n.color }}>{n.label}</div>
-              <div style={{ fontSize:10, color:"#94a3b8", marginTop:2 }}>{n.sub}</div>
+          { id:"assign",    icon: Wrench, label:"Assign Field Tasks", sub:`${pending.length} awaiting deployment`,  color:"#FF9933" },
+          { id:"pending",   icon: Clock, label:"Active Tasks in Progress", sub:`${assigned.length} currently active`, color:"#60a5fa" },
+          { id:"resolved",  icon: CheckCircle2, label:"Resolved History", sub:`${resolved.length} cases completed`,      color:"#10B981" },
+          { id:"volunteers",icon: Users, label:"Volunteer Directory", sub:`${volunteers.length} verified members`,    color:"#a78bfa" },
+        ].map(n => {
+          const Icon = n.icon;
+          return (
+            <div key={n.id} className="card" onClick={() => setView(n.id)}
+              style={{ padding:18, cursor:"pointer", display:"flex", alignItems:"center", gap:16 }}>
+              <span style={{ color: n.color }}>
+                <Icon className="w-6 h-6" />
+              </span>
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:13, fontWeight:700, color:n.color }}>{n.label}</div>
+                <div style={{ fontSize:10, color:"#94a3b8", marginTop:2 }}>{n.sub}</div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gov-amber" />
             </div>
-            <span style={{ color:"#FF9933", fontSize:16 }}>&rarr;</span>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {complaints.slice(0,6).length > 0 && (
@@ -284,10 +353,13 @@ function DashboardView({ setView, complaints, volunteers }) {
           <div className="card" style={{ overflow:"hidden" }}>
             {complaints.slice(0,6).map((c,i) => (
               <div key={c._id} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", borderBottom: i<5 ? "1px solid rgba(255,255,255,0.04)" : "none", flexWrap:"wrap" }}>
-                <span style={{ fontSize:18 }}>{categoryIcon(c.category)}</span>
+                <span>{categoryIcon(c.category)}</span>
                 <div style={{ flex:1, minWidth:180 }}>
                   <div style={{ fontSize:12, fontWeight:700, color:"#f1f5f9" }} className="serif">{c.title}</div>
-                  <div style={{ fontSize:10, color:"#94a3b8", marginTop:2 }}>📍 {c.location} &bull; {timeAgo(c.createdAt)}</div>
+                  <div style={{ fontSize:10, color:"#94a3b8", marginTop:2, display:"flex", alignItems:"center", gap:4 }}>
+                    <MapPin className="w-3 h-3 text-gov-amber inline" />
+                    <span>{c.location} &bull; {timeAgo(c.createdAt)}</span>
+                  </div>
                 </div>
                 <Badge label={c.status} className={statusColor(c.status)} />
               </div>
@@ -315,7 +387,7 @@ function BidCard({ bid, rank, isAssigned, onAssign, canAssign, assigning }) {
         <div style={{ position:"absolute", top:0, right:12, background:"#FF9933", color:"#050f1d", fontSize:9, fontWeight:900, padding:"2px 8px", borderRadius:"0 0 4px 4px", fontFamily:"'JetBrains Mono',monospace" }}>RECOMMENDED MATCH</div>
       )}
       {isAssigned && (
-        <div style={{ position:"absolute", top:0, right:12, background:"#10B981", color:"#050f1d", fontSize:9, fontWeight:900, padding:"2px 8px", borderRadius:"0 0 4px 4px", fontFamily:"'JetBrains Mono',monospace" }}>ASSIGNED &check;</div>
+        <div style={{ position:"absolute", top:0, right:12, background:"#10B981", color:"#050f1d", fontSize:9, fontWeight:900, padding:"2px 8px", borderRadius:"0 0 4px 4px", fontFamily:"'JetBrains Mono',monospace" }}>ASSIGNED</div>
       )}
 
       <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12, marginTop:4 }}>
@@ -327,7 +399,7 @@ function BidCard({ bid, rank, isAssigned, onAssign, canAssign, assigning }) {
           <div style={{ fontSize:13, fontWeight:700, color:"white" }} className="serif">{vol?.name || "Unknown"}</div>
           <div style={{ fontSize:10, color:"#94a3b8" }}>{vol?.email}</div>
           <div style={{ fontSize:10, color:"#34d399", marginTop:2 }}>
-            &check; {vol?.volunteerDetails?.totalTasksCompleted || 0} completed tasks
+            {vol?.volunteerDetails?.totalTasksCompleted || 0} completed tasks
           </div>
         </div>
       </div>
@@ -345,15 +417,16 @@ function BidCard({ bid, rank, isAssigned, onAssign, canAssign, assigning }) {
         ))}
       </div>
 
-      <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", padding:"8px 10px", marginBottom:12, fontSize:10, color:"#94a3b8", borderRadius:4 }}>
-        🏦 Bank: {bid.bankDetails?.bankName} &bull; A/C: ••••{bid.bankDetails?.accountNumber?.slice(-4)} &bull; {bid.bankDetails?.accountHolder}
+      <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", padding:"8px 10px", marginBottom:12, fontSize:10, color:"#94a3b8", borderRadius:4, display:"flex", alignItems:"center", gap:6 }}>
+        <Building2 className="w-3 h-3 text-gov-amber shrink-0" />
+        <span>Bank: {bid.bankDetails?.bankName} &bull; A/C: ••••{bid.bankDetails?.accountNumber?.slice(-4)} &bull; {bid.bankDetails?.accountHolder}</span>
       </div>
 
       {canAssign && !isAssigned && (
         <button className="btn-primary" style={{ width:"100%" }}
           disabled={assigning}
           onClick={() => onAssign(bid._id, bid.volunteer._id)}>
-          {assigning ? "Assigning..." : "Assign This Task &rarr;"}
+          {assigning ? "Assigning..." : "Assign This Task →"}
         </button>
       )}
     </div>
@@ -446,22 +519,29 @@ function ComplaintModal({ complaint, onClose, onAssigned, onResolved }) {
           <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:14, alignItems:"center" }}>
             <Badge label={categoryLabel(complaint.category)} className="text-blue-400 bg-blue-950/40 border-blue-600/50" />
             <Badge label={complaint.status} className={statusColor(complaint.status)} />
-            <span style={{ fontSize:11, color:"#94a3b8" }}>📍 {complaint.location}</span>
-            <span style={{ fontSize:11, color:"#94a3b8" }}>🕐 {timeAgo(complaint.createdAt)}</span>
+            <span style={{ fontSize:11, color:"#94a3b8", display:"flex", alignItems:"center", gap:4 }}>
+              <MapPin className="w-3 h-3 text-gov-amber" />
+              <span>{complaint.location}</span>
+            </span>
+            <span style={{ fontSize:11, color:"#94a3b8", display:"flex", alignItems:"center", gap:4 }}>
+              <Clock className="w-3 h-3 text-gov-amber" />
+              <span>{timeAgo(complaint.createdAt)}</span>
+            </span>
           </div>
 
           <p style={{ fontSize:12, color:"#cbd5e1", lineHeight:1.6, marginBottom:18 }}>{complaint.description}</p>
 
           {complaint.assignedTo && (
             <div style={{ background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.3)", padding:12, borderRadius:6, marginBottom:18, display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-              <span style={{ fontSize:20 }}>🛡️</span>
+              <ShieldCheck className="w-5 h-5 text-emerald-400" />
               <div style={{ flex:1, minWidth:160 }}>
                 <div style={{ fontSize:12, color:"#34d399", fontWeight:700 }}>Assigned To: {complaint.assignedTo?.name || "Volunteer"}</div>
                 <div style={{ fontSize:10, color:"#94a3b8" }}>{complaint.assignedTo?.email}</div>
               </div>
               {complaint.status === "assigned" && (
-                <button className="btn-primary" onClick={handleResolve} disabled={resolving}>
-                  {resolving ? "Resolving..." : "✅ Mark as Resolved"}
+                <button className="btn-primary" onClick={handleResolve} disabled={resolving} style={{ display:"flex", alignItems:"center", gap:6 }}>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{resolving ? "Resolving..." : "Mark as Resolved"}</span>
                 </button>
               )}
             </div>
@@ -553,7 +633,7 @@ function AssignTaskView({ complaints, setComplaints, loading }) {
                 <Badge label={c.status} className={`absolute top-3 right-3 ${statusColor(c.status)}`} />
               </div>
             ) : (
-              <div style={{ height:100, background:"#071322", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, position:"relative" }}>
+              <div style={{ height:100, background:"#071322", display:"flex", alignItems:"center", justifyContent:"center", position:"relative" }}>
                 {categoryIcon(c.category)}
                 <Badge label={c.status} className={`absolute top-3 right-3 ${statusColor(c.status)}`} />
               </div>
@@ -566,12 +646,15 @@ function AssignTaskView({ complaints, setComplaints, loading }) {
                 <p style={{ fontSize:11, color:"#94a3b8", marginTop:4, overflow:"hidden", textOverflow:"ellipsis", display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical" }}>
                   {c.description}
                 </p>
-                <div style={{ fontSize:10, color:"#64748b", marginTop:8 }}>📍 {c.location}</div>
+                <div style={{ fontSize:10, color:"#64748b", marginTop:8, display:"flex", alignItems:"center", gap:4 }}>
+                  <MapPin className="w-3 h-3 text-gov-amber inline" />
+                  <span>{c.location}</span>
+                </div>
               </div>
 
               <div style={{ marginTop:14, paddingTop:10, borderTop:"1px solid rgba(255,255,255,0.06)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                 <span style={{ fontSize:10, color:"#94a3b8" }}>{timeAgo(c.createdAt)}</span>
-                <span style={{ fontSize:10, color:"#FF9933", fontWeight:700, fontFamily:"'JetBrains Mono',monospace" }}>Review &rarr;</span>
+                <span style={{ fontSize:10, color:"#FF9933", fontWeight:700, fontFamily:"'JetBrains Mono',monospace" }}>Review →</span>
               </div>
             </div>
           </div>
@@ -630,11 +713,17 @@ function PendingView({ complaints, setComplaints, loading }) {
                   <div style={{ fontSize: 10, color: "#FF9933", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>#{c._id?.slice(-6).toUpperCase()}</div>
                   <h3 style={{ fontSize: 14, fontWeight: 700, color: "white", marginTop: 4 }} className="serif">{c.title}</h3>
                   <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 4, lineHeight: 1.5 }}>{c.description}</p>
-                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 8 }}>📍 {c.location}</div>
+                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 8, display: "flex", alignItems: "center", gap: 4 }}>
+                    <MapPin className="w-3 h-3 text-gov-amber inline" />
+                    <span>{c.location}</span>
+                  </div>
 
                   {c.assignedTo && (
                     <div style={{ marginTop: 12, padding: 10, background: "#071322", borderRadius: 4, border: "1px solid #1c3c66" }}>
-                      <div style={{ fontSize: 10, color: "#34d399", fontWeight: 700 }}>👷 Assigned: {c.assignedTo.name}</div>
+                      <div style={{ fontSize: 10, color: "#34d399", fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}>
+                        <HardHat className="w-3.5 h-3.5 text-emerald-400 inline" />
+                        <span>Assigned: {c.assignedTo.name}</span>
+                      </div>
                       <div style={{ fontSize: 9, color: "#94a3b8" }}>{c.assignedTo.email}</div>
                     </div>
                   )}
@@ -644,7 +733,7 @@ function PendingView({ complaints, setComplaints, loading }) {
               <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: 10, color: "#94a3b8" }}>Assigned {timeAgo(c.updatedAt)}</span>
                 <button className="btn-primary" onClick={() => handleResolve(c._id)}>
-                  Mark Resolved &check;
+                  Mark Resolved
                 </button>
               </div>
             </div>
@@ -711,7 +800,12 @@ function ResolvedView({ complaints, loading }) {
                   <td style={{ padding:"12px 14px" }}>
                     <Badge label={categoryLabel(r.category)} className="text-blue-400 bg-blue-950/40 border-blue-600/50" />
                   </td>
-                  <td style={{ padding:"12px 14px", fontSize:11, color:"#cbd5e1" }}>📍 {r.location}</td>
+                  <td style={{ padding:"12px 14px", fontSize:11, color:"#cbd5e1" }}>
+                    <span style={{ display:"flex", alignItems:"center", gap:4 }}>
+                      <MapPin className="w-3 h-3 text-gov-amber inline" />
+                      <span>{r.location}</span>
+                    </span>
+                  </td>
                   <td style={{ padding:"12px 14px", fontSize:11, color:"#34d399" }}>
                     {r.assignedTo?.name || "Direct Municipal Action"}
                   </td>
@@ -789,7 +883,7 @@ function VolunteersView() {
       <div className="card" style={{ padding:20 }}>
         {!selected ? (
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100%", color:"#64748b", minHeight:200 }}>
-            <span style={{ fontSize:40, marginBottom:8 }}>👷</span>
+            <Users className="w-10 h-10 text-slate-500 mb-2" />
             <span style={{ fontSize:12, fontFamily:"'JetBrains Mono',monospace", textTransform:"uppercase" }}>Select a volunteer to inspect profile</span>
           </div>
         ) : (
@@ -801,7 +895,12 @@ function VolunteersView() {
               <div>
                 <h3 style={{ fontSize:16, fontWeight:700, color:"white" }} className="serif">{selected.name}</h3>
                 <p style={{ fontSize:11, color:"#94a3b8" }}>{selected.email}</p>
-                {selected.phone && <p style={{ fontSize:11, color:"#94a3b8" }}>📱 {selected.phone}</p>}
+                {selected.phone && (
+                  <p style={{ fontSize:11, color:"#94a3b8", display:"flex", alignItems:"center", gap:4, marginTop:2 }}>
+                    <Phone className="w-3 h-3 text-gov-amber" />
+                    <span>{selected.phone}</span>
+                  </p>
+                )}
               </div>
             </div>
 

@@ -32,13 +32,24 @@ exports.createComplaint = async (req, res) => {
             }
         }
 
+        const postedBy = req.user?._id || req.user?.id;
+        if (!postedBy) {
+            return res.status(401).json({
+                success: false,
+                message: "Authentication expired or invalid. Please sign in again.",
+            });
+        }
+
+        const allowedCategories = ["garbage", "bad_road", "broken_light", "other", "waterlogging"];
+        const sanitizedCategory = allowedCategories.includes(category) ? category : "other";
+
         const complaint = await Complaint.create({
             title,
             description,
-            category,
+            category: sanitizedCategory,
             location,
             photo,
-            postedBy: req.user?._id || req.user?.id,
+            postedBy,
         });
 
         return res.status(201).json({

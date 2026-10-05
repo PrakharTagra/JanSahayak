@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { LogOut } from "lucide-react";
 
 export default function LogoutModal({ onConfirm, onCancel }) {
   return (
@@ -15,8 +16,8 @@ export default function LogoutModal({ onConfirm, onCancel }) {
 
         {/* Modal Header */}
         <div className="border-b border-gov-border px-5 py-3.5 flex items-center gap-3 bg-[#050f1d]">
-          <div className="w-8 h-8 rounded-full border border-red-500/40 bg-red-950/40 flex items-center justify-center text-sm shrink-0 text-red-400">
-            ⏻
+          <div className="w-8 h-8 rounded-full border border-red-500/40 bg-red-950/40 flex items-center justify-center shrink-0 text-red-400">
+            <LogOut className="w-4 h-4" />
           </div>
           <div className="min-w-0">
             <h2 className="text-sm font-bold font-serif text-white leading-tight">
@@ -54,7 +55,8 @@ export default function LogoutModal({ onConfirm, onCancel }) {
             onClick={onConfirm}
             className="flex-1 py-2.5 px-3 rounded bg-red-600 hover:bg-red-500 text-white transition text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-red-900/30 active:scale-95"
           >
-            <span>⏻</span> Confirm
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Confirm</span>
           </button>
         </div>
       </motion.div>

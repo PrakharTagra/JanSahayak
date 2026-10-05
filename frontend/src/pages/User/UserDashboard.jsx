@@ -1,6 +1,15 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import {
+  FileText,
+  CheckCircle2,
+  Clock,
+  Radio,
+  FilePlus2,
+  FolderClock,
+  ArrowRight
+} from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
 
 export default function UserDashboard() {
@@ -32,26 +41,26 @@ export default function UserDashboard() {
             {
               label: "Total Registered",
               value: statsData.stats?.total || 0,
-              icon: "📋",
+              icon: FileText,
               sub: "All time grievances filed",
               color: "text-gov-amber",
-              badgeBg: "bg-amber-950/40 border-amber-600/40",
+              badgeBg: "bg-amber-950/40 border-amber-600/40 text-gov-amber",
             },
             {
               label: "Resolved",
               value: statsData.stats?.resolved || 0,
-              icon: "✅",
+              icon: CheckCircle2,
               sub: "Action verified by authority",
               color: "text-emerald-400",
-              badgeBg: "bg-emerald-950/40 border-emerald-600/40",
+              badgeBg: "bg-emerald-950/40 border-emerald-600/40 text-emerald-400",
             },
             {
               label: "Pending Action",
               value: statsData.stats?.pending || 0,
-              icon: "⏳",
+              icon: Clock,
               sub: "Under municipal review",
               color: "text-amber-400",
-              badgeBg: "bg-orange-950/40 border-orange-600/40",
+              badgeBg: "bg-orange-950/40 border-orange-600/40 text-amber-400",
             },
           ]);
         }
@@ -85,9 +94,9 @@ export default function UserDashboard() {
   }, []);
 
   const navCards = [
-    { title: "Community Feed", icon: "📡", path: "/user/feed", desc: "View & upvote civic grievances reported in your locality", tag: "Live Feed" },
-    { title: "File Grievance", icon: "📝", path: "/user/reportissue", desc: "Report pothole, garbage, or streetlight failure with photo proof", tag: "New Report" },
-    { title: "My Reports", icon: "🗂️", path: "/user/myreports", desc: "Inspect real-time tracking, assignment, and resolution proof", tag: "Track Status" },
+    { title: "Community Feed", icon: Radio, path: "/user/feed", desc: "View & upvote civic grievances reported in your locality", tag: "Live Feed" },
+    { title: "File Grievance", icon: FilePlus2, path: "/user/reportissue", desc: "Report pothole, garbage, or streetlight failure with photo proof", tag: "New Report" },
+    { title: "My Reports", icon: FolderClock, path: "/user/myreports", desc: "Inspect real-time tracking, assignment, and resolution proof", tag: "Track Status" },
   ];
 
   const statusStyle = {
@@ -140,26 +149,29 @@ export default function UserDashboard() {
 
             {/* ── METRIC STATS ── */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {stats && stats.map((item, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ y: -2 }}
-                  className="border border-gov-border bg-gov-card p-4 sm:p-5 rounded-lg flex items-start gap-4 shadow-gov-card"
-                >
-                  <div className={`w-11 h-11 rounded-lg border ${item.badgeBg} flex items-center justify-center text-xl shrink-0 shadow-sm`}>
-                    {item.icon}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[11px] font-mono text-gov-slate uppercase tracking-wider font-semibold truncate">
-                      {item.label}
-                    </p>
-                    <p className={`text-2xl sm:text-3xl font-black font-mono mt-0.5 ${item.color}`}>
-                      {item.value}
-                    </p>
-                    <p className="text-[11px] text-gov-muted mt-0.5 truncate">{item.sub}</p>
-                  </div>
-                </motion.div>
-              ))}
+              {stats && stats.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={i}
+                    whileHover={{ y: -2 }}
+                    className="border border-gov-border bg-gov-card p-4 sm:p-5 rounded-lg flex items-start gap-4 shadow-gov-card"
+                  >
+                    <div className={`w-11 h-11 rounded-lg border ${item.badgeBg} flex items-center justify-center shrink-0 shadow-sm`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-mono text-gov-slate uppercase tracking-wider font-semibold truncate">
+                        {item.label}
+                      </p>
+                      <p className={`text-2xl sm:text-3xl font-black font-mono mt-0.5 ${item.color}`}>
+                        {item.value}
+                      </p>
+                      <p className="text-[11px] text-gov-muted mt-0.5 truncate">{item.sub}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
 
             {/* ── QUICK NAVIGATION CARDS ── */}
@@ -168,34 +180,39 @@ export default function UserDashboard() {
                 Quick Actions & Services
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {navCards.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    whileHover={{ y: -3 }}
-                    onClick={() => navigate(item.path)}
-                    className="cursor-pointer border border-gov-border hover:border-gov-amber/70 bg-gov-card p-5 rounded-lg transition-all shadow-gov-card group flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-2xl p-2 rounded bg-[#0a192f] border border-gov-border group-hover:scale-110 transition-transform">{item.icon}</span>
-                        <span className="text-[10px] font-mono font-bold text-gov-amber bg-gov-amber/10 border border-gov-amber/30 px-2 py-0.5 rounded uppercase tracking-wider">
-                          {item.tag}
-                        </span>
+                {navCards.map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div
+                      key={i}
+                      whileHover={{ y: -3 }}
+                      onClick={() => navigate(item.path)}
+                      className="cursor-pointer border border-gov-border hover:border-gov-amber/70 bg-gov-card p-5 rounded-lg transition-all shadow-gov-card group flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="p-2.5 rounded bg-[#0a192f] border border-gov-border group-hover:scale-110 transition-transform text-gov-amber">
+                            <Icon className="w-5 h-5" />
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-gov-amber bg-gov-amber/10 border border-gov-amber/30 px-2 py-0.5 rounded uppercase tracking-wider">
+                            {item.tag}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-white group-hover:text-gov-amber transition-colors text-sm sm:text-base">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
+                          {item.desc}
+                        </p>
                       </div>
-                      <h3 className="font-bold text-white group-hover:text-gov-amber transition-colors text-sm sm:text-base">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs text-slate-300 mt-1.5 leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </div>
 
-                    <div className="mt-4 pt-3 border-t border-gov-border/60 text-xs text-gov-amber font-mono font-semibold flex items-center justify-between group-hover:translate-x-0.5 transition-transform">
-                      <span>Access Feature</span>
-                      <span>&rarr;</span>
-                    </div>
-                  </motion.div>
-                ))}
+                      <div className="mt-4 pt-3 border-t border-gov-border/60 text-xs text-gov-amber font-mono font-semibold flex items-center justify-between group-hover:translate-x-0.5 transition-transform">
+                        <span>Access Feature</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
 
@@ -208,24 +225,26 @@ export default function UserDashboard() {
                 </div>
                 <button
                   onClick={() => navigate("/user/myreports")}
-                  className="btn-gov-secondary px-3 py-1.5 rounded text-xs font-mono font-semibold uppercase tracking-wider"
+                  className="btn-gov-secondary px-3 py-1.5 rounded text-xs font-mono font-semibold uppercase tracking-wider flex items-center gap-1.5"
                 >
-                  View All &rarr;
+                  <span>View All</span>
+                  <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
 
               {recentActivity.length === 0 ? (
                 <div className="text-center py-10 border border-dashed border-gov-border rounded-lg bg-[#071322]">
-                  <p className="text-2xl mb-2">📋</p>
+                  <FileText className="w-8 h-8 text-gov-slate mx-auto mb-2" />
                   <p className="text-sm font-semibold text-white">No Grievances Filed Yet</p>
                   <p className="text-xs text-gov-slate mt-1 max-w-sm mx-auto">
                     Report local civic issues such as broken streetlights, potholes, or uncollected garbage.
                   </p>
                   <button
                     onClick={() => navigate("/user/reportissue")}
-                    className="btn-gov-primary px-4 py-2 rounded text-xs font-mono font-bold uppercase tracking-wider mt-4"
+                    className="btn-gov-primary px-4 py-2 rounded text-xs font-mono font-bold uppercase tracking-wider mt-4 inline-flex items-center gap-1.5"
                   >
-                    File First Grievance &rarr;
+                    <span>File First Grievance</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ) : (

@@ -1,21 +1,32 @@
 import { useState, useEffect } from "react";
+import {
+  Building2,
+  ClipboardList,
+  FileSignature,
+  CheckCircle2,
+  Info,
+  Check,
+  Camera,
+  UserPlus,
+  Wrench,
+  ShieldCheck,
+  Radio,
+  Flame,
+  Clock,
+  MapPin,
+  User,
+  ThumbsUp,
+  ArrowRight
+} from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
-
-const categoryMap = {
-  garbage:      "Sanitation",
-  bad_road:     "Infrastructure",
-  broken_light: "Electricity",
-  waterlogging: "Water Supply",
-  other:        "General",
-};
 
 // ── Volunteer Info Modal ───────────────────────────────────────────────────
 function VolunteerInfoModal({ onClose }) {
   const steps = [
-    { num: "01", title: "Visit JanSahayak Seva Kendra",      desc: "Locate your nearest JanSahayak municipal centre with a valid government ID.", icon: "🏛️" },
-    { num: "02", title: "Fill Volunteer Enrolment Form",     desc: "Complete the V-REG form indicating your domain skills and ward availability.", icon: "📋" },
-    { num: "03", title: "Skill & Verification Check",        desc: "Undergo a short verification based on chosen categories (Sanitation, Roads, Electricity).", icon: "📝" },
-    { num: "04", title: "Authorized Account Activation",     desc: "Upon clearance, your account is upgraded to Volunteer status with authorized bidding access.", icon: "✅" },
+    { num: "01", title: "Visit JanSahayak Seva Kendra",      desc: "Locate your nearest JanSahayak municipal centre with a valid government ID.", icon: Building2 },
+    { num: "02", title: "Fill Volunteer Enrolment Form",     desc: "Complete the V-REG form indicating your domain skills and ward availability.", icon: ClipboardList },
+    { num: "03", title: "Skill & Verification Check",        desc: "Undergo a short verification based on chosen categories (Sanitation, Roads, Electricity).", icon: FileSignature },
+    { num: "04", title: "Authorized Account Activation",     desc: "Upon clearance, your account is upgraded to Volunteer status with authorized bidding access.", icon: CheckCircle2 },
   ];
 
   return (
@@ -38,24 +49,30 @@ function VolunteerInfoModal({ onClose }) {
           </div>
 
           <div className="flex flex-col gap-3 mb-5">
-            {steps.map((s, i) => (
-              <div key={i} className="flex gap-3.5 border border-gov-border/70 bg-[#071526] p-3 rounded hover:border-gov-amber/40 transition">
-                <div className="shrink-0 w-8 h-8 rounded bg-gov-amber/15 border border-gov-amber/30 text-gov-amber flex items-center justify-center text-sm font-bold">
-                  {s.icon}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-[10px] font-mono text-gov-amber font-bold">{s.num}</span>
-                    <span className="text-xs font-bold text-white">{s.title}</span>
+            {steps.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div key={i} className="flex gap-3.5 border border-gov-border/70 bg-[#071526] p-3 rounded hover:border-gov-amber/40 transition">
+                  <div className="shrink-0 w-8 h-8 rounded bg-gov-amber/15 border border-gov-amber/30 text-gov-amber flex items-center justify-center shadow-sm">
+                    <Icon className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">{s.desc}</p>
+                  <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-[10px] font-mono text-gov-amber font-bold">{s.num}</span>
+                      <span className="text-xs font-bold text-white">{s.title}</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">{s.desc}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <div className="border border-gov-amber/30 bg-gov-amber/10 p-3 rounded text-xs text-amber-200/90 leading-relaxed mb-4">
-            ℹ️ Verified volunteers can submit remediation bids on neighborhood complaints and receive municipal honorarium upon verified completion.
+          <div className="border border-gov-amber/30 bg-gov-amber/10 p-3 rounded text-xs text-amber-200/90 leading-relaxed mb-4 flex items-start gap-2">
+            <Info className="w-4 h-4 text-gov-amber shrink-0 mt-0.5" />
+            <div>
+              Verified volunteers can submit remediation bids on neighborhood complaints and receive municipal honorarium upon verified completion.
+            </div>
           </div>
 
           <button
@@ -107,7 +124,7 @@ function VolunteerApplyModal({ complaint, onClose, onSubmit }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
         <div className="bg-gov-navy border border-emerald-600/50 max-w-sm w-full p-6 text-center rounded-lg shadow-2xl">
           <div className="tricolor-bar-h h-1 w-full mb-4" />
-          <div className="text-4xl mb-3">🎉</div>
+          <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
           <h3 className="text-base font-bold font-serif text-white mb-1">Bid Submitted Successfully</h3>
           <p className="text-xs text-slate-300 font-sans mb-5 leading-relaxed">
             Your remediation proposal has been recorded. The authority will review your cost and timeline estimates.
@@ -250,12 +267,15 @@ function VolunteerApplyModal({ complaint, onClose, onSubmit }) {
                 {form.selfiePreview ? (
                   <>
                     <img src={form.selfiePreview} alt="Volunteer Preview" className="w-12 h-12 rounded object-cover border border-gov-border" />
-                    <span className="text-xs font-mono text-emerald-400 font-semibold">Photograph selected ✓ (click to change)</span>
+                    <span className="text-xs font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Photograph selected (click to change)</span>
+                    </span>
                   </>
                 ) : (
                   <>
-                    <span className="text-2xl">📸</span>
-                    <span className="text-xs text-slate-300">Click to upload live verification selfie *</span>
+                    <Camera className="w-6 h-6 text-slate-400" />
+                    <span className="text-xs text-slate-300">Click to upload live verification photograph *</span>
                   </>
                 )}
                 <input type="file" accept="image/*" className="hidden" onChange={handleSelfie} />
@@ -273,9 +293,10 @@ function VolunteerApplyModal({ complaint, onClose, onSubmit }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn-gov-primary flex-1 py-2.5 rounded text-xs font-mono uppercase tracking-wider font-bold shadow-gov-btn disabled:opacity-60"
+                className="btn-gov-primary flex-1 py-2.5 rounded text-xs font-mono uppercase tracking-wider font-bold shadow-gov-btn disabled:opacity-60 flex items-center justify-center gap-1.5"
               >
-                {submitting ? "Submitting Bid..." : "Submit Proposal &rarr;"}
+                <span>{submitting ? "Submitting Bid..." : "Submit Proposal"}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </form>
@@ -413,9 +434,10 @@ export default function Feed() {
       return (
         <button
           onClick={() => setInfoModal(true)}
-          className="text-[11px] font-mono text-gov-amber hover:underline px-2.5 py-1 rounded border border-gov-amber/40 bg-gov-amber/10 flex items-center gap-1 active:scale-95"
+          className="text-[11px] font-mono text-gov-amber hover:underline px-2.5 py-1 rounded border border-gov-amber/40 bg-gov-amber/10 flex items-center gap-1.5 active:scale-95"
         >
-          <span>🙋</span> Become a Volunteer
+          <UserPlus className="w-3.5 h-3.5" />
+          <span>Become a Volunteer</span>
         </button>
       );
     }
@@ -437,7 +459,8 @@ export default function Feed() {
     if (appliedComplaints.has(post._id)) {
       return (
         <span className="text-[10px] font-mono text-emerald-400 px-2.5 py-1 rounded border border-emerald-600/40 bg-emerald-950/30 flex items-center gap-1">
-          ✓ Proposal Logged
+          <Check className="w-3.5 h-3.5" />
+          <span>Proposal Logged</span>
         </span>
       );
     }
@@ -447,7 +470,8 @@ export default function Feed() {
         onClick={() => setApplyModal(post)}
         className="btn-gov-primary px-3 py-1.5 rounded text-[11px] font-mono font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm active:scale-95"
       >
-        <span>👷</span> Submit Bid
+        <Wrench className="w-3.5 h-3.5" />
+        <span>Submit Bid</span>
       </button>
     );
   };
@@ -475,12 +499,14 @@ export default function Feed() {
           </div>
           <div className="flex items-center gap-2">
             {isVolunteer && (
-              <span className="border border-emerald-600/50 bg-emerald-950/40 text-emerald-300 text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded">
-                🛡️ Verified Volunteer
+              <span className="border border-emerald-600/50 bg-emerald-950/40 text-emerald-300 text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Verified Volunteer</span>
               </span>
             )}
-            <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded">
-              📡 Public Stream
+            <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded flex items-center gap-1">
+              <Radio className="w-3.5 h-3.5" />
+              <span>Public Stream</span>
             </span>
           </div>
         </div>
@@ -496,19 +522,21 @@ export default function Feed() {
                 <div className="flex gap-1.5 p-1 bg-[#050f1d] border border-gov-border rounded">
                   <button
                     onClick={() => setSortBy("upvotes")}
-                    className={`px-3 py-1 rounded text-xs font-semibold transition ${
+                    className={`px-3 py-1 rounded text-xs font-semibold transition flex items-center gap-1.5 ${
                       sortBy === "upvotes" ? "bg-gov-amber text-white shadow-sm" : "text-gov-slate hover:text-white"
                     }`}
                   >
-                    🔥 Most Upvoted
+                    <Flame className="w-3.5 h-3.5" />
+                    <span>Most Upvoted</span>
                   </button>
                   <button
                     onClick={() => setSortBy("newest")}
-                    className={`px-3 py-1 rounded text-xs font-semibold transition ${
+                    className={`px-3 py-1 rounded text-xs font-semibold transition flex items-center gap-1.5 ${
                       sortBy === "newest" ? "bg-gov-amber text-white shadow-sm" : "text-gov-slate hover:text-white"
                     }`}
                   >
-                    🕒 Most Recent
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Most Recent</span>
                   </button>
                 </div>
               </div>
@@ -531,7 +559,7 @@ export default function Feed() {
               <div className="space-y-4">
                 {complaints.length === 0 ? (
                   <div className="text-center py-16 border border-dashed border-gov-border rounded-lg bg-gov-card/40">
-                    <p className="text-3xl mb-2">🎉</p>
+                    <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
                     <p className="text-sm font-semibold text-white">No Unresolved Complaints Found</p>
                     <p className="text-xs text-gov-slate mt-1 max-w-sm mx-auto">
                       All grievances in your locality have either been resolved or are currently assigned to municipal work crews.
@@ -582,12 +610,14 @@ export default function Feed() {
                           </p>
 
                           <div className="flex flex-wrap items-center gap-3 text-xs text-gov-slate mt-3 pt-3 border-t border-gov-border/60">
-                            <span className="flex items-center gap-1 truncate max-w-xs">
-                              📍 <span>{post.location}</span>
+                            <span className="flex items-center gap-1.5 truncate max-w-xs">
+                              <MapPin className="w-3.5 h-3.5 text-gov-amber shrink-0" />
+                              <span>{post.location}</span>
                             </span>
                             {post.postedBy?.name && (
-                              <span className="flex items-center gap-1 font-mono text-[11px] text-gov-muted">
-                                👤 Reported by {post.postedBy.name}
+                              <span className="flex items-center gap-1.5 font-mono text-[11px] text-gov-muted">
+                                <User className="w-3.5 h-3.5 text-gov-slate shrink-0" />
+                                <span>Reported by {post.postedBy.name}</span>
                               </span>
                             )}
                           </div>
@@ -605,7 +635,7 @@ export default function Feed() {
                                 : "border-gov-border text-slate-300 hover:border-gov-amber/60 hover:text-white bg-[#050f1d]"
                             }`}
                           >
-                            <span>▲</span>
+                            <ThumbsUp className="w-3.5 h-3.5" />
                             <span>{isUpvoted(post) ? "Upvoted" : "Upvote"}</span>
                             <span className="bg-black/30 px-1.5 py-0.5 rounded text-gov-amber font-mono">
                               {post.upvotes?.length || 0}

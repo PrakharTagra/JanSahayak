@@ -1,11 +1,19 @@
 import os
 import io
+import gc
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
 from PIL import Image
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+# Restrict PyTorch CPU threads to prevent memory spikes & OOM kills on Render 512MB RAM
+torch.set_num_threads(1)
+try:
+    torch.set_num_interop_threads(1)
+except Exception:
+    pass
 
 app = Flask(__name__)
 CORS(app)
@@ -25,6 +33,10 @@ model = models.mobilenet_v2(weights=None)
 model.classifier[1] = nn.Linear(model.last_channel, len(CATEGORIES))
 model.load_state_dict(checkpoint['model_state'])
 model.eval()
+
+# Force garbage collection after weight loading
+del checkpoint
+gc.collect()
 
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
@@ -63,24 +75,38 @@ def predict():
     try:
         img_bytes = file.read()
         img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
+        # Downscale large images to reduce memory footprint on Render 512MB limit
+        if max(img.size) > 512:
+            img.thumbnail((512, 512), Image.Resampling.LANCZOS)
     except Exception as e:
         return jsonify({'error': f'Invalid image file: {str(e)}'}), 400
 
-    tensor = transform(img).unsqueeze(0)
+    try:
+        tensor = transform(img).unsqueeze(0)
+        del img
+        del img_bytes
 
-    with torch.no_grad():
-        outputs = model(tensor)
-        probs = torch.softmax(outputs, dim=1)[0]
+        with torch.no_grad():
+            outputs = model(tensor)
+            probs = torch.softmax(outputs, dim=1)[0]
 
-    category = CATEGORIES[probs.argmax().item()]
-    confidence = round(probs.max().item() * 100, 2)
+        del tensor
 
-    return jsonify({
-        'category': category,
-        'confidence': confidence,
-        'all_scores': {c: round(p.item() * 100, 2)
-                       for c, p in zip(CATEGORIES, probs)}
-    })
+        category = CATEGORIES[probs.argmax().item()]
+        confidence = round(probs.max().item() * 100, 2)
+        scores = {c: round(p.item() * 100, 2) for c, p in zip(CATEGORIES, probs)}
+
+        del probs
+        gc.collect()
+
+        return jsonify({
+            'category': category,
+            'confidence': confidence,
+            'all_scores': scores
+        })
+    except Exception as e:
+        gc.collect()
+        return jsonify({'error': f'Prediction failed: {str(e)}'}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))

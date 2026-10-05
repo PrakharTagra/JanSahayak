@@ -100,31 +100,34 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on PORT ${PORT}`);
 
   // Automated keep-alive to keep Render free tier alive
-  // Pings itself and optionally ML service every 14 minutes (Render sleeps after 15 min)
-  const pingUrl = process.env.KEEP_ALIVE_URL || process.env.RENDER_EXTERNAL_URL;
-  if (pingUrl) {
-    const targetUrl = pingUrl.endsWith("/health") ? pingUrl : `${pingUrl.replace(/\/+$/, "")}/health`;
-    console.log(`Keep-alive active. Self-ping configured for: ${targetUrl}`);
+  // Pings backend and ML service every 10 minutes (Render sleeps after 15 min)
+  const backendHealthUrl = (
+    process.env.KEEP_ALIVE_URL ||
+    process.env.RENDER_EXTERNAL_URL ||
+    "https://jansahayak-backend-zvbb.onrender.com"
+  ).replace(/\/+$/, "") + "/health";
 
-    setInterval(async () => {
-      try {
-        const response = await axios.get(targetUrl, { timeout: 10000 });
-        console.log(`[Keep-Alive] Pinged backend: status ${response.status}`);
-      } catch (err) {
-        console.error(`[Keep-Alive] Self-ping failed:`, err.message);
-      }
+  const mlServiceBase = (
+    process.env.ML_SERVICE_URL ||
+    "https://jansahayak-ml-service.onrender.com"
+  ).replace(/\/+$/, "");
+  const mlHealthUrl = mlServiceBase.endsWith("/health") ? mlServiceBase : `${mlServiceBase}/health`;
 
-      // Also ping ML service if URL configured
-      if (process.env.ML_SERVICE_URL) {
-        try {
-          const mlBase = process.env.ML_SERVICE_URL.replace(/\/+$/, "");
-          const mlHealthUrl = mlBase.endsWith("/health") ? mlBase : `${mlBase}/health`;
-          const mlRes = await axios.get(mlHealthUrl, { timeout: 10000 });
-          console.log(`[Keep-Alive] Pinged ML service: status ${mlRes.status}`);
-        } catch (mlErr) {
-          console.error(`[Keep-Alive] ML service ping failed:`, mlErr.message);
-        }
-      }
-    }, 14 * 60 * 1000); // Every 14 minutes
-  }
+  console.log(`[Keep-Alive] Configured: Backend (${backendHealthUrl}), ML (${mlHealthUrl})`);
+
+  setInterval(async () => {
+    try {
+      const response = await axios.get(backendHealthUrl, { timeout: 15000 });
+      console.log(`[Keep-Alive] Pinged backend: status ${response.status}`);
+    } catch (err) {
+      console.warn(`[Keep-Alive] Backend ping warning:`, err.message);
+    }
+
+    try {
+      const mlRes = await axios.get(mlHealthUrl, { timeout: 15000 });
+      console.log(`[Keep-Alive] Pinged ML service: status ${mlRes.status}`);
+    } catch (mlErr) {
+      console.warn(`[Keep-Alive] ML service ping warning:`, mlErr.message);
+    }
+  }, 10 * 60 * 1000); // Every 10 minutes
 });

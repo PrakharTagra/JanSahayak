@@ -1,6 +1,13 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {
+  Mail,
+  ClipboardList,
+  Info,
+  AlertCircle,
+  ArrowRight
+} from "lucide-react";
 import logo from "/favicon.png";
 
 export function Signup() {
@@ -95,7 +102,17 @@ export function Signup() {
           {/* Badge */}
           <div className="flex justify-center mb-4 sm:mb-5">
             <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-wider px-3.5 py-1 rounded flex items-center gap-1.5 shadow-sm">
-              {signupDone ? <><span>📧</span> Verification Pending</> : <><span>📋</span> Citizen Registration Portal</>}
+              {signupDone ? (
+                <>
+                  <Mail className="w-3.5 h-3.5" />
+                  <span>Verification Pending</span>
+                </>
+              ) : (
+                <>
+                  <ClipboardList className="w-3.5 h-3.5" />
+                  <span>Citizen Registration Portal</span>
+                </>
+              )}
             </span>
           </div>
 
@@ -118,8 +135,8 @@ export function Signup() {
             {/* Verification State */}
             {signupDone ? (
               <div className="p-6 sm:p-8 flex flex-col items-center gap-4 text-center">
-                <div className="w-16 h-16 rounded-full border-2 border-gov-amber bg-gov-amber/10 flex items-center justify-center text-3xl text-gov-amber shadow-inner">
-                  📧
+                <div className="w-16 h-16 rounded-full border-2 border-gov-amber bg-gov-amber/10 flex items-center justify-center text-gov-amber shadow-inner">
+                  <Mail className="w-8 h-8" />
                 </div>
 
                 <div>
@@ -148,9 +165,10 @@ export function Signup() {
 
                 <button
                   onClick={() => navigate("/login")}
-                  className="btn-gov-primary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono shadow-gov-btn"
+                  className="btn-gov-primary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono shadow-gov-btn flex items-center justify-center gap-2"
                 >
-                  Proceed to Login &rarr;
+                  <span>Proceed to Login</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
                 <button
@@ -163,8 +181,11 @@ export function Signup() {
             ) : (
               /* Signup Form */
               <div className="p-5 sm:p-7">
-                <div className="border border-gov-border bg-gov-navy/80 p-3 rounded mb-5 text-xs text-slate-300 leading-relaxed">
-                  ℹ️ Registration is free for all residents of India. Your identity is secured under the IT Act, 2000.
+                <div className="border border-gov-border bg-gov-navy/80 p-3 rounded mb-5 text-xs text-slate-300 leading-relaxed flex items-start gap-2">
+                  <Info className="w-4 h-4 text-gov-amber shrink-0 mt-0.5" />
+                  <div>
+                    Registration is free for all residents of India. Your identity is secured under the IT Act, 2000.
+                  </div>
                 </div>
 
                 <form onSubmit={handleSignup} className="flex flex-col gap-4">
@@ -258,7 +279,8 @@ export function Signup() {
                   {error && (
                     <div className="border border-red-500/40 bg-red-950/30 rounded p-3 text-left">
                       <p className="text-red-300 text-xs font-bold flex items-center gap-1.5">
-                        <span>⚠️</span> Registration Issue
+                        <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                        <span>Registration Issue</span>
                       </p>
                       <p className="text-red-200/80 text-[11px] mt-0.5">{error}</p>
                     </div>
@@ -276,7 +298,10 @@ export function Signup() {
                         <span>Creating Account...</span>
                       </>
                     ) : (
-                      <span>Complete Registration &rarr;</span>
+                      <>
+                        <span>Complete Registration</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </>
                     )}
                   </button>
                 </form>

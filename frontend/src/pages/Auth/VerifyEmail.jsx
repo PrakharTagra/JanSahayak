@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import {
+  CheckCircle2,
+  Clock,
+  XCircle,
+  ArrowRight
+} from "lucide-react";
 import logo from "/favicon.png";
 
 export function VerifyEmail() {
@@ -99,8 +105,8 @@ export function VerifyEmail() {
             {/* Success */}
             {status === "success" && (
               <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-950/40 flex items-center justify-center text-3xl text-emerald-400 shadow-inner">
-                  ✓
+                <div className="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-950/40 flex items-center justify-center text-emerald-400 shadow-inner">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <div>
                   <h3 className="text-emerald-400 font-bold text-base">
@@ -112,9 +118,10 @@ export function VerifyEmail() {
                 </div>
                 <button
                   onClick={() => navigate("/login")}
-                  className="btn-gov-primary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono shadow-gov-btn mt-2"
+                  className="btn-gov-primary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono shadow-gov-btn mt-2 flex items-center justify-center gap-1.5"
                 >
-                  Proceed to Login &rarr;
+                  <span>Proceed to Login</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
@@ -122,8 +129,8 @@ export function VerifyEmail() {
             {/* Expired */}
             {status === "expired" && (
               <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full border-2 border-amber-500 bg-amber-950/40 flex items-center justify-center text-3xl text-amber-400 shadow-inner">
-                  ⏱
+                <div className="w-16 h-16 rounded-full border-2 border-amber-500 bg-amber-950/40 flex items-center justify-center text-amber-400 shadow-inner">
+                  <Clock className="w-8 h-8" />
                 </div>
                 <div>
                   <h3 className="text-amber-400 font-bold text-base">
@@ -135,9 +142,10 @@ export function VerifyEmail() {
                 </div>
                 <button
                   onClick={() => navigate("/login")}
-                  className="btn-gov-secondary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono mt-2"
+                  className="btn-gov-secondary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono mt-2 flex items-center justify-center gap-1.5"
                 >
-                  Return to Login & Request New Link &rarr;
+                  <span>Return to Login & Request New Link</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
@@ -145,8 +153,8 @@ export function VerifyEmail() {
             {/* Error */}
             {status === "error" && (
               <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full border-2 border-red-500 bg-red-950/40 flex items-center justify-center text-3xl text-red-400 shadow-inner">
-                  ✗
+                <div className="w-16 h-16 rounded-full border-2 border-red-500 bg-red-950/40 flex items-center justify-center text-red-400 shadow-inner">
+                  <XCircle className="w-8 h-8" />
                 </div>
                 <div>
                   <h3 className="text-red-400 font-bold text-base">

@@ -1,6 +1,16 @@
 import UserSidebar from "../../components/UserSidebar";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import {
+  FolderClock,
+  Plus,
+  ArrowRight,
+  MapPin,
+  Building2,
+  Calendar,
+  Clock,
+  ThumbsUp
+} from "lucide-react";
 
 export default function MyReports() {
   const navigate = useNavigate();
@@ -91,9 +101,10 @@ export default function MyReports() {
           </div>
           <button
             onClick={() => navigate("/user/reportissue")}
-            className="btn-gov-primary px-4 py-2 rounded text-xs font-mono font-bold uppercase tracking-wider shadow-gov-btn w-fit active:scale-95"
+            className="btn-gov-primary px-4 py-2 rounded text-xs font-mono font-bold uppercase tracking-wider shadow-gov-btn w-fit active:scale-95 flex items-center gap-1.5"
           >
-            + File New Grievance
+            <Plus className="w-3.5 h-3.5" />
+            <span>File New Grievance</span>
           </button>
         </div>
 
@@ -118,16 +129,17 @@ export default function MyReports() {
             {/* Complaints List */}
             {reports.length === 0 ? (
               <div className="text-center py-16 border border-dashed border-gov-border rounded-lg bg-gov-card/40">
-                <p className="text-3xl mb-2">🗂️</p>
+                <FolderClock className="w-8 h-8 text-gov-slate mx-auto mb-2" />
                 <p className="text-sm font-semibold text-white">No Complaints Logged in This Docket</p>
                 <p className="text-xs text-gov-slate mt-1 max-w-sm mx-auto">
                   You haven't filed any civic grievances yet. Use the button above to report road defects, garbage issues, or street lighting problems.
                 </p>
                 <button
                   onClick={() => navigate("/user/reportissue")}
-                  className="btn-gov-primary px-5 py-2.5 rounded text-xs font-mono font-bold uppercase tracking-wider mt-4"
+                  className="btn-gov-primary px-5 py-2.5 rounded text-xs font-mono font-bold uppercase tracking-wider mt-4 inline-flex items-center gap-1.5"
                 >
-                  File a Complaint Now &rarr;
+                  <span>File a Complaint Now</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
@@ -179,17 +191,30 @@ export default function MyReports() {
 
                         {/* Location and Timestamps */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4 pt-3 border-t border-gov-border/60 text-xs text-gov-slate">
-                          <span className="truncate">📍 Location: <strong className="text-slate-200">{r.location}</strong></span>
-                          <span>🏛️ Department: <strong className="text-slate-200 uppercase">{r.dept}</strong></span>
-                          <span>📅 Filed On: <strong className="text-slate-200">{r.filed}</strong></span>
-                          <span>🔄 Last Status Update: <strong className="text-slate-200">{r.updated}</strong></span>
+                          <span className="truncate flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-gov-amber shrink-0" />
+                            <span>Location: <strong className="text-slate-200">{r.location}</strong></span>
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <Building2 className="w-3.5 h-3.5 text-gov-amber shrink-0" />
+                            <span>Department: <strong className="text-slate-200 uppercase">{r.dept}</strong></span>
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <Calendar className="w-3.5 h-3.5 text-gov-amber shrink-0" />
+                            <span>Filed On: <strong className="text-slate-200">{r.filed}</strong></span>
+                          </span>
+                          <span className="flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-gov-amber shrink-0" />
+                            <span>Last Status Update: <strong className="text-slate-200">{r.updated}</strong></span>
+                          </span>
                         </div>
                       </div>
 
                       {/* Footer Actions */}
                       <div className="flex items-center justify-between mt-4 pt-3 border-t border-gov-border/60 text-xs font-mono">
-                        <span className="text-gov-slate">
-                          ▲ Community Support: <strong className="text-gov-amber">{r.upvotes}</strong> upvotes
+                        <span className="text-gov-slate flex items-center gap-1.5">
+                          <ThumbsUp className="w-3.5 h-3.5 text-gov-amber" />
+                          <span>Community Support: <strong className="text-gov-amber">{r.upvotes}</strong> upvotes</span>
                         </span>
                         <span className="text-[11px] text-gov-amber">
                           Mandated Resolution Window: 15 Days

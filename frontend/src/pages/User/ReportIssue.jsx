@@ -1,12 +1,24 @@
 import { useState } from "react";
+import {
+  MapPin,
+  Camera,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  Info,
+  Check,
+  FileText,
+  ArrowRight,
+  RotateCcw
+} from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
 
 const CATEGORIES = [
-  { value: "garbage", label: "Garbage & Waste Disposal", icon: "🗑️" },
-  { value: "bad_road", label: "Pothole & Bad Roads", icon: "🕳️" },
-  { value: "broken_light", label: "Broken Streetlight", icon: "💡" },
-  { value: "waterlogging", label: "Waterlogging & Drainage", icon: "🌊" },
-  { value: "other", label: "Other Civic Grievance", icon: "📌" },
+  { value: "garbage", label: "Garbage & Waste Disposal" },
+  { value: "bad_road", label: "Pothole & Bad Roads" },
+  { value: "broken_light", label: "Broken Streetlight" },
+  { value: "waterlogging", label: "Waterlogging & Drainage" },
+  { value: "other", label: "Other Civic Grievance" },
 ];
 
 export default function ReportIssue() {
@@ -22,28 +34,99 @@ export default function ReportIssue() {
   const [loadingAI, setLoadingAI] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [loadingGPS, setLoadingGPS] = useState(false);
+  const [gpsStatus, setGpsStatus] = useState("");
   const [aiInfo, setAiInfo] = useState(null);
 
-  // Real GPS Geolocation handler
+  // Reverse geocoding helper using OpenStreetMap Nominatim
+  const reverseGeocode = async (lat, lon) => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+        {
+          headers: { "Accept-Language": "en" },
+          signal: controller.signal,
+        }
+      );
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.address) {
+          const a = data.address;
+          const road = a.road || a.pedestrian || a.street || "";
+          const area = a.suburb || a.neighbourhood || a.residential || a.city_district || "";
+          const city = a.city || a.town || a.village || a.county || "";
+          const state = a.state || "";
+          const postcode = a.postcode ? ` - ${a.postcode}` : "";
+
+          const parts = [road, area, city, state].filter(Boolean);
+          if (parts.length > 0) {
+            return `${parts.join(", ")}${postcode} (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
+          }
+          if (data.display_name) {
+            const shortName = data.display_name.split(",").slice(0, 4).join(",");
+            return `${shortName} (${lat.toFixed(5)}, ${lon.toFixed(5)})`;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Reverse geocode warning:", e);
+    }
+    return `Coordinates: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  };
+
+  // Robust multi-tier GPS location handler
   const handleGPS = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
+      alert("Geolocation is not supported by your browser. Please type your address manually.");
       return;
     }
+
     setLoadingGPS(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
+    setGpsStatus("Acquiring GPS fix...");
+
+    const onCoordsSuccess = async (pos) => {
+      try {
         const { latitude, longitude } = pos.coords;
-        const coordsStr = `GPS: ${latitude.toFixed(5)}° N, ${longitude.toFixed(5)}° E`;
-        setLocation(coordsStr);
+        setGpsStatus("Resolving street address...");
+        const readableAddress = await reverseGeocode(latitude, longitude);
+        setLocation(readableAddress);
+      } catch (err) {
+        console.warn("Geocode error:", err);
+        setLocation(`Coordinates: ${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`);
+      } finally {
         setLoadingGPS(false);
-      },
+        setGpsStatus("");
+      }
+    };
+
+    // Primary attempt: high accuracy (satellite/GPS) with 7s timeout
+    navigator.geolocation.getCurrentPosition(
+      onCoordsSuccess,
       (err) => {
-        console.warn("GPS error:", err);
-        alert("Unable to retrieve location. Please check location permissions or type address manually.");
-        setLoadingGPS(false);
+        console.warn("High accuracy GPS timed out or failed, falling back to network triangulation:", err);
+        setGpsStatus("Triangulating location via network...");
+        // Secondary attempt: low accuracy (WiFi / Cellular / IP) with 10s timeout
+        navigator.geolocation.getCurrentPosition(
+          onCoordsSuccess,
+          (fallbackErr) => {
+            console.error("All geolocation attempts failed:", fallbackErr);
+            setLoadingGPS(false);
+            setGpsStatus("");
+            if (fallbackErr.code === 1) {
+              alert("Location permission was denied. Please allow location access in your browser or enter your address manually.");
+            } else if (fallbackErr.code === 2) {
+              alert("Location is unavailable on your device. Please type your street address or landmark manually.");
+            } else {
+              alert("Location request timed out. Please enter your address manually.");
+            }
+          },
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+        );
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 7000, maximumAge: 30000 }
     );
   };
 
@@ -134,8 +217,8 @@ export default function ReportIssue() {
           
           <main className="flex-1 gov-pattern flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <div className="max-w-md w-full text-center border border-gov-border bg-gov-card p-6 sm:p-8 rounded-lg shadow-gov-card">
-              <div className="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-950/40 text-emerald-400 text-3xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-                ✓
+              <div className="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-950/40 text-emerald-400 flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
 
               <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-widest bg-emerald-950/40 border border-emerald-600/40 px-3 py-1 rounded">
@@ -163,15 +246,17 @@ export default function ReportIssue() {
               <div className="flex flex-col sm:flex-row gap-3 mt-6">
                 <button
                   onClick={handleReset}
-                  className="btn-gov-primary flex-1 py-3 rounded text-xs font-mono font-bold uppercase tracking-wider shadow-gov-btn"
+                  className="btn-gov-primary flex-1 py-3 rounded text-xs font-mono font-bold uppercase tracking-wider shadow-gov-btn flex items-center justify-center gap-2"
                 >
-                  File Another Grievance
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>File Another Grievance</span>
                 </button>
                 <button
                   onClick={() => window.location.href = "/user/myreports"}
-                  className="btn-gov-secondary flex-1 py-3 rounded text-xs font-mono font-semibold uppercase tracking-wider"
+                  className="btn-gov-secondary flex-1 py-3 rounded text-xs font-mono font-semibold uppercase tracking-wider flex items-center justify-center gap-2"
                 >
-                  Track in My Reports &rarr;
+                  <span>Track in My Reports</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -202,8 +287,9 @@ export default function ReportIssue() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded">
-              📋 New Representation
+            <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5" />
+              <span>New Representation</span>
             </span>
           </div>
         </div>
@@ -213,8 +299,11 @@ export default function ReportIssue() {
           <div className="max-w-3xl mx-auto space-y-6">
 
             {/* Info Notice */}
-            <div className="border border-gov-border bg-gov-card/80 p-3.5 sm:p-4 rounded-lg text-xs text-slate-300 leading-relaxed shadow-sm">
-              ℹ️ Mandatory fields are indicated with <span className="text-gov-amber font-bold">*</span>. Attaching clear photographs expedites field inspections and verification by ward engineers.
+            <div className="border border-gov-border bg-gov-card/80 p-3.5 sm:p-4 rounded-lg text-xs text-slate-300 leading-relaxed shadow-sm flex items-start gap-2.5">
+              <Info className="w-4 h-4 text-gov-amber shrink-0 mt-0.5" />
+              <div>
+                Mandatory fields are indicated with <span className="text-gov-amber font-bold">*</span>. Attaching clear photographs expedites field inspections and verification by ward engineers.
+              </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -295,7 +384,7 @@ export default function ReportIssue() {
                       </option>
                       {CATEGORIES.map((cat) => (
                         <option key={cat.value} value={cat.value} className="bg-gov-card text-white">
-                          {cat.icon} {cat.label}
+                          {cat.label}
                         </option>
                       ))}
                     </select>
@@ -307,7 +396,11 @@ export default function ReportIssue() {
                           ? "bg-emerald-950/40 border-emerald-600/50 text-emerald-300"
                           : "bg-amber-950/40 border-amber-600/50 text-amber-300"
                       }`}>
-                        <span>{aiInfo.type === 'success' ? '✨' : 'ℹ️'}</span>
+                        {aiInfo.type === 'success' ? (
+                          <Sparkles className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+                        ) : (
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0 text-amber-400" />
+                        )}
                         <span>{aiInfo.text}</span>
                       </div>
                     )}
@@ -341,24 +434,25 @@ export default function ReportIssue() {
                         type="button"
                         onClick={handleGPS}
                         disabled={loadingGPS}
-                        className="btn-gov-secondary px-4 py-2.5 rounded text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-60"
+                        className="btn-gov-secondary px-4 py-2.5 rounded text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60"
                       >
                         {loadingGPS ? (
                           <>
                             <span className="w-3.5 h-3.5 border-2 border-gov-amber border-t-transparent rounded-full animate-spin" />
-                            <span>Locating...</span>
+                            <span>{gpsStatus || "Locating..."}</span>
                           </>
                         ) : (
                           <>
-                            <span>📍</span>
-                            <span>Auto-Fill GPS</span>
+                            <MapPin className="w-3.5 h-3.5 text-gov-amber" />
+                            <span>Detect My Location</span>
                           </>
                         )}
                       </button>
                     </div>
-                    <p className="text-[10px] text-gov-muted font-mono mt-1">
-                      Accurate location ensures the designated ward officer inspects the right site.
-                    </p>
+                    <div className="flex items-center justify-between text-[10px] text-gov-muted font-mono mt-1">
+                      <span>Accurate address ensures the designated ward officer inspects the right site</span>
+                      {gpsStatus && <span className="text-gov-amber">{gpsStatus}</span>}
+                    </div>
                   </div>
 
                   {/* Photo Upload with Preview */}
@@ -374,13 +468,14 @@ export default function ReportIssue() {
                         {filePreview ? (
                           <div className="flex flex-col items-center gap-2">
                             <img src={filePreview} alt="Evidence Preview" className="w-32 h-24 object-cover rounded border border-gov-border shadow-sm" />
-                            <span className="text-xs font-mono text-emerald-400 font-semibold">
-                              ✓ {file?.name} (Click to change)
+                            <span className="text-xs font-mono text-emerald-400 font-semibold flex items-center gap-1.5">
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>{file?.name} (Click to change)</span>
                             </span>
                           </div>
                         ) : (
                           <>
-                            <span className="text-3xl">📷</span>
+                            <Camera className="w-8 h-8 text-gov-slate" />
                             <span className="text-xs sm:text-sm font-semibold text-white">
                               Click to select photograph or capture on mobile camera
                             </span>
@@ -432,7 +527,7 @@ export default function ReportIssue() {
                           try {
                             data = JSON.parse(text);
                           } catch {
-                            throw new Error("Invalid AI response");
+                            throw new Error("Invalid response format");
                           }
 
                           if (res.ok && data.success && data.category) {
@@ -444,14 +539,14 @@ export default function ReportIssue() {
                           } else {
                             setAiInfo({
                               type: "warn",
-                              text: data.message || "AI vision warming up. Please verify the category manually above."
+                              text: data.message || "AI vision service warming up. Please select category manually above."
                             });
                           }
                         } catch (err) {
                           console.warn("AI Notice:", err);
                           setAiInfo({
                             type: "warn",
-                            text: "AI service is warming up. Please verify category manually above."
+                            text: "AI service is warming up on Render. Please verify category manually above."
                           });
                         } finally {
                           setLoadingAI(false);
@@ -496,7 +591,10 @@ export default function ReportIssue() {
                     <span>Submitting Grievance to Municipal Registry...</span>
                   </>
                 ) : (
-                  <span>Submit Formal Grievance &rarr;</span>
+                  <>
+                    <span>Submit Formal Grievance</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
                 )}
               </button>
             </form>

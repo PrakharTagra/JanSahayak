@@ -1,6 +1,15 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  ShieldCheck,
+  User,
+  Building2,
+  RotateCw,
+  CheckCircle2,
+  AlertCircle,
+  ArrowRight
+} from "lucide-react";
 import logo from "/favicon.png";
 
 export function Login() {
@@ -130,7 +139,8 @@ export function Login() {
           {/* Security Badge */}
           <div className="flex justify-center mb-4 sm:mb-5">
             <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-wider px-3.5 py-1 rounded flex items-center gap-1.5 shadow-sm">
-              <span>🔒</span> Official Government Authentication
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Official Government Authentication</span>
             </span>
           </div>
 
@@ -166,7 +176,8 @@ export function Login() {
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    <span>👤</span> Citizen
+                    <User className="w-3.5 h-3.5" />
+                    <span>Citizen</span>
                   </button>
                   <button
                     type="button"
@@ -177,7 +188,8 @@ export function Login() {
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    <span>🏛️</span> Authority
+                    <Building2 className="w-3.5 h-3.5" />
+                    <span>Authority</span>
                   </button>
                 </div>
                 <p className="text-[10px] text-gov-muted mt-2 text-center font-mono">
@@ -245,13 +257,14 @@ export function Login() {
                       className="text-[10px] font-mono text-gov-amber hover:underline transition flex items-center gap-1"
                       title="Generate new calculation"
                     >
-                      <span>🔄</span> Refresh
+                      <RotateCw className="w-3 h-3" />
+                      <span>Refresh</span>
                     </button>
                   </div>
 
                   {captchaVerified ? (
                     <div className="flex items-center gap-2 py-1 text-emerald-400 font-mono text-xs font-bold">
-                      <span>✓</span>
+                      <CheckCircle2 className="w-3.5 h-3.5" />
                       <span>Security challenge verified</span>
                     </div>
                   ) : (
@@ -288,7 +301,8 @@ export function Login() {
                 {loginError && (
                   <div className="border border-red-500/40 bg-red-950/30 rounded p-3 text-left">
                     <p className="text-red-300 text-xs font-bold flex items-center gap-1.5">
-                      <span>⚠️</span> Login Failed
+                      <AlertCircle className="w-3.5 h-3.5 text-red-400" />
+                      <span>Login Failed</span>
                     </p>
                     <p className="text-red-200/80 text-[11px] mt-0.5 leading-relaxed">{loginError}</p>
                     {loginError.toLowerCase().includes("verify") && (
@@ -311,7 +325,10 @@ export function Login() {
                       <span>Authenticating...</span>
                     </>
                   ) : (
-                    <span>Sign In to Portal &rarr;</span>
+                    <>
+                      <span>Sign In to Portal</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
                   )}
                 </button>
               </form>

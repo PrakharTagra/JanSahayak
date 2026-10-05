@@ -1,5 +1,26 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import {
+  Megaphone,
+  Globe,
+  Scale,
+  Phone,
+  Zap,
+  AlertTriangle,
+  Lightbulb,
+  Trash2,
+  Droplets,
+  Car,
+  Wrench,
+  ShieldCheck,
+  FileText,
+  Cpu,
+  Vote,
+  CheckCircle2,
+  Mail,
+  Building2,
+  ArrowRight
+} from "lucide-react";
 import pothole from "../assets/pothole.jpg";
 import light from "../assets/streetlight.jpg";
 import garbage from "../assets/garbage.jpg";
@@ -42,8 +63,9 @@ export default function Landing() {
 
       {/* ══ ANNOUNCEMENT TICKER ══ */}
       <div className="bg-[#0b1b30] border-b border-gov-border/80 py-2 overflow-hidden flex items-center gap-3 px-4">
-        <span className="shrink-0 text-gov-amber text-[10px] sm:text-xs font-bold tracking-wider uppercase font-mono bg-gov-amber/15 px-2 py-0.5 rounded border border-gov-amber/30">
-          📢 Official Notice:
+        <span className="shrink-0 text-gov-amber text-[10px] sm:text-xs font-bold tracking-wider uppercase font-mono bg-gov-amber/15 px-2 py-0.5 rounded border border-gov-amber/30 flex items-center gap-1.5">
+          <Megaphone className="w-3.5 h-3.5" />
+          <span>Official Notice:</span>
         </span>
         <div className="overflow-hidden flex-1 relative">
           <p className="whitespace-nowrap text-xs text-slate-300 animate-pulse sm:animate-none">
@@ -148,7 +170,7 @@ export default function Landing() {
             ))}
           </div>
           <div className="shrink-0 text-gov-slate text-[11px] flex items-center gap-1.5 pl-2">
-            <span>🌐</span>
+            <Globe className="w-3.5 h-3.5" />
             <span className="text-white hover:text-gov-amber cursor-pointer">EN</span>
             <span>|</span>
             <span className="text-slate-400 hover:text-gov-amber cursor-pointer font-hindi">हिन्दी</span>
@@ -181,18 +203,20 @@ export default function Landing() {
               JanSahayak is an integrated citizen grievance redressal platform enabling residents across India to report municipal issues—potholes, garbage dumps, non-functioning streetlights, and drainage blockages—with real-time GPS tagging and photographic evidence.
             </p>
             
-            <div className="mt-4 border-l-3 border-gov-amber bg-gov-card/60 p-3.5 rounded-r max-w-2xl border border-gov-border">
+            <div className="mt-4 border-l-3 border-gov-amber bg-gov-card/60 p-3.5 rounded-r max-w-2xl border border-gov-border flex items-start gap-2.5">
+              <Scale className="w-4 h-4 text-gov-amber shrink-0 mt-0.5" />
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                ⚖️ <strong>Legal Backing:</strong> All complaints filed are treated as formal civic representations under Public Grievance Acts, mandating official department acknowledgement within 5 days.
+                <strong>Legal Backing:</strong> All complaints filed are treated as formal civic representations under Public Grievance Acts, mandating official department acknowledgement within 5 days.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3.5 mt-7 sm:mt-8">
               <button
                 onClick={() => navigate("/login")}
-                className="btn-gov-primary px-7 py-3.5 rounded text-sm font-bold uppercase tracking-wider font-mono text-center shadow-gov-btn"
+                className="btn-gov-primary px-7 py-3.5 rounded text-sm font-bold uppercase tracking-wider font-mono text-center shadow-gov-btn flex items-center justify-center gap-2"
               >
-                File a Complaint →
+                <span>File a Complaint</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 onClick={() => document.getElementById("process")?.scrollIntoView({ behavior: "smooth" })}
@@ -204,7 +228,7 @@ export default function Landing() {
 
             {/* Helpline badge */}
             <div className="mt-6 inline-flex items-center gap-3 border border-gov-border bg-gov-card/90 px-4 py-2.5 rounded text-xs text-slate-300 font-mono shadow-sm">
-              <span className="text-gov-amber text-lg">📞</span>
+              <Phone className="w-4 h-4 text-gov-amber" />
               <span>Toll-Free Helpline: <strong className="text-white text-sm">1800-11-2026</strong> (24×7 Citizen Support)</span>
             </div>
           </motion.div>
@@ -218,8 +242,9 @@ export default function Landing() {
           >
             <div className="border border-gov-border bg-gov-card rounded-lg p-5 sm:p-6 shadow-gov-card relative">
               <div className="flex items-center justify-between border-b border-gov-border/80 pb-3 mb-4">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-gov-amber">
-                  ⚡ Quick Grievance Filing
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-gov-amber flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Quick Grievance Filing</span>
                 </span>
                 <span className="text-[10px] font-mono text-gov-emerald bg-emerald-950/40 border border-emerald-600/40 px-2 py-0.5 rounded">
                   System Active
@@ -232,23 +257,26 @@ export default function Landing() {
 
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { icon: "🕳️", label: "Pothole & Roads", priority: "High" },
-                  { icon: "💡", label: "Street Lighting", priority: "Medium" },
-                  { icon: "🗑️", label: "Garbage Overflow", priority: "Urgent" },
-                  { icon: "💧", label: "Waterlogging", priority: "High" },
-                  { icon: "🚦", label: "Traffic Signal", priority: "Medium" },
-                  { icon: "🚰", label: "Drainage Blocks", priority: "Urgent" },
-                ].map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => navigate("/login")}
-                    className="flex flex-col items-start gap-1 p-3 rounded border border-gov-border bg-[#0a192f] hover:border-gov-amber/70 hover:bg-gov-amber/5 transition text-left group active:scale-95"
-                  >
-                    <span className="text-xl group-hover:scale-110 transition-transform">{item.icon}</span>
-                    <span className="text-xs font-semibold text-white group-hover:text-gov-amber transition-colors line-clamp-1">{item.label}</span>
-                    <span className="text-[10px] text-gov-slate font-mono">{item.priority}</span>
-                  </button>
-                ))}
+                  { icon: AlertTriangle, label: "Pothole & Roads", priority: "High" },
+                  { icon: Lightbulb, label: "Street Lighting", priority: "Medium" },
+                  { icon: Trash2, label: "Garbage Overflow", priority: "Urgent" },
+                  { icon: Droplets, label: "Waterlogging", priority: "High" },
+                  { icon: Car, label: "Traffic Signal", priority: "Medium" },
+                  { icon: Wrench, label: "Drainage Blocks", priority: "Urgent" },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={() => navigate("/login")}
+                      className="flex flex-col items-start gap-1 p-3 rounded border border-gov-border bg-[#0a192f] hover:border-gov-amber/70 hover:bg-gov-amber/5 transition text-left group active:scale-95"
+                    >
+                      <Icon className="w-5 h-5 text-gov-amber group-hover:scale-110 transition-transform" />
+                      <span className="text-xs font-semibold text-white group-hover:text-gov-amber transition-colors line-clamp-1">{item.label}</span>
+                      <span className="text-[10px] text-gov-slate font-mono">{item.priority}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               <button
@@ -287,8 +315,11 @@ export default function Landing() {
             <p className="text-slate-300 mt-3 leading-relaxed text-sm sm:text-base">
               The platform utilizes automated <strong>AI Computer Vision</strong> to categorize issues directly from submitted photos, verifies coordinates through geo-tagging, and leverages community upvoting so critical hazards are escalated immediately.
             </p>
-            <div className="mt-6 border border-gov-amber/40 bg-gov-amber/10 p-4 rounded text-xs sm:text-sm text-amber-200/90 leading-relaxed">
-              📌 <strong>Citizen Charter Guarantee:</strong> Grievances logged with photographs are prioritized for inspection by municipal engineers within 48 hours.
+            <div className="mt-6 border border-gov-amber/40 bg-gov-amber/10 p-4 rounded text-xs sm:text-sm text-amber-200/90 leading-relaxed flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-gov-amber shrink-0 mt-0.5" />
+              <div>
+                <strong>Citizen Charter Guarantee:</strong> Grievances logged with photographs are prioritized for inspection by municipal engineers within 48 hours.
+              </div>
             </div>
           </div>
 
@@ -385,21 +416,24 @@ export default function Landing() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
           {[
-            { step: "01", icon: "📝", title: "File Grievance", desc: "Submit grievance with photograph, title, and exact location description." },
-            { step: "02", icon: "🤖", title: "AI Categorization", desc: "Computer vision automatically detects issue type and assigns correct department." },
-            { step: "03", icon: "🗳️", title: "Citizen Upvoting", desc: "Community members vote to prioritize critical emergencies in the locality." },
-            { step: "04", icon: "👷", title: "Dispatch & Action", desc: "Municipal engineers or verified volunteers inspect and fix the issue." },
-            { step: "05", icon: "✅", title: "Verified Closure", desc: "Status updated to Resolved with timestamped completion proof." },
-          ].map((item, i) => (
-            <div key={i} className="border border-gov-border bg-gov-card p-5 rounded-lg text-center flex flex-col items-center shadow-gov-card">
-              <div className="w-12 h-12 rounded-full border-2 border-gov-saffron bg-gov-saffron/10 flex items-center justify-center text-xl mb-3">
-                {item.icon}
+            { step: "01", icon: FileText, title: "File Grievance", desc: "Submit grievance with photograph, title, and exact location description." },
+            { step: "02", icon: Cpu, title: "AI Categorization", desc: "Computer vision automatically detects issue type and assigns correct department." },
+            { step: "03", icon: Vote, title: "Citizen Upvoting", desc: "Community members vote to prioritize critical emergencies in the locality." },
+            { step: "04", icon: Wrench, title: "Dispatch & Action", desc: "Municipal engineers or verified volunteers inspect and fix the issue." },
+            { step: "05", icon: CheckCircle2, title: "Verified Closure", desc: "Status updated to Resolved with timestamped completion proof." },
+          ].map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={i} className="border border-gov-border bg-gov-card p-5 rounded-lg text-center flex flex-col items-center shadow-gov-card">
+                <div className="w-12 h-12 rounded-full border-2 border-gov-saffron bg-gov-saffron/10 flex items-center justify-center text-gov-amber mb-3">
+                  <Icon className="w-6 h-6" />
+                </div>
+                <span className="text-gov-amber text-[10px] font-mono font-bold tracking-widest">{item.step}</span>
+                <h3 className="font-bold text-sm text-white mt-1">{item.title}</h3>
+                <p className="text-slate-300 text-xs mt-2 leading-relaxed">{item.desc}</p>
               </div>
-              <span className="text-gov-amber text-[10px] font-mono font-bold tracking-widest">{item.step}</span>
-              <h3 className="font-bold text-sm text-white mt-1">{item.title}</h3>
-              <p className="text-slate-300 text-xs mt-2 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
@@ -467,9 +501,9 @@ export default function Landing() {
           <div>
             <h4 className="text-white font-bold mb-3 uppercase tracking-wider font-mono text-xs">Support & Helpline</h4>
             <ul className="space-y-2">
-              <li>📞 Toll-Free: <strong className="text-white font-mono">1800-11-2026</strong></li>
-              <li>📧 Support: <span className="text-white">support@jansahayak.gov.in</span></li>
-              <li>🏛️ Mon–Sat: 09:00 AM – 06:00 PM</li>
+              <li className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-gov-amber" /> Toll-Free: <strong className="text-white font-mono">1800-11-2026</strong></li>
+              <li className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-gov-amber" /> Support: <span className="text-white">support@jansahayak.gov.in</span></li>
+              <li className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5 text-gov-amber" /> Mon–Sat: 09:00 AM – 06:00 PM</li>
               <li className="text-[10px] text-gov-muted">Emergency Services: Dial 112</li>
             </ul>
           </div>

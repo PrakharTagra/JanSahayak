@@ -26,7 +26,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     const form = new FormData();
     form.append("image", fs.createReadStream(filePath), req.file.originalname);
 
-    const mlUrl = (process.env.ML_SERVICE_URL || "http://localhost:5001").replace(/\/+$/, "");
+    const mlUrl = (process.env.ML_SERVICE_URL || "https://jansahayak-ml-service.onrender.com").replace(/\/+$/, "");
     const targetEndpoint = mlUrl.endsWith("/predict") ? mlUrl : `${mlUrl}/predict`;
 
     const mlResponse = await axios.post(
@@ -34,7 +34,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       form,
       {
         headers: form.getHeaders(),
-        timeout: 60000 // 60s for Render free tier spin-up
+        timeout: 45000 // 45s timeout
       }
     );
 
@@ -49,11 +49,14 @@ router.post("/", upload.single("image"), async (req, res) => {
   } catch (error) {
     console.error("Classification error:", error.message);
     const isTimeout = error.code === "ECONNABORTED" || error.message.includes("timeout");
-    return res.status(503).json({
+    // Return HTTP 200 with fallback indicator so client doesn't hit a 500/503 network crash
+    return res.status(200).json({
       success: false,
+      fallback: true,
+      category: null,
       message: isTimeout
-        ? "AI service is waking up on Render. Please try again in 30 seconds, or select category manually."
-        : "AI classification unavailable: " + (error.response?.data?.error || error.message),
+        ? "AI vision service is spinning up on Render. Please select the category manually."
+        : "AI classification is currently unavailable. Please select the category manually.",
     });
   } finally {
     // Ensure uploaded temp file is always cleaned up
