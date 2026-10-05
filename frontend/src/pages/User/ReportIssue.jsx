@@ -14,13 +14,38 @@ export default function ReportIssue() {
   const [desc, setDesc] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
-  const [priority, setPriority] = useState("");
   const [file, setFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [complaintId, setComplaintId] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingGPS, setLoadingGPS] = useState(false);
   const [aiInfo, setAiInfo] = useState(null);
+
+  // Real GPS Geolocation handler
+  const handleGPS = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    setLoadingGPS(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const coordsStr = `GPS: ${latitude.toFixed(5)}° N, ${longitude.toFixed(5)}° E`;
+        setLocation(coordsStr);
+        setLoadingGPS(false);
+      },
+      (err) => {
+        console.warn("GPS error:", err);
+        alert("Unable to retrieve location. Please check location permissions or type address manually.");
+        setLoadingGPS(false);
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,7 +62,7 @@ export default function ReportIssue() {
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please log in first to file a complaint.");
+      alert("Please sign in first to file a complaint.");
       window.location.href = "/login";
       return;
     }
@@ -68,13 +93,14 @@ export default function ReportIssue() {
       try {
         data = JSON.parse(text);
       } catch (err) {
-        throw new Error(`Server returned error (${response.status})`);
+        throw new Error(`Server returned status ${response.status}`);
       }
 
       if (response.ok && data.success) {
+        setComplaintId(data.complaint?._id ? `JS-${data.complaint._id.slice(-6).toUpperCase()}` : `JS-2026-${Math.floor(1000 + Math.random() * 9000)}`);
         setSubmitted(true);
       } else {
-        alert(data.message || "Failed to submit complaint. Please check fields and try again.");
+        alert(data.message || "Failed to submit grievance. Please verify details and try again.");
       }
 
     } catch (error) {
@@ -85,151 +111,172 @@ export default function ReportIssue() {
     }
   };
 
+  // Reset form to file another complaint
+  const handleReset = () => {
+    setTitle("");
+    setDesc("");
+    setLocation("");
+    setCategory("");
+    setFile(null);
+    setFilePreview(null);
+    setAgreed(false);
+    setAiInfo(null);
+    setSubmitted(false);
+  };
+
+  // ── SUBMISSION SUCCESS VIEW ──
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#060e1f] text-white flex">
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
-          .font-serif-display{font-family:'Source Serif 4',Georgia,serif}
-          .font-mono-gov{font-family:'JetBrains Mono',monospace}
-          .tricolor-bar{background:linear-gradient(to right,#FF9933 33.3%,white 33.3%,white 66.6%,#138808 66.6%)}
-          .gov-grid{background-image:linear-gradient(rgba(255,165,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,165,0,0.025) 1px,transparent 1px);background-size:48px 48px}
-        `}</style>
+      <div className="min-h-screen bg-gov-dark text-slate-100 flex flex-col lg:flex-row">
         <UserSidebar />
-        <div className="ml-[30%] flex-1 flex flex-col min-h-screen">
-          <div className="tricolor-bar h-1 w-full shrink-0" />
-          <div className="flex-1 gov-grid flex items-center justify-center px-6">
-            <div className="max-w-md w-full text-center">
-              <div className="text-5xl mb-4">✅</div>
-              <div className="border border-green-700/40 bg-green-900/10 p-8">
-                <p className="text-[10px] font-mono-gov text-green-400 uppercase tracking-widest mb-2">Complaint Registered</p>
-                <h2 className="text-2xl font-black font-serif-display text-white">Submission Successful</h2>
-                <p className="text-slate-400 text-sm mt-3 leading-relaxed">
-                  Your grievance has been registered on the JanSahayak Portal. A unique complaint ID has been assigned and the relevant department has been notified.
-                </p>
-                <div className="mt-6 border border-amber-700/30 bg-[#0a1628] px-5 py-4">
-                  <p className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest">Complaint ID</p>
-                  <p className="text-xl font-black font-mono-gov text-amber-400 mt-1">JS-2026-{Math.floor(1000 + Math.random() * 9000)}</p>
-                  <p className="text-[10px] text-slate-600 font-mono-gov mt-1">Save this for future reference</p>
-                </div>
-                <p className="text-[10px] text-slate-500 font-mono-gov mt-4">
-                  An acknowledgement has been sent to your registered email. You will receive SMS updates at every stage of resolution.
-                </p>
+        <div className="lg:pl-72 w-full flex-1 flex flex-col min-h-screen pt-14 lg:pt-0">
+          <div className="tricolor-bar-h h-1 w-full shrink-0" />
+          
+          <main className="flex-1 gov-pattern flex items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className="max-w-md w-full text-center border border-gov-border bg-gov-card p-6 sm:p-8 rounded-lg shadow-gov-card">
+              <div className="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-950/40 text-emerald-400 text-3xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                ✓
+              </div>
+
+              <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-widest bg-emerald-950/40 border border-emerald-600/40 px-3 py-1 rounded">
+                Grievance Registered Successfully
+              </span>
+
+              <h2 className="text-xl sm:text-2xl font-bold font-serif text-white mt-3">
+                Complaint Registered
+              </h2>
+
+              <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
+                Your grievance has been officially recorded in the municipal registry and dispatched to the concerned department for inspection.
+              </p>
+
+              <div className="mt-5 border border-gov-amber/40 bg-[#071322] p-4 rounded-md text-center">
+                <p className="text-[10px] font-mono text-gov-slate uppercase tracking-wider">Formal Tracking Reference</p>
+                <p className="text-xl sm:text-2xl font-black font-mono text-gov-amber mt-1 tracking-wider">{complaintId}</p>
+                <p className="text-[10px] text-gov-muted font-mono mt-1">Keep this ID for future tracking & queries</p>
+              </div>
+
+              <p className="text-[11px] text-slate-400 mt-4 leading-relaxed">
+                An acknowledgement receipt has been logged. You will receive updates as the municipal engineer evaluates the issue.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
                 <button
-                  onClick={() => setSubmitted(false)}
-                  className="mt-6 w-full py-3 bg-amber-600 hover:bg-amber-500 transition font-bold tracking-widest uppercase text-sm font-mono-gov"
+                  onClick={handleReset}
+                  className="btn-gov-primary flex-1 py-3 rounded text-xs font-mono font-bold uppercase tracking-wider shadow-gov-btn"
                 >
-                  File Another Complaint
+                  File Another Grievance
+                </button>
+                <button
+                  onClick={() => window.location.href = "/user/myreports"}
+                  className="btn-gov-secondary flex-1 py-3 rounded text-xs font-mono font-semibold uppercase tracking-wider"
+                >
+                  Track in My Reports &rarr;
                 </button>
               </div>
             </div>
-          </div>
-          <div className="tricolor-bar h-1 w-full shrink-0" />
+          </main>
+
+          <div className="tricolor-bar-h h-1 w-full shrink-0" />
         </div>
       </div>
     );
   }
 
+  // ── MAIN FORM VIEW ──
   return (
-    <div className="min-h-screen bg-[#060e1f] text-white flex">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
-        .font-serif-display{font-family:'Source Serif 4',Georgia,serif}
-        .font-mono-gov{font-family:'JetBrains Mono',monospace}
-        .tricolor-bar{background:linear-gradient(to right,#FF9933 33.3%,white 33.3%,white 66.6%,#138808 66.6%)}
-        .gov-grid{background-image:linear-gradient(rgba(255,165,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,165,0,0.025) 1px,transparent 1px);background-size:48px 48px}
-        input,textarea,select{outline:none}
-        input:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px #060e1f inset!important;-webkit-text-fill-color:white!important}
-      `}</style>
-
+    <div className="min-h-screen bg-gov-dark text-slate-100 flex flex-col lg:flex-row">
       <UserSidebar />
 
-      <div className="ml-[30%] flex-1 flex flex-col min-h-screen">
-        <div className="tricolor-bar h-1 w-full shrink-0" />
+      <div className="lg:pl-72 w-full flex-1 flex flex-col min-h-screen pt-14 lg:pt-0">
+        <div className="tricolor-bar-h h-1 w-full shrink-0" />
 
-        {/* Top bar */}
-        <div className="bg-[#0a1628] border-b border-amber-700/30 px-6 py-3 flex items-center justify-between shrink-0">
+        {/* Top Header */}
+        <div className="bg-gov-navy border-b border-gov-border px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
           <div>
-            <h1 className="text-base font-black font-serif-display text-white leading-tight">File a Complaint</h1>
-            <p className="text-[10px] text-slate-500 font-mono-gov">JanSahayak Portal &nbsp;|&nbsp; शिकायत दर्ज करें</p>
+            <h1 className="text-base sm:text-lg font-bold font-serif text-white leading-tight">
+              File a Civic Grievance
+            </h1>
+            <p className="text-[10px] sm:text-xs text-gov-slate font-hindi">
+              नागरिक शिकायत पंजीकरण &bull; JanSahayak Public Portal
+            </p>
           </div>
-          <div className="border border-amber-700/40 bg-amber-900/20 text-amber-300 text-[10px] font-mono-gov uppercase tracking-widest px-3 py-1">
-            📋 New Grievance
+          <div className="flex items-center gap-2">
+            <span className="border border-gov-amber/40 bg-gov-amber/10 text-gov-amber text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded">
+              📋 New Representation
+            </span>
           </div>
         </div>
 
-        <div className="flex-1 gov-grid p-6 overflow-auto">
-          <div className="max-w-4xl">
+        {/* Form Container */}
+        <main className="flex-1 gov-pattern p-4 sm:p-6 lg:p-8 overflow-y-auto">
+          <div className="max-w-3xl mx-auto space-y-6">
 
-            {/* Info notice */}
-            <div className="border border-amber-700/30 bg-amber-900/10 text-amber-200/80 text-[11px] font-mono-gov px-4 py-3 mb-6 leading-relaxed">
-              ℹ️ All fields marked <span className="text-amber-500">*</span> are mandatory. Complaints with photographic evidence are prioritised and resolved faster. False or misleading complaints may result in account suspension.
+            {/* Info Notice */}
+            <div className="border border-gov-border bg-gov-card/80 p-3.5 sm:p-4 rounded-lg text-xs text-slate-300 leading-relaxed shadow-sm">
+              ℹ️ Mandatory fields are indicated with <span className="text-gov-amber font-bold">*</span>. Attaching clear photographs expedites field inspections and verification by ward engineers.
             </div>
 
-            {/* Steps indicator */}
-            <div className="flex items-center gap-2 mb-6 text-[10px] font-mono-gov">
-              {["Issue Details", "Location & Evidence", "Declaration"].map((step, i) => (
-                <div key={step} className="flex items-center gap-2">
-                  <div className={`flex items-center gap-1.5 px-3 py-1.5 border ${i === 0 ? "border-amber-600 bg-amber-600/20 text-amber-400" : "border-white/10 text-slate-600"}`}>
-                    <span>{i + 1}.</span> {step}
-                  </div>
-                  {i < 2 && <div className="text-slate-700">›</div>}
-                </div>
-              ))}
-            </div>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
 
               {/* ── SECTION 1: Issue Details ── */}
-              <div className="border border-white/10 bg-[#0a1628]">
-                <div className="border-b border-white/10 px-5 py-3 flex items-center gap-2">
-                  <span className="text-amber-400 font-mono-gov font-bold text-[10px] uppercase tracking-widest">01</span>
-                  <span className="text-white font-bold text-sm">Issue Details</span>
+              <div className="border border-gov-border bg-gov-card rounded-lg overflow-hidden shadow-gov-card">
+                <div className="border-b border-gov-border/80 px-5 py-3 flex items-center gap-2.5 bg-[#071526]">
+                  <span className="w-6 h-6 rounded bg-gov-amber/20 text-gov-amber font-mono font-bold text-xs flex items-center justify-center">01</span>
+                  <span className="text-white font-bold text-sm">Issue Information</span>
                 </div>
-                <div className="p-5 flex flex-col gap-5">
 
+                <div className="p-4 sm:p-6 space-y-4">
                   {/* Title */}
                   <div>
-                    <label className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest block mb-1.5">
-                      Complaint Title <span className="text-amber-500">*</span>
+                    <label className="text-[11px] font-mono text-slate-300 uppercase tracking-wider block mb-1.5 font-semibold">
+                      Complaint Title <span className="text-gov-amber">*</span>
                     </label>
                     <input
                       type="text"
-                      placeholder="Brief title describing the issue"
+                      placeholder="Brief descriptive title (e.g. Open manhole on Sector 14 Main Road)"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       required
-                      className="w-full px-4 py-3 bg-[#060e1f] border border-white/10 focus:border-amber-600/60 text-white placeholder-slate-600 text-sm font-mono-gov transition"
+                      maxLength={100}
+                      className="w-full px-3.5 py-2.5 bg-[#050f1d] border border-gov-border rounded focus:border-gov-amber focus:ring-1 focus:ring-gov-amber focus:outline-none text-white placeholder-slate-500 text-sm font-sans transition"
                     />
-                    <p className="text-[10px] text-slate-600 font-mono-gov mt-1">{title.length}/100 characters</p>
+                    <div className="flex justify-between text-[10px] text-gov-muted font-mono mt-1">
+                      <span>Be specific about the nature of the hazard</span>
+                      <span>{title.length}/100</span>
+                    </div>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest block mb-1.5">
-                      Detailed Description <span className="text-amber-500">*</span>
+                    <label className="text-[11px] font-mono text-slate-300 uppercase tracking-wider block mb-1.5 font-semibold">
+                      Detailed Problem Description <span className="text-gov-amber">*</span>
                     </label>
                     <textarea
                       rows={4}
-                      placeholder="Describe the issue in detail — when it started, how severe it is, and any impact on residents..."
+                      placeholder="Describe the issue in detail: when did it start, how severe is it, and does it cause traffic or safety risks..."
                       value={desc}
                       onChange={(e) => setDesc(e.target.value)}
                       required
-                      className="w-full px-4 py-3 bg-[#060e1f] border border-white/10 focus:border-amber-600/60 text-white placeholder-slate-600 text-sm font-mono-gov resize-none transition"
+                      maxLength={500}
+                      className="w-full px-3.5 py-2.5 bg-[#050f1d] border border-gov-border rounded focus:border-gov-amber focus:ring-1 focus:ring-gov-amber focus:outline-none text-white placeholder-slate-500 text-sm font-sans transition resize-none"
                     />
-                    <p className="text-[10px] text-slate-600 font-mono-gov mt-1">{desc.length}/500 characters</p>
+                    <div className="flex justify-between text-[10px] text-gov-muted font-mono mt-1">
+                      <span>Include landmark descriptions if possible</span>
+                      <span>{desc.length}/500</span>
+                    </div>
                   </div>
 
-                  {/* Category Selection */}
+                  {/* Category Dropdown */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest block">
-                        Issue Category <span className="text-amber-500">*</span>
+                      <label className="text-[11px] font-mono text-slate-300 uppercase tracking-wider font-semibold">
+                        Grievance Category <span className="text-gov-amber">*</span>
                       </label>
                       {loadingAI && (
-                        <span className="text-[10px] font-mono-gov text-amber-400 flex items-center gap-1.5">
-                          <span className="w-2.5 h-2.5 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></span>
-                          AI analyzing...
+                        <span className="text-[10px] font-mono text-gov-amber flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 border-2 border-gov-amber border-t-transparent rounded-full animate-spin" />
+                          AI analyzing photo...
                         </span>
                       )}
                     </div>
@@ -241,24 +288,24 @@ export default function ReportIssue() {
                         setAiInfo(null);
                       }}
                       required
-                      className="w-full px-4 py-3 bg-[#060e1f] border border-white/10 focus:border-amber-600/60 text-white text-sm font-mono-gov transition"
+                      className="w-full px-3.5 py-2.5 bg-[#050f1d] border border-gov-border rounded focus:border-gov-amber focus:ring-1 focus:ring-gov-amber focus:outline-none text-white text-sm font-sans transition"
                     >
-                      <option value="" disabled className="bg-[#060e1f] text-slate-500">
-                        -- Select Issue Category (or upload photo for AI auto-detection) --
+                      <option value="" disabled className="bg-[#050f1d] text-slate-500">
+                        -- Select Category (or attach photo for AI auto-detection) --
                       </option>
                       {CATEGORIES.map((cat) => (
-                        <option key={cat.value} value={cat.value} className="bg-[#0a1628] text-white">
+                        <option key={cat.value} value={cat.value} className="bg-gov-card text-white">
                           {cat.icon} {cat.label}
                         </option>
                       ))}
                     </select>
 
-                    {/* Status / AI result alert */}
+                    {/* AI auto-detection feedback notice */}
                     {aiInfo && (
-                      <div className={`mt-2 px-3 py-2 text-xs font-mono-gov border flex items-center gap-2 ${
+                      <div className={`mt-2 p-2.5 rounded text-xs font-mono border flex items-center gap-2 ${
                         aiInfo.type === 'success' 
-                          ? "bg-green-950/40 border-green-700/50 text-green-300"
-                          : "bg-amber-950/40 border-amber-700/50 text-amber-300"
+                          ? "bg-emerald-950/40 border-emerald-600/50 text-emerald-300"
+                          : "bg-amber-950/40 border-amber-600/50 text-amber-300"
                       }`}>
                         <span>{aiInfo.type === 'success' ? '✨' : 'ℹ️'}</span>
                         <span>{aiInfo.text}</span>
@@ -269,81 +316,104 @@ export default function ReportIssue() {
               </div>
 
               {/* ── SECTION 2: Location & Evidence ── */}
-              <div className="border border-white/10 bg-[#0a1628]">
-                <div className="border-b border-white/10 px-5 py-3 flex items-center gap-2">
-                  <span className="text-amber-400 font-mono-gov font-bold text-[10px] uppercase tracking-widest">02</span>
-                  <span className="text-white font-bold text-sm">Location & Evidence</span>
+              <div className="border border-gov-border bg-gov-card rounded-lg overflow-hidden shadow-gov-card">
+                <div className="border-b border-gov-border/80 px-5 py-3 flex items-center gap-2.5 bg-[#071526]">
+                  <span className="w-6 h-6 rounded bg-gov-amber/20 text-gov-amber font-mono font-bold text-xs flex items-center justify-center">02</span>
+                  <span className="text-white font-bold text-sm">Location & Photographic Evidence</span>
                 </div>
-                <div className="p-5 flex flex-col gap-5">
 
-                  {/* Location */}
+                <div className="p-4 sm:p-6 space-y-4">
+                  {/* Location Input */}
                   <div>
-                    <label className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest block mb-1.5">
-                      Location / Address <span className="text-amber-500">*</span>
+                    <label className="text-[11px] font-mono text-slate-300 uppercase tracking-wider block mb-1.5 font-semibold">
+                      Street Address / Location <span className="text-gov-amber">*</span>
                     </label>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <input
                         type="text"
-                        placeholder="Street, Sector, Landmark, City"
+                        placeholder="Street, Landmark, Ward Number, City"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         required
-                        className="flex-1 px-4 py-3 bg-[#060e1f] border border-white/10 focus:border-amber-600/60 text-white placeholder-slate-600 text-sm font-mono-gov transition"
+                        className="flex-1 px-3.5 py-2.5 bg-[#050f1d] border border-gov-border rounded focus:border-gov-amber focus:ring-1 focus:ring-gov-amber focus:outline-none text-white placeholder-slate-500 text-sm font-sans transition"
                       />
                       <button
                         type="button"
-                        className="px-4 py-3 border border-amber-700/40 text-amber-400 hover:bg-amber-600/10 transition text-[10px] font-mono-gov uppercase tracking-wide whitespace-nowrap"
+                        onClick={handleGPS}
+                        disabled={loadingGPS}
+                        className="btn-gov-secondary px-4 py-2.5 rounded text-xs font-mono font-bold uppercase tracking-wider whitespace-nowrap flex items-center justify-center gap-1.5 active:scale-95 disabled:opacity-60"
                       >
-                        📍 Use GPS
+                        {loadingGPS ? (
+                          <>
+                            <span className="w-3.5 h-3.5 border-2 border-gov-amber border-t-transparent rounded-full animate-spin" />
+                            <span>Locating...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>📍</span>
+                            <span>Auto-Fill GPS</span>
+                          </>
+                        )}
                       </button>
                     </div>
-                    <p className="text-[10px] text-slate-600 font-mono-gov mt-1">
-                      Precise location helps authorities locate and resolve the issue faster.
+                    <p className="text-[10px] text-gov-muted font-mono mt-1">
+                      Accurate location ensures the designated ward officer inspects the right site.
                     </p>
                   </div>
 
-                  {/* File upload */}
+                  {/* Photo Upload with Preview */}
                   <div>
-                    <label className="text-[10px] font-mono-gov text-slate-500 uppercase tracking-widest block mb-1.5">
-                      Upload Photograph / Evidence
+                    <label className="text-[11px] font-mono text-slate-300 uppercase tracking-wider block mb-1.5 font-semibold">
+                      Photographic Evidence (Recommended for Fast Redressal)
                     </label>
                     <div className="relative">
                       <label
                         htmlFor="evidence-upload"
-                        className="flex flex-col items-center justify-center border border-dashed border-amber-700/30 bg-[#060e1f] hover:border-amber-600/60 hover:bg-amber-600/5 transition cursor-pointer py-8 gap-2"
+                        className="flex flex-col items-center justify-center border-2 border-dashed border-gov-border hover:border-gov-amber/70 bg-[#050f1d] hover:bg-gov-amber/[0.02] transition-all cursor-pointer rounded-lg p-6 gap-2 text-center"
                       >
-                        <span className="text-2xl">{file ? "📎" : "📷"}</span>
-                        <span className="text-xs font-mono-gov text-slate-400">
-                          {file ? file.name : "Click to upload image or drag & drop"}
-                        </span>
-                        <span className="text-[10px] font-mono-gov text-slate-600">
-                          JPG, PNG up to 5MB — Strongly recommended
-                        </span>
+                        {filePreview ? (
+                          <div className="flex flex-col items-center gap-2">
+                            <img src={filePreview} alt="Evidence Preview" className="w-32 h-24 object-cover rounded border border-gov-border shadow-sm" />
+                            <span className="text-xs font-mono text-emerald-400 font-semibold">
+                              ✓ {file?.name} (Click to change)
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-3xl">📷</span>
+                            <span className="text-xs sm:text-sm font-semibold text-white">
+                              Click to select photograph or capture on mobile camera
+                            </span>
+                            <span className="text-[11px] text-gov-slate font-mono">
+                              JPG, PNG, WEBP up to 5 MB &bull; Automated AI inspection enabled
+                            </span>
+                          </>
+                        )}
                       </label>
 
-                      {/* 🔥 LOADER OVERLAY */}
+                      {/* AI analyzing overlay */}
                       {loadingAI && (
-                        <div className="absolute inset-0 bg-black/70 flex items-center justify-center rounded">
-                          <div className="flex flex-col items-center gap-3">
-                            <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-                            <p className="text-xs text-amber-400 font-mono-gov">
-                              AI is analyzing image...
-                            </p>
-                          </div>
+                        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center gap-2 z-10">
+                          <div className="w-8 h-8 border-3 border-gov-amber border-t-transparent rounded-full animate-spin" />
+                          <p className="text-xs font-mono font-bold text-gov-amber">
+                            AI Computer Vision Analyzing Image...
+                          </p>
                         </div>
                       )}
                     </div>
+
                     <input
                       id="evidence-upload"
-                      disabled={loadingAI}
                       type="file"
                       accept="image/*"
+                      disabled={loadingAI}
                       className="hidden"
                       onChange={async (e) => {
-                        const selectedFile = e.target.files[0];
-                        setFile(selectedFile);
-
+                        const selectedFile = e.target.files?.[0];
                         if (!selectedFile) return;
+
+                        setFile(selectedFile);
+                        setFilePreview(URL.createObjectURL(selectedFile));
 
                         try {
                           setLoadingAI(true);
@@ -352,7 +422,6 @@ export default function ReportIssue() {
                           const formData = new FormData();
                           formData.append("image", selectedFile);
 
-                          // 👉 CALL CLASSIFY API
                           const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/classify`, {
                             method: "POST",
                             body: formData,
@@ -362,29 +431,27 @@ export default function ReportIssue() {
                           let data;
                           try {
                             data = JSON.parse(text);
-                          } catch (err) {
-                            console.error("Not JSON →", text);
-                            throw new Error("Invalid response from server");
+                          } catch {
+                            throw new Error("Invalid AI response");
                           }
 
                           if (res.ok && data.success && data.category) {
                             setCategory(data.category);
                             setAiInfo({
                               type: "success",
-                              text: `AI auto-detected: ${data.category.toUpperCase().replace(/_/g, " ")} (${Math.round(data.confidence || 0)}% confidence). You can change this if needed.`
+                              text: `AI Auto-Detected: ${data.category.toUpperCase().replace(/_/g, " ")} (${Math.round(data.confidence || 0)}% confidence). Category updated.`
                             });
                           } else {
                             setAiInfo({
                               type: "warn",
-                              text: data.message || "AI service warming up. Please select category manually above."
+                              text: data.message || "AI vision warming up. Please verify the category manually above."
                             });
                           }
-
                         } catch (err) {
-                          console.warn("ML notice:", err);
+                          console.warn("AI Notice:", err);
                           setAiInfo({
                             type: "warn",
-                            text: "AI service warming up. Please select category manually above."
+                            text: "AI service is warming up. Please verify category manually above."
                           });
                         } finally {
                           setLoadingAI(false);
@@ -392,74 +459,65 @@ export default function ReportIssue() {
                       }}
                     />
                   </div>
-
                 </div>
               </div>
 
-              {/* ── SECTION 3: Declaration ── */}
-              <div className="border border-white/10 bg-[#0a1628]">
-                <div className="border-b border-white/10 px-5 py-3 flex items-center gap-2">
-                  <span className="text-amber-400 font-mono-gov font-bold text-[10px] uppercase tracking-widest">03</span>
+              {/* ── SECTION 3: Citizen Declaration ── */}
+              <div className="border border-gov-border bg-gov-card rounded-lg overflow-hidden shadow-gov-card">
+                <div className="border-b border-gov-border/80 px-5 py-3 flex items-center gap-2.5 bg-[#071526]">
+                  <span className="w-6 h-6 rounded bg-gov-amber/20 text-gov-amber font-mono font-bold text-xs flex items-center justify-center">03</span>
                   <span className="text-white font-bold text-sm">Citizen Declaration</span>
                 </div>
-                <div className="p-5">
-                  <label className="flex items-start gap-3 cursor-pointer group">
-                    <div
-                      onClick={() => setAgreed(!agreed)}
-                      className={`mt-0.5 w-4 h-4 shrink-0 border-2 transition flex items-center justify-center ${
-                        agreed ? "border-amber-500 bg-amber-600" : "border-slate-600 group-hover:border-amber-700"
-                      }`}
-                    >
-                      {agreed && <span className="text-white text-[10px] leading-none">✓</span>}
-                    </div>
-                    <p className="text-[11px] text-slate-400 font-mono-gov leading-relaxed">
-                      I hereby declare that the information provided above is true and correct to the best of my knowledge. I understand that filing a false complaint is an offence and may result in legal action under applicable law. I consent to my complaint being shared with the relevant municipal department for resolution.
+
+                <div className="p-4 sm:p-6">
+                  <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={agreed}
+                      onChange={(e) => setAgreed(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-gov-border text-gov-amber focus:ring-gov-amber shrink-0"
+                    />
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      I solemnly affirm that the details and photographic proof submitted above are genuine and relate to an actual public infrastructure problem. I understand that submitting malicious or counterfeit complaints is prohibited under municipal rules.
                     </p>
                   </label>
                 </div>
               </div>
 
-              {/* Submit */}
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loadingAI || loadingSubmit}
-                className={`w-full py-3.5 font-bold tracking-widest uppercase text-sm font-mono-gov transition ${
-                  loadingAI
-                    ? "bg-slate-700 cursor-not-allowed"
-                    : "bg-amber-600 hover:bg-amber-500 active:scale-[0.99]"
-                }`}
+                className="btn-gov-primary w-full py-3.5 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono flex items-center justify-center gap-2 shadow-gov-btn disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                {loadingAI ? "Processing Image..." : "Submit Complaint →"}
+                {loadingSubmit ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Submitting Grievance to Municipal Registry...</span>
+                  </>
+                ) : (
+                  <span>Submit Formal Grievance &rarr;</span>
+                )}
               </button>
-
-              <p className="text-[10px] text-slate-600 font-mono-gov text-center -mt-2">
-                You will receive an acknowledgement with a unique Complaint ID on your registered email & mobile.
-              </p>
-
             </form>
 
-            {/* Footer strip */}
-            <div className="mt-8 border border-white/5 bg-white/5 py-2 px-4 text-center text-[10px] text-slate-600 font-mono-gov">
-              Need help? Call <strong className="text-slate-400">1800-XXX-XXXX</strong> (Toll Free) &nbsp;|&nbsp; © 2026 JanSahayak — Government of India
+            <div className="border border-gov-border bg-gov-card/60 rounded-md py-3 px-4 text-center text-xs text-gov-slate font-mono">
+              Municipal Grievance Cell &bull; Call <strong className="text-gov-amber">1800-11-2026</strong> for urgent emergency escalations
             </div>
           </div>
-        </div>
-        <div className="tricolor-bar h-1 w-full shrink-0" />
-      </div>
-      {loadingSubmit && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
-            
-            {/* Spinner */}
-            <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-            
-            {/* Text */}
-            <p className="text-amber-400 font-mono-gov text-sm tracking-widest">
-              Submitting Complaint...
-            </p>
+        </main>
 
-            <p className="text-slate-500 text-xs font-mono-gov">
-              Please wait while we register your grievance
+        <div className="tricolor-bar-h h-1 w-full shrink-0" />
+      </div>
+
+      {/* Fullscreen Submission Loader Overlay */}
+      {loadingSubmit && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-gov-navy border border-gov-border p-6 rounded-lg max-w-sm w-full text-center shadow-2xl flex flex-col items-center gap-3">
+            <div className="w-10 h-10 border-3 border-gov-amber border-t-transparent rounded-full animate-spin" />
+            <h3 className="text-white font-bold font-serif text-sm">Registering Complaint</h3>
+            <p className="text-xs text-gov-slate leading-relaxed">
+              Encrypting metadata and routing grievance to municipal authority database…
             </p>
           </div>
         </div>

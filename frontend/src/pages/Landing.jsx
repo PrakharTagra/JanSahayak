@@ -8,269 +8,306 @@ import water from "../assets/Water.jpg";
 import drainage from "../assets/Drainage.jpg";
 import traffic from "../assets/Traffic.jpg";
 
-// ── tiny helpers ──────────────────────────────────────────────────────────────
+// ── Helpers ──
 const Badge = ({ children }) => (
-  <span className="inline-block bg-orange-600 text-white text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm">
+  <span className="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase px-3 py-1 rounded shadow-sm font-mono">
     {children}
   </span>
 );
 
 const Divider = () => (
-  <div className="flex items-center gap-3 my-2">
-    <div className="h-px flex-1 bg-amber-600/40" />
-    <div className="w-1.5 h-1.5 rotate-45 bg-amber-600" />
-    <div className="h-px flex-1 bg-amber-600/40" />
+  <div className="flex items-center gap-3 my-2.5 max-w-xs">
+    <div className="h-0.5 flex-1 bg-gradient-to-r from-gov-amber/60 to-transparent" />
+    <div className="w-1.5 h-1.5 rotate-45 bg-gov-amber" />
+    <div className="h-0.5 flex-1 bg-gradient-to-l from-gov-amber/60 to-transparent" />
   </div>
 );
 
 const StatCard = ({ number, label, sub }) => (
-  <div className="border border-amber-700/40 bg-[#0a1628]/80 p-6 text-center">
-    <div className="text-3xl md:text-4xl font-black text-amber-400 font-mono">{number}</div>
-    <div className="text-white font-semibold mt-1 text-sm">{label}</div>
-    {sub && <div className="text-slate-400 text-xs mt-0.5">{sub}</div>}
+  <div className="border border-gov-border/70 bg-gov-card/80 p-5 sm:p-6 text-center shadow-gov-card rounded-sm">
+    <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gov-amberLight font-mono tracking-tight">{number}</div>
+    <div className="text-white font-semibold mt-1 text-xs sm:text-sm">{label}</div>
+    {sub && <div className="text-gov-slate text-[11px] sm:text-xs mt-0.5">{sub}</div>}
   </div>
 );
 
-// ── main component ────────────────────────────────────────────────────────────
 export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#060e1f] text-white font-sans">
-      {/* ── Google Fonts (Tiro Devanagari + Source Serif 4) ── */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap');
-        .font-serif-display { font-family: 'Source Serif 4', Georgia, serif; }
-        .font-mono-gov      { font-family: 'JetBrains Mono', monospace; }
-        .font-hindi         { font-family: 'Tiro Devanagari Hindi', serif; }
-        .ashoka-border { border-image: repeating-linear-gradient(90deg,#b45309 0,#b45309 6px,transparent 6px,transparent 12px) 1; }
-        @keyframes ticker { 0%{transform:translateX(100%)} 100%{transform:translateX(-100%)} }
-        .ticker { animation: ticker 28s linear infinite; }
-        .gov-grid { background-image: linear-gradient(rgba(255,165,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,165,0,0.04) 1px,transparent 1px); background-size:48px 48px; }
-        .stamp::before { content:''; position:absolute;inset:0;border:2px solid rgba(251,191,36,0.15);border-radius:4px; }
-        .tricolor-bar { background:linear-gradient(to right,#FF9933 33.3%,white 33.3%,white 66.6%,#138808 66.6%); }
-      `}</style>
+    <div className="min-h-screen bg-gov-dark text-slate-100 font-sans selection:bg-amber-600 selection:text-white">
 
-      {/* ══ TOP STRIP — tricolor ══════════════════════════════════════════════ */}
-      <div className="tricolor-bar h-1.5 w-full" />
+      {/* ══ TOP TRICOLOR BAR ══ */}
+      <div className="tricolor-bar-h h-1.5 w-full shrink-0" />
 
-      {/* ══ ANNOUNCEMENT TICKER ══════════════════════════════════════════════ */}
-      <div className="bg-amber-700/20 border-b border-amber-700/30 py-1.5 overflow-hidden flex items-center gap-2 px-4">
-        <span className="shrink-0 text-amber-400 text-xs font-bold tracking-widest uppercase font-mono-gov">
-          📢 Notice:
+      {/* ══ ANNOUNCEMENT TICKER ══ */}
+      <div className="bg-[#0b1b30] border-b border-gov-border/80 py-2 overflow-hidden flex items-center gap-3 px-4">
+        <span className="shrink-0 text-gov-amber text-[10px] sm:text-xs font-bold tracking-wider uppercase font-mono bg-gov-amber/15 px-2 py-0.5 rounded border border-gov-amber/30">
+          📢 Official Notice:
         </span>
-        <div className="overflow-hidden flex-1">
-          <p className="ticker whitespace-nowrap text-xs text-slate-300">
-            JanSahayak Portal v2.0 launched — All citizens are encouraged to report civic issues online &nbsp;|&nbsp; New: Mobile app available on Play Store &nbsp;|&nbsp; Grievance redressal timelines reduced to 15 working days &nbsp;|&nbsp; Over 500 issues resolved in Q1 2026 &nbsp;|&nbsp; कृपया अपनी शिकायत दर्ज करें
+        <div className="overflow-hidden flex-1 relative">
+          <p className="whitespace-nowrap text-xs text-slate-300 animate-pulse sm:animate-none">
+            JanSahayak Portal v2.0 Live &bull; File civic grievances with geo-location & photographic proof &bull; Mandated 15-day SLA resolution &bull; नागरिक शिकायत निवारण सेवा
           </p>
         </div>
       </div>
 
-      {/* ══ GOVERNMENT HEADER ════════════════════════════════════════════════ */}
-      <header className="bg-[#0a1628] border-b-2 border-amber-700/60 py-5 px-6">
+      {/* ══ GOVERNMENT HEADER ══ */}
+      <header className="bg-gov-navy border-b border-gov-border py-4 sm:py-5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-4 justify-between">
-          {/* Left: emblem + name */}
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full border-2 border-amber-600 flex items-center justify-center bg-amber-900/20 shrink-0 overflow-hidden">
-              <img src={logo} alt="JanSahayak Emblem" className="w-10 h-10 object-cover" />
-            </div>
-            <div>
-              <div className="text-amber-400 text-xs tracking-[0.2em] uppercase font-mono-gov">
-                Government of India Initiative
+          
+          {/* Left: Emblem & National Title */}
+          <div className="flex items-center gap-3.5 sm:gap-4 w-full md:w-auto justify-between md:justify-start">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-gov-saffron bg-gov-saffron/10 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+                <img src={logo} alt="JanSahayak Emblem" className="w-8 h-8 sm:w-9 sm:h-9 object-cover" />
               </div>
-              <h1 className="text-2xl md:text-3xl font-black tracking-tight text-white font-serif-display leading-tight">
-                JanSahayak
-              </h1>
-              <p className="text-slate-400 text-xs tracking-wide font-hindi">
-                जन सहायक — नागरिक शिकायत निवारण पोर्टल
-              </p>
+              <div>
+                <div className="text-gov-amber text-[10px] sm:text-xs tracking-[0.18em] uppercase font-mono font-semibold">
+                  Government of India Initiative
+                </div>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white font-serif leading-tight">
+                  JanSahayak
+                </h1>
+                <p className="text-gov-slate text-[11px] sm:text-xs font-hindi">
+                  जन सहायक — नागरिक शिकायत निवारण पोर्टल
+                </p>
+              </div>
+            </div>
+
+            {/* Mobile Auth Buttons */}
+            <div className="flex md:hidden gap-2">
+              <button
+                onClick={() => navigate("/login")}
+                className="px-3 py-1.5 border border-gov-amber/60 text-gov-amber hover:bg-gov-amber/10 rounded text-xs font-semibold uppercase tracking-wider font-mono transition"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate("/signup")}
+                className="btn-gov-primary px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider font-mono"
+              >
+                Register
+              </button>
             </div>
           </div>
 
-          {/* Center: ministry label */}
-          <div className="hidden lg:block text-center">
-            <p className="text-slate-400 text-xs">Under the aegis of</p>
-            <p className="text-white text-sm font-semibold">
+          {/* Center: Ministry Label (Desktop) */}
+          <div className="hidden lg:block text-center border-x border-gov-border/60 px-6">
+            <p className="text-gov-slate text-[11px]">Under the aegis of</p>
+            <p className="text-white text-xs sm:text-sm font-semibold tracking-wide">
               Ministry of Housing & Urban Affairs
             </p>
-            <p className="text-slate-400 text-xs">भारत सरकार</p>
+            <p className="text-gov-amber text-[11px] font-hindi">आवासन और शहरी कार्य मंत्रालय &bull; भारत सरकार</p>
           </div>
 
-          {/* Right: auth buttons */}
-          <div className="flex gap-3">
+          {/* Right: Desktop Auth Buttons */}
+          <div className="hidden md:flex items-center gap-3">
             <button
               onClick={() => navigate("/login")}
-              className="px-5 py-2 border border-amber-600/60 text-amber-400 hover:bg-amber-600/10 transition text-sm font-semibold tracking-wide uppercase font-mono-gov"
+              className="px-5 py-2.5 border border-gov-amber/60 text-gov-amber hover:bg-gov-amber/10 rounded text-xs sm:text-sm font-bold tracking-wider uppercase font-mono transition active:scale-95 shadow-sm"
             >
-              Login
+              Sign In
             </button>
             <button
               onClick={() => navigate("/signup")}
-              className="px-5 py-2 bg-amber-600 hover:bg-amber-500 transition text-white text-sm font-semibold tracking-wide uppercase font-mono-gov"
+              className="btn-gov-primary px-5 py-2.5 rounded text-xs sm:text-sm font-bold tracking-wider uppercase font-mono shadow-gov-btn"
             >
-              Register
+              Register Citizen
             </button>
           </div>
         </div>
       </header>
 
-      {/* ══ NAV BAR ══════════════════════════════════════════════════════════ */}
-      <nav className="bg-[#0d1f3c] border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex items-center gap-6 px-6 py-2 text-xs font-semibold tracking-widest uppercase font-mono-gov overflow-x-auto">
-          {[
-            ["Home", "/"],
-            ["About", null],
-            ["Report Issue", "/login"],
-            ["Track Status", "/login"],
-            ["FAQ", null],
-            ["Contact", null],
-          ].map(([label, path]) => (
-            <button
-              key={label}
-              onClick={() => path && navigate(path)}
-              className="whitespace-nowrap text-slate-400 hover:text-amber-400 transition pb-0.5 border-b-2 border-transparent hover:border-amber-400"
-            >
-              {label}
-            </button>
-          ))}
-          <div className="ml-auto shrink-0 text-slate-500 text-[10px]">
-            🌐 <span className="hover:text-amber-400 cursor-pointer">EN</span> | <span className="hover:text-amber-400 cursor-pointer font-hindi">हि</span>
+      {/* ══ RESPONSIVE NAV BAR ══ */}
+      <nav className="bg-[#0b1c34] border-b border-gov-border sticky top-0 z-30 shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2.5 text-xs font-semibold tracking-wider uppercase font-mono overflow-x-auto gap-4">
+          <div className="flex items-center gap-4 sm:gap-6 whitespace-nowrap">
+            {[
+              ["Home", "/"],
+              ["About Portal", "#about"],
+              ["Report Issue", "/login"],
+              ["Track Status", "/login"],
+              ["Categories", "#categories"],
+              ["FAQ", "#faq"],
+            ].map(([label, path]) => (
+              <button
+                key={label}
+                onClick={() => {
+                  if (path.startsWith("#")) {
+                    const el = document.querySelector(path);
+                    if (el) el.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    navigate(path);
+                  }
+                }}
+                className="text-slate-300 hover:text-gov-amber transition pb-0.5 border-b-2 border-transparent hover:border-gov-amber text-xs"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="shrink-0 text-gov-slate text-[11px] flex items-center gap-1.5 pl-2">
+            <span>🌐</span>
+            <span className="text-white hover:text-gov-amber cursor-pointer">EN</span>
+            <span>|</span>
+            <span className="text-slate-400 hover:text-gov-amber cursor-pointer font-hindi">हिन्दी</span>
           </div>
         </div>
       </nav>
 
-      {/* ══ HERO ═════════════════════════════════════════════════════════════ */}
-      <section className="relative gov-grid overflow-hidden">
-        {/* decorative diagonals */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber-600/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
-          {/* text */}
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
-            <Badge>Official Portal</Badge>
+      {/* ══ HERO SECTION ══ */}
+      <section className="relative gov-pattern overflow-hidden border-b border-gov-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 grid lg:grid-cols-12 gap-10 items-center">
+          
+          {/* Hero Left Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-7"
+          >
+            <Badge>National Grievance Portal</Badge>
             <Divider />
-            <h2 className="text-4xl md:text-5xl font-black font-serif-display leading-[1.1] mt-4">
-              Report. Track.{" "}
-              <span className="text-amber-400">Fix Your City.</span>
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black font-serif leading-[1.15] text-white mt-3">
+              Report Civic Issues. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gov-saffron via-amber-400 to-amber-200">
+                Empower Your City.
+              </span>
             </h2>
-            <p className="mt-5 text-slate-300 leading-relaxed text-base">
-              JanSahayak is an integrated citizen grievance redressal system enabling residents to
-              report civic issues — potholes, broken streetlights, water leakages and more — with
-              photographic evidence and GPS-tagged location data.
+            
+            <p className="mt-4 sm:mt-5 text-slate-300 leading-relaxed text-sm sm:text-base max-w-2xl">
+              JanSahayak is an integrated citizen grievance redressal platform enabling residents across India to report municipal issues—potholes, garbage dumps, non-functioning streetlights, and drainage blockages—with real-time GPS tagging and photographic evidence.
             </p>
-            <p className="mt-3 text-slate-400 text-sm border-l-2 border-amber-600 pl-3">
-              Over <strong className="text-amber-400">60%</strong> of civic complaints in Indian cities go
-              unresolved due to inadequate reporting infrastructure.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-8">
+            
+            <div className="mt-4 border-l-3 border-gov-amber bg-gov-card/60 p-3.5 rounded-r max-w-2xl border border-gov-border">
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                ⚖️ <strong>Legal Backing:</strong> All complaints filed are treated as formal civic representations under Public Grievance Acts, mandating official department acknowledgement within 5 days.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3.5 mt-7 sm:mt-8">
               <button
                 onClick={() => navigate("/login")}
-                className="px-7 py-3 bg-amber-600 hover:bg-amber-500 transition font-bold tracking-wide uppercase text-sm font-mono-gov"
+                className="btn-gov-primary px-7 py-3.5 rounded text-sm font-bold uppercase tracking-wider font-mono text-center shadow-gov-btn"
               >
                 File a Complaint →
               </button>
               <button
-                onClick={() => document.getElementById("learn-more").scrollIntoView({ behavior: "smooth" })}
-                className="px-7 py-3 border border-amber-700/60 text-amber-400 hover:bg-amber-600/10 transition text-sm font-mono-gov uppercase tracking-wide"
+                onClick={() => document.getElementById("process")?.scrollIntoView({ behavior: "smooth" })}
+                className="btn-gov-secondary px-6 py-3.5 rounded text-sm font-bold uppercase tracking-wider font-mono text-center"
               >
-                Learn More
+                How It Works
               </button>
             </div>
-            {/* helpline */}
-            <div className="mt-8 inline-flex items-center gap-3 border border-white/10 bg-white/5 px-4 py-2 text-xs text-slate-400 font-mono-gov">
-              <span className="text-amber-400 text-lg">📞</span>
-              Helpline: <strong className="text-white">1800-XXX-XXXX</strong> (Toll Free, 24×7)
+
+            {/* Helpline badge */}
+            <div className="mt-6 inline-flex items-center gap-3 border border-gov-border bg-gov-card/90 px-4 py-2.5 rounded text-xs text-slate-300 font-mono shadow-sm">
+              <span className="text-gov-amber text-lg">📞</span>
+              <span>Toll-Free Helpline: <strong className="text-white text-sm">1800-11-2026</strong> (24×7 Citizen Support)</span>
             </div>
           </motion.div>
 
-          {/* right — info card stack */}
-          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }}>
-            <div className="border border-amber-700/40 bg-[#0a1628]/90 p-6 relative stamp">
-              <div className="absolute -top-3 left-4 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest font-mono-gov">
-                Quick Access
+          {/* Hero Right: Quick Grievance Box */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="lg:col-span-5"
+          >
+            <div className="border border-gov-border bg-gov-card rounded-lg p-5 sm:p-6 shadow-gov-card relative">
+              <div className="flex items-center justify-between border-b border-gov-border/80 pb-3 mb-4">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-gov-amber">
+                  ⚡ Quick Grievance Filing
+                </span>
+                <span className="text-[10px] font-mono text-gov-emerald bg-emerald-950/40 border border-emerald-600/40 px-2 py-0.5 rounded">
+                  System Active
+                </span>
               </div>
-              <div className="grid grid-cols-2 gap-3 mt-3">
+
+              <p className="text-xs text-slate-400 mb-4">
+                Select your grievance category for automated routing to the responsible municipal department:
+              </p>
+
+              <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { icon: "🕳️", label: "Pothole Report", tag: "High Priority" },
-                  { icon: "💡", label: "Street Lighting", tag: "Medium" },
-                  { icon: "🗑️", label: "Garbage Overflow", tag: "High Priority" },
-                  { icon: "💧", label: "Water Leakage", tag: "Medium" },
-                  { icon: "🚦", label: "Traffic Signal", tag: "Urgent" },
-                  { icon: "🚰", label: "Blocked Drain", tag: "Medium" },
+                  { icon: "🕳️", label: "Pothole & Roads", priority: "High" },
+                  { icon: "💡", label: "Street Lighting", priority: "Medium" },
+                  { icon: "🗑️", label: "Garbage Overflow", priority: "Urgent" },
+                  { icon: "💧", label: "Waterlogging", priority: "High" },
+                  { icon: "🚦", label: "Traffic Signal", priority: "Medium" },
+                  { icon: "🚰", label: "Drainage Blocks", priority: "Urgent" },
                 ].map((item) => (
                   <button
                     key={item.label}
                     onClick={() => navigate("/login")}
-                    className="flex flex-col items-start gap-1 border border-white/10 hover:border-amber-600/60 bg-white/5 hover:bg-amber-600/10 transition p-3 text-left"
+                    className="flex flex-col items-start gap-1 p-3 rounded border border-gov-border bg-[#0a192f] hover:border-gov-amber/70 hover:bg-gov-amber/5 transition text-left group active:scale-95"
                   >
-                    <span className="text-xl">{item.icon}</span>
-                    <span className="text-xs font-semibold text-white">{item.label}</span>
-                    <span className="text-[10px] text-slate-400">{item.tag}</span>
+                    <span className="text-xl group-hover:scale-110 transition-transform">{item.icon}</span>
+                    <span className="text-xs font-semibold text-white group-hover:text-gov-amber transition-colors line-clamp-1">{item.label}</span>
+                    <span className="text-[10px] text-gov-slate font-mono">{item.priority}</span>
                   </button>
                 ))}
               </div>
+
               <button
                 onClick={() => navigate("/login")}
-                className="w-full mt-4 py-2 border border-dashed border-amber-700/60 text-amber-500 text-xs uppercase tracking-widest hover:bg-amber-600/10 transition font-mono-gov"
+                className="w-full mt-4 py-3 rounded border border-dashed border-gov-amber/60 text-gov-amber text-xs font-bold uppercase tracking-wider hover:bg-gov-amber/10 transition font-mono text-center active:scale-95"
               >
-                + Report Other Issue
+                + View All Civic Departments
               </button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ══ STATS BAR ════════════════════════════════════════════════════════ */}
-      <div className="bg-[#0a1628] border-y border-amber-700/30">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-amber-700/20">
-          <StatCard number="12,400+" label="Issues Reported" sub="Since Jan 2024" />
-          <StatCard number="8,950+" label="Resolved" sub="71% resolution rate" />
-          <StatCard number="24" label="Cities Covered" sub="Across 8 States" />
-          <StatCard number="15 Days" label="Avg. Resolution Time" sub="Down from 42 days" />
+      {/* ══ STATS SECTION ══ */}
+      <section className="bg-gov-navy border-b border-gov-border">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-gov-border/60">
+          <StatCard number="12,400+" label="Issues Registered" sub="Across smart municipalities" />
+          <StatCard number="8,950+" label="Resolved Cases" sub="72% positive redressal rate" />
+          <StatCard number="24" label="Participating Cities" sub="Across 8 Indian States" />
+          <StatCard number="15 Days" label="Average Resolution" sub="Compliant with Citizen Charter" />
         </div>
-      </div>
+      </section>
 
-      {/* ══ ABOUT ════════════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-16 items-start">
+      {/* ══ ABOUT PORTAL ══ */}
+      <section id="about" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
-            <Badge>About the Portal</Badge>
-            <h2 className="text-3xl font-black font-serif-display mt-3 leading-tight">
-              What is JanSahayak?
+            <Badge>Civic Governance</Badge>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-serif mt-3 text-white leading-tight">
+              About the JanSahayak Framework
             </h2>
             <Divider />
-            <p className="text-slate-300 mt-4 leading-relaxed">
-              JanSahayak is a citizen-powered grievance redressal platform under the Smart Cities
-              Mission. It bridges the gap between residents and municipal authorities by providing a
-              transparent, structured, and accountable reporting mechanism.
+            <p className="text-slate-300 mt-4 leading-relaxed text-sm sm:text-base">
+              JanSahayak is an open, citizen-first civic grievance monitoring portal established under the Smart Cities Mission. Designed in accordance with Digital India guidelines, it brings complete visibility to everyday infrastructure failures.
             </p>
-            <p className="text-slate-300 mt-4 leading-relaxed">
-              Built in compliance with the Government's Digital India initiative, the portal supports
-              geo-tagged reporting, photographic evidence submission, real-time status tracking, and
-              community upvoting to prioritise high-impact issues.
+            <p className="text-slate-300 mt-3 leading-relaxed text-sm sm:text-base">
+              The platform utilizes automated <strong>AI Computer Vision</strong> to categorize issues directly from submitted photos, verifies coordinates through geo-tagging, and leverages community upvoting so critical hazards are escalated immediately.
             </p>
-            <div className="mt-6 border border-amber-700/40 bg-amber-900/10 p-4 text-sm text-amber-200">
-              <strong>Legal Basis:</strong> Complaints registered on this portal are treated as formal
-              grievances under the Public Grievances (Redressal) Act and must be acknowledged within
-              <strong> 5 working days</strong>.
+            <div className="mt-6 border border-gov-amber/40 bg-gov-amber/10 p-4 rounded text-xs sm:text-sm text-amber-200/90 leading-relaxed">
+              📌 <strong>Citizen Charter Guarantee:</strong> Grievances logged with photographs are prioritized for inspection by municipal engineers within 48 hours.
             </div>
           </div>
-          <div className="space-y-4">
+
+          <div id="faq" className="space-y-3">
+            <h3 className="text-sm font-mono uppercase tracking-widest text-gov-amber font-bold mb-3">
+              Frequently Asked Questions (FAQ)
+            </h3>
             {[
-              { q: "Who can use this portal?", a: "Any Indian citizen with a valid Aadhaar-linked mobile number can register and file complaints." },
-              { q: "Is it free to use?", a: "Yes. JanSahayak is a completely free public service offered by the Government." },
-              { q: "How are complaints tracked?", a: "Each complaint receives a unique ID. Citizens receive SMS/email updates at every stage of resolution." },
-              { q: "What action can I expect?", a: "Municipal authorities are mandated to respond within 5 days and resolve within 15 working days." },
+              { q: "Who can register complaints on JanSahayak?", a: "Any citizen residing in India with a verified email or phone number can log in and file grievances for their ward." },
+              { q: "Is there any charge for reporting civic issues?", a: "No. JanSahayak is a 100% free public service provided by the municipal authorities and Government of India." },
+              { q: "How are submitted complaints tracked?", a: "Every complaint generates a unique tracking ID (e.g. JS-2026-XXXX). Citizens receive status updates via dashboard and email." },
+              { q: "What happens if a complaint is delayed beyond the SLA?", a: "Complaints exceeding the 15-day resolution window are escalated automatically to higher municipal commissioners." },
             ].map((faq, i) => (
-              <details key={i} className="border border-white/10 group">
-                <summary className="flex justify-between items-center px-4 py-3 cursor-pointer text-sm font-semibold hover:bg-white/5 list-none">
-                  {faq.q}
-                  <span className="text-amber-400 group-open:rotate-45 transition-transform">+</span>
+              <details key={i} className="border border-gov-border bg-gov-card rounded group transition overflow-hidden">
+                <summary className="flex justify-between items-center px-4 py-3 cursor-pointer text-xs sm:text-sm font-semibold text-white hover:bg-white/[0.03] select-none list-none">
+                  <span>{faq.q}</span>
+                  <span className="text-gov-amber text-lg group-open:rotate-45 transition-transform duration-200">+</span>
                 </summary>
-                <div className="px-4 pb-4 text-slate-400 text-sm leading-relaxed border-t border-white/10 pt-3">
+                <div className="px-4 pb-3.5 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-gov-border/60 pt-3 bg-[#0a192f]">
                   {faq.a}
                 </div>
               </details>
@@ -279,254 +316,176 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ══ CIVIC PROBLEMS ═══════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-[#080f1e] border-y border-white/5">
+      {/* ══ CIVIC PROBLEM CATEGORIES ══ */}
+      <section id="categories" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gov-navy border-y border-gov-border">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <Badge>Reportable Categories</Badge>
-            <h2 className="text-3xl font-black font-serif-display mt-3">
-              Civic Issues Addressed
+          <div className="text-center mb-10 sm:mb-14">
+            <Badge>Reportable Issues</Badge>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-serif mt-3 text-white">
+              Official Grievance Categories
             </h2>
-            <p className="text-slate-400 mt-3 max-w-xl mx-auto text-sm">
-              The following categories are officially recognised under the JanSahayak grievance
-              framework and are assigned to respective municipal departments.
+            <p className="text-gov-slate mt-2 max-w-xl mx-auto text-xs sm:text-sm">
+              Issues assigned directly to designated municipal departments with mandated Service Level Agreements (SLA).
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
             {[
-              { title: "Potholes & Road Damage", img: pothole, dept: "PWD / Road Dept.", sla: "15 days", desc: "Potholes damage vehicles, cause accidents, and worsen significantly during monsoons." },
-              { title: "Broken Street Lights", img: light, dept: "Electricity Dept.", sla: "7 days", desc: "Poor lighting increases crime, reduces visibility, and creates unsafe night conditions." },
-              { title: "Garbage Overflow", img: garbage, dept: "Sanitation Dept.", sla: "3 days", desc: "Overflowing garbage leads to foul smell, disease vectors and environmental pollution." },
-              { title: "Water Leakage / Shortage", img: water, dept: "Jal Board", sla: "10 days", desc: "Leaking pipelines waste thousands of litres daily and damage nearby infrastructure." },
-              { title: "Blocked Drainage", img: drainage, dept: "Drainage Dept.", sla: "7 days", desc: "Clogged drains cause waterlogging, flooding and mosquito breeding in urban areas." },
-              { title: "Traffic Signal Issues", img: traffic, dept: "Traffic Police", sla: "5 days", desc: "Non-functional signals lead to traffic chaos, delays and increased accident risk." },
+              { title: "Potholes & Road Cracks", img: pothole, dept: "Public Works (PWD)", sla: "15 Days", desc: "Hazardous potholes and broken road pavements causing vehicular damage and traffic risks." },
+              { title: "Broken Street Lights", img: light, dept: "Electricity Board", sla: "7 Days", desc: "Defective luminaires and dark stretches causing unsafe nighttime conditions." },
+              { title: "Garbage Overflow", img: garbage, dept: "Solid Waste Dept.", sla: "3 Days", desc: "Overflowing public bins and roadside waste dumps creating health hazards." },
+              { title: "Water Leakage & Supply", img: water, dept: "Jal Sansthan", sla: "7 Days", desc: "Ruptured municipal pipelines, contaminated drinking supply, or zero water pressure." },
+              { title: "Blocked Drains & Sludge", img: drainage, dept: "Drainage Board", sla: "5 Days", desc: "Clogged stormwater drains causing water stagnation, foul odor, and mosquito breeding." },
+              { title: "Traffic Signal Malfunctions", img: traffic, dept: "Traffic Division", sla: "3 Days", desc: "Non-functional intersection timers and signals causing urban road congestion." },
             ].map((item, i) => (
-              <motion.div
+              <div
                 key={i}
-                whileHover={{ y: -4 }}
-                className="border border-white/10 hover:border-amber-700/60 bg-[#0a1628] overflow-hidden transition group"
+                className="border border-gov-border hover:border-gov-amber/60 bg-gov-card rounded-lg overflow-hidden transition-all duration-200 group flex flex-col shadow-gov-card"
               >
-                <div className="relative h-40 overflow-hidden">
-                  <img src={item.img} className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628]" />
+                <div className="relative h-44 overflow-hidden bg-black/40">
+                  <img src={item.img} alt={item.title} className="w-full h-full object-cover opacity-75 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gov-card via-transparent" />
+                  <span className="absolute top-3 right-3 text-[10px] font-mono font-bold bg-gov-emerald/90 text-white px-2.5 py-1 rounded shadow">
+                    SLA: {item.sla}
+                  </span>
                 </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-white">{item.title}</h3>
-                  <div className="flex gap-3 mt-2 text-[10px] font-mono-gov">
-                    <span className="text-amber-400 bg-amber-900/30 px-2 py-0.5">{item.dept}</span>
-                    <span className="text-green-400 bg-green-900/30 px-2 py-0.5">SLA: {item.sla}</span>
+                <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-bold text-base text-white group-hover:text-gov-amber transition-colors">{item.title}</h3>
+                    <div className="mt-2 text-[10px] font-mono text-gov-amber bg-gov-amber/10 border border-gov-amber/30 px-2 py-0.5 rounded w-fit">
+                      {item.dept}
+                    </div>
+                    <p className="text-slate-300 text-xs sm:text-sm mt-3 leading-relaxed">{item.desc}</p>
                   </div>
-                  <p className="text-slate-400 text-sm mt-3">{item.desc}</p>
                   <button
                     onClick={() => navigate("/login")}
-                    className="mt-4 text-xs text-amber-400 hover:underline font-mono-gov uppercase tracking-wide"
+                    className="mt-4 pt-3 border-t border-gov-border/60 text-xs text-gov-amber font-mono font-semibold uppercase tracking-wider hover:underline flex items-center justify-between"
                   >
-                    Report This →
+                    <span>File Complaint</span>
+                    <span>→</span>
                   </button>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ HOW IT WORKS ═════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <Badge>Process</Badge>
-          <h2 className="text-3xl font-black font-serif-display mt-3">How to File a Complaint</h2>
-          <p className="text-slate-400 mt-2 text-sm">Step-by-step grievance process in accordance with government guidelines</p>
-        </div>
-        <div className="relative">
-          {/* connecting line */}
-          <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-px bg-amber-700/30" />
-          <div className="grid md:grid-cols-5 gap-6">
-            {[
-              { step: "01", icon: "📝", title: "Register / Login", desc: "Create account with Aadhaar-verified mobile number" },
-              { step: "02", icon: "📍", title: "Locate Issue", desc: "Use GPS or drop a pin on the map at the issue location" },
-              { step: "03", icon: "📷", title: "Upload Evidence", desc: "Attach photographs and describe the problem in detail" },
-              { step: "04", icon: "📨", title: "Submit Complaint", desc: "Receive unique complaint ID and acknowledgement receipt" },
-              { step: "05", icon: "✅", title: "Track & Resolve", desc: "Get SMS updates until closure and rate the resolution" },
-            ].map((item, i) => (
-              <div key={i} className="flex flex-col items-center text-center relative">
-                <div className="w-14 h-14 rounded-full border-2 border-amber-600 bg-amber-900/20 flex items-center justify-center text-2xl mb-4 z-10">
-                  {item.icon}
-                </div>
-                <span className="text-amber-400 text-[10px] font-mono-gov tracking-widest">{item.step}</span>
-                <h3 className="font-bold mt-1 text-sm text-white">{item.title}</h3>
-                <p className="text-slate-400 text-xs mt-2">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ══ WHY IT MATTERS ═══════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-[#080f1e] border-y border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <Badge>Key Benefits</Badge>
-            <h2 className="text-3xl font-black font-serif-display mt-3">Why JanSahayak?</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { icon: "⚡", title: "Faster Resolution", desc: "Structured digital complaints eliminate manual paperwork, reducing average resolution time from 42 to 15 working days.", stat: "65% faster" },
-              { icon: "🔍", title: "Full Transparency", desc: "Real-time status updates, departmental assignments and public dashboards ensure complete accountability.", stat: "100% trackable" },
-              { icon: "🗳️", title: "Democratic Prioritisation", desc: "Community upvoting ensures high-impact issues are escalated automatically to senior officials.", stat: "Top issues escalated" },
-              { icon: "📊", title: "Data-Driven Governance", desc: "Aggregated complaint data helps authorities identify chronic problem zones and allocate resources efficiently.", stat: "Smart allocation" },
-              { icon: "📱", title: "Multi-Channel Access", desc: "File complaints via web portal, mobile app, or toll-free helpline — available in 12 regional languages.", stat: "12 languages" },
-              { icon: "🔒", title: "Secure & Compliant", desc: "ISO 27001 certified infrastructure with end-to-end encryption. Data stored on Indian government servers.", stat: "ISO certified" },
-            ].map((item, i) => (
-              <div key={i} className="border border-white/10 hover:border-amber-700/40 bg-[#0a1628] p-6 transition">
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <div className="text-[10px] text-amber-400 font-mono-gov tracking-widest mb-1">{item.stat}</div>
-                <h3 className="font-bold text-white">{item.title}</h3>
-                <p className="text-slate-400 text-sm mt-2 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
+      {/* ══ STEP BY STEP PROCESS ══ */}
+      <section id="process" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center mb-10 sm:mb-14">
+          <Badge>Transparent Workflow</Badge>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-serif mt-3 text-white">
+            How Complaints Are Processed
+          </h2>
+          <p className="text-gov-slate mt-2 text-xs sm:text-sm">
+            5 clear steps from initial reporting to verified civic resolution
+          </p>
         </div>
-      </section>
 
-      {/* ══ FEATURES SECTION ═════════════════════════════════════════════════ */}
-      <section id="learn-more" className="py-20 px-6 max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <Badge>Platform Features</Badge>
-          <h2 className="text-3xl font-black font-serif-display mt-3">Portal Capabilities</h2>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6">
           {[
-            { no: "01", title: "Geo-tagged Reporting", desc: "Citizens attach GPS coordinates ensuring authorities locate issues precisely without field surveys.", color: "text-amber-400" },
-            { no: "02", title: "Community Upvoting", desc: "Upvotes highlight the most urgent community issues and trigger automatic escalation protocols.", color: "text-amber-400" },
-            { no: "03", title: "SLA Enforcement", desc: "Automated reminders escalate overdue complaints to senior officers ensuring accountability.", color: "text-amber-400" },
+            { step: "01", icon: "📝", title: "File Grievance", desc: "Submit grievance with photograph, title, and exact location description." },
+            { step: "02", icon: "🤖", title: "AI Categorization", desc: "Computer vision automatically detects issue type and assigns correct department." },
+            { step: "03", icon: "🗳️", title: "Citizen Upvoting", desc: "Community members vote to prioritize critical emergencies in the locality." },
+            { step: "04", icon: "👷", title: "Dispatch & Action", desc: "Municipal engineers or verified volunteers inspect and fix the issue." },
+            { step: "05", icon: "✅", title: "Verified Closure", desc: "Status updated to Resolved with timestamped completion proof." },
           ].map((item, i) => (
-            <motion.div key={i} whileHover={{ y: -4 }} className="border border-white/10 hover:border-amber-700/60 bg-[#0a1628] p-6 transition">
-              <span className={`text-sm font-mono-gov font-bold ${item.color}`}>{item.no}</span>
-              <h3 className="font-bold mt-2 mb-2 text-white">{item.title}</h3>
-              <p className="text-slate-400 text-sm">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {[
-            { no: "04", title: "Departmental Workflow", desc: "Complaints auto-routed to concerned departments with built-in assignment and progress tracking.", color: "text-orange-400" },
-            { no: "05", title: "Public Dashboard", desc: "Live analytics showing resolution rates, category breakdown and city rankings available publicly.", color: "text-orange-400" },
-          ].map((item, i) => (
-            <motion.div key={i} whileHover={{ y: -4 }} className="border border-white/10 hover:border-orange-700/60 bg-[#0a1628] p-6 transition">
-              <span className={`text-sm font-mono-gov font-bold ${item.color}`}>{item.no}</span>
-              <h3 className="font-bold mt-2 mb-2 text-white">{item.title}</h3>
-              <p className="text-slate-400 text-sm">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ══ PARTNER MINISTRIES ═══════════════════════════════════════════════ */}
-      <section className="py-14 px-6 bg-[#080f1e] border-y border-white/5">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-slate-500 text-xs tracking-widest uppercase font-mono-gov mb-6">In Collaboration With</p>
-          <div className="flex flex-wrap justify-center gap-6 text-slate-400 text-xs font-semibold">
-            {[
-              "Ministry of Housing & Urban Affairs",
-              "Digital India Programme",
-              "Smart Cities Mission",
-              "NASSCOM",
-              "MyGov India",
-              "NDMC",
-            ].map((org) => (
-              <div key={org} className="border border-white/10 px-4 py-2 hover:border-amber-700/40 hover:text-amber-400 transition">
-                {org}
+            <div key={i} className="border border-gov-border bg-gov-card p-5 rounded-lg text-center flex flex-col items-center shadow-gov-card">
+              <div className="w-12 h-12 rounded-full border-2 border-gov-saffron bg-gov-saffron/10 flex items-center justify-center text-xl mb-3">
+                {item.icon}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══ CTA BANNER ═══════════════════════════════════════════════════════ */}
-      <section className="py-20 px-6 bg-amber-700/10 border-y border-amber-700/30 text-center">
-        <Badge>Take Action</Badge>
-        <h2 className="text-3xl md:text-4xl font-black font-serif-display mt-4">
-          Don't just complain — file a <span className="text-amber-400">formal grievance.</span>
-        </h2>
-        <p className="text-slate-400 mt-3 max-w-xl mx-auto text-sm">
-          Your complaint has legal backing. Authorities are bound to respond.
-          It takes less than 2 minutes to file.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 mt-8">
-          <button
-            onClick={() => navigate("/signup")}
-            className="px-8 py-3 bg-amber-600 hover:bg-amber-500 font-bold tracking-widest uppercase text-sm font-mono-gov transition"
-          >
-            Register as Citizen
-          </button>
-          <button
-            onClick={() => navigate("/login")}
-            className="px-8 py-3 border border-amber-600 text-amber-400 hover:bg-amber-600/10 font-bold tracking-widest uppercase text-sm font-mono-gov transition"
-          >
-            Already Registered? Login
-          </button>
-        </div>
-      </section>
-
-      {/* ══ FOOTER ═══════════════════════════════════════════════════════════ */}
-      <footer className="bg-[#060c18] border-t border-amber-700/30 pt-12 pb-6 text-sm text-slate-400">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10 mb-10">
-          {/* Brand */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <img src={logo} className="w-7 h-7 rounded" alt="logo" />
-              <h3 className="text-white font-black font-serif-display text-lg">JanSahayak</h3>
+              <span className="text-gov-amber text-[10px] font-mono font-bold tracking-widest">{item.step}</span>
+              <h3 className="font-bold text-sm text-white mt-1">{item.title}</h3>
+              <p className="text-slate-300 text-xs mt-2 leading-relaxed">{item.desc}</p>
             </div>
-            <p className="text-xs leading-relaxed">
-              An initiative under the Smart Cities Mission, Government of India. Empowering citizens through transparent civic grievance redressal.
+          ))}
+        </div>
+      </section>
+
+      {/* ══ FINAL CALL TO ACTION ══ */}
+      <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#091f3a] to-gov-navy border-t border-gov-border text-center">
+        <div className="max-w-3xl mx-auto">
+          <Badge>Active Citizen Participation</Badge>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-serif mt-4 text-white leading-tight">
+            Be the Change in Your Neighborhood
+          </h2>
+          <p className="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed">
+            Every complaint registered on JanSahayak holds authorities accountable and helps create safer, cleaner public spaces.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3.5 mt-7">
+            <button
+              onClick={() => navigate("/signup")}
+              className="btn-gov-primary px-8 py-3.5 rounded text-sm font-bold uppercase tracking-wider font-mono shadow-gov-btn"
+            >
+              Register Citizen Account
+            </button>
+            <button
+              onClick={() => navigate("/login")}
+              className="btn-gov-secondary px-8 py-3.5 rounded text-sm font-bold uppercase tracking-wider font-mono"
+            >
+              Sign In to Portal
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ GOVERNMENT FOOTER ══ */}
+      <footer className="bg-[#040b15] border-t border-gov-border pt-12 pb-6 text-xs text-gov-slate">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          <div>
+            <div className="flex items-center gap-2.5 mb-3">
+              <img src={logo} className="w-6 h-6 rounded" alt="Emblem" />
+              <span className="text-white font-bold font-serif text-base">JanSahayak</span>
+            </div>
+            <p className="leading-relaxed">
+              Official Civic Grievance & Citizen Empowerment Platform, Ministry of Housing & Urban Affairs, Government of India.
             </p>
-            <p className="mt-3 text-xs text-amber-700/80 font-hindi">जन सेवा ही राष्ट्र सेवा है</p>
+            <p className="mt-2 text-gov-amber font-hindi text-xs">सत्यमेव जयते &bull; जन सेवा ही राष्ट्र सेवा</p>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold mb-3 uppercase tracking-widest text-xs font-mono-gov">Quick Links</h4>
-            <ul className="space-y-2 text-xs">
-              {["Home", "About Portal", "File Complaint", "Track Status", "Public Dashboard", "RTI / CPGRAMS"].map((l) => (
-                <li key={l} className="hover:text-amber-400 cursor-pointer transition">{l}</li>
-              ))}
+            <h4 className="text-white font-bold mb-3 uppercase tracking-wider font-mono text-xs">Portal Navigation</h4>
+            <ul className="space-y-2">
+              <li onClick={() => navigate("/")} className="hover:text-gov-amber cursor-pointer transition">Home Page</li>
+              <li onClick={() => navigate("/login")} className="hover:text-gov-amber cursor-pointer transition">File Grievance</li>
+              <li onClick={() => navigate("/login")} className="hover:text-gov-amber cursor-pointer transition">Track Case Status</li>
+              <li onClick={() => navigate("/login")} className="hover:text-gov-amber cursor-pointer transition">Volunteer Network</li>
             </ul>
           </div>
 
-          {/* Categories */}
           <div>
-            <h4 className="text-white font-bold mb-3 uppercase tracking-widest text-xs font-mono-gov">Issue Categories</h4>
-            <ul className="space-y-2 text-xs">
-              {["Potholes & Roads", "Street Lighting", "Garbage & Sanitation", "Water & Drainage", "Traffic Signals", "Other Civic Issues"].map((l) => (
-                <li key={l} className="hover:text-amber-400 cursor-pointer transition">{l}</li>
-              ))}
+            <h4 className="text-white font-bold mb-3 uppercase tracking-wider font-mono text-xs">Gov Initiatives</h4>
+            <ul className="space-y-2">
+              <li className="hover:text-gov-amber cursor-pointer transition">Smart Cities Mission</li>
+              <li className="hover:text-gov-amber cursor-pointer transition">Digital India Programme</li>
+              <li className="hover:text-gov-amber cursor-pointer transition">Swachh Bharat Abhiyan</li>
+              <li className="hover:text-gov-amber cursor-pointer transition">CPGRAMS Portal</li>
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="text-white font-bold mb-3 uppercase tracking-widest text-xs font-mono-gov">Contact Us</h4>
-            <ul className="space-y-2 text-xs">
-              <li>📞 <strong className="text-white">1800-XXX-XXXX</strong> (Toll Free)</li>
-              <li>📧 grievance@jansahayak.gov.in</li>
-              <li>🕐 Mon–Sat, 9:00 AM – 6:00 PM</li>
-              <li className="mt-3 text-[10px] text-slate-500">Emergency: Contact local municipal office or dial 112</li>
+            <h4 className="text-white font-bold mb-3 uppercase tracking-wider font-mono text-xs">Support & Helpline</h4>
+            <ul className="space-y-2">
+              <li>📞 Toll-Free: <strong className="text-white font-mono">1800-11-2026</strong></li>
+              <li>📧 Support: <span className="text-white">support@jansahayak.gov.in</span></li>
+              <li>🏛️ Mon–Sat: 09:00 AM – 06:00 PM</li>
+              <li className="text-[10px] text-gov-muted">Emergency Services: Dial 112</li>
             </ul>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-[10px] text-slate-500 font-mono-gov">
-          <p>© 2026 JanSahayak — Government of India. All rights reserved.</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-gov-border/60 pt-5 flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] font-mono">
+          <p>&copy; 2026 JanSahayak &bull; Government of India. All rights reserved.</p>
           <div className="flex gap-4">
-            {["Privacy Policy", "Terms of Use", "Accessibility", "Site Map"].map((l) => (
-              <span key={l} className="hover:text-amber-400 cursor-pointer transition">{l}</span>
-            ))}
+            <span className="hover:text-gov-amber cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-gov-amber cursor-pointer">Terms of Service</span>
+            <span className="hover:text-gov-amber cursor-pointer">Accessibility Statement</span>
+            <span className="hover:text-gov-amber cursor-pointer">Site Map</span>
           </div>
         </div>
 
-        {/* bottom tricolor */}
-        <div className="tricolor-bar h-1 w-full mt-6" />
+        <div className="tricolor-bar-h h-1 w-full mt-5" />
       </footer>
     </div>
   );

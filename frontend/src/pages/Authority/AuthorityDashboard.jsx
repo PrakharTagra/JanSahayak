@@ -7,9 +7,9 @@ const authHeaders = () => ({ Authorization: `Bearer ${getToken()}` });
 const jsonHeaders = () => ({ ...authHeaders(), "Content-Type": "application/json" });
 
 const statusColor = (s) => {
-  if (s === "resolved")  return "text-green-400 bg-green-900/20 border-green-700/40";
-  if (s === "assigned")  return "text-blue-400 bg-blue-900/20 border-blue-700/40";
-  if (s === "pending")   return "text-amber-400 bg-amber-900/20 border-amber-700/40";
+  if (s === "resolved")  return "text-emerald-400 bg-emerald-950/40 border-emerald-600/50";
+  if (s === "assigned")  return "text-blue-400 bg-blue-950/40 border-blue-600/50";
+  if (s === "pending")   return "text-amber-400 bg-amber-950/40 border-amber-600/50";
   return "text-slate-400 bg-slate-800 border-slate-700";
 };
 
@@ -18,12 +18,8 @@ const categoryIcon = (c = "") => {
   return map[c] || "📋";
 };
 const categoryLabel = (c = "") => {
-  const map = { garbage:"Sanitation", bad_road:"Road", broken_light:"Electricity", waterlogging:"Water", other:"Other" };
+  const map = { garbage:"Sanitation", bad_road:"Roads & PWD", broken_light:"Electricity", waterlogging:"Water Supply", other:"Other" };
   return map[c] || c;
-};
-const categoryAccent = (c = "") => {
-  const map = { garbage:"#34d399", bad_road:"#f59e0b", broken_light:"#facc15", waterlogging:"#60a5fa", other:"#FF9933" };
-  return map[c] || "#FF9933";
 };
 
 const timeAgo = (d) => {
@@ -41,59 +37,51 @@ const scoreApplicant = (b) => {
 };
 
 const Badge = ({ label, className = "" }) => (
-  <span className={`text-[9px] font-mono px-2 py-0.5 border uppercase tracking-widest ${className}`}>{label}</span>
+  <span className={`text-[10px] font-mono px-2 py-0.5 border rounded uppercase tracking-wider font-semibold ${className}`}>{label}</span>
 );
 
 // ─── STYLES ───────────────────────────────────────────────────────────────────
 const STYLES = `
-  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #060e1f; color: #e2e8f0; font-family: 'JetBrains Mono', monospace; }
-  .serif { font-family: 'Source Serif 4', Georgia, serif; }
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; }
+  body { background: #050f1d; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .serif { font-family: 'Merriweather', Georgia, serif; }
   .tricolor { background: linear-gradient(to right,#FF9933 33.3%,white 33.3%,white 66.6%,#138808 66.6%); }
-  .gov-grid { background-image: linear-gradient(rgba(255,153,51,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,153,51,0.02) 1px,transparent 1px); background-size:48px 48px; }
-  ::-webkit-scrollbar { width:4px; height:4px; }
-  ::-webkit-scrollbar-track { background:#0a1628; }
-  ::-webkit-scrollbar-thumb { background:#FF9933; border-radius:2px; }
+  .gov-grid { background-image: linear-gradient(rgba(255,153,51,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,153,51,0.02) 1px,transparent 1px); background-size:36px 36px; }
 
-  .card { border:1px solid rgba(255,153,51,0.18); background:#0a1628; transition:border-color 0.2s; }
-  .card:hover { border-color:rgba(255,153,51,0.45); }
+  .card { border:1px solid #1c3c66; background:#0f233d; border-radius:6px; transition:border-color 0.2s, transform 0.15s; }
+  .card:hover { border-color:#d97706; }
 
-  .btn-primary { background:#FF9933; color:#060e1f; border:none; font-family:'JetBrains Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; font-size:10px; cursor:pointer; padding:9px 18px; transition:background 0.15s; }
-  .btn-primary:hover { background:#ffb347; }
-  .btn-primary:disabled { background:#334155; color:#64748b; cursor:not-allowed; }
+  .btn-primary { background:linear-gradient(135deg, #FF9933 0%, #D97706 100%); color:#ffffff; border:none; font-family:'JetBrains Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; font-size:11px; cursor:pointer; padding:9px 18px; border-radius:4px; transition:all 0.15s; box-shadow:0 2px 6px rgba(217,119,6,0.3); }
+  .btn-primary:hover { background:linear-gradient(135deg, #FFA74D 0%, #E67E00 100%); transform:translateY(-1px); }
+  .btn-primary:active { transform:scale(0.98); }
+  .btn-primary:disabled { background:#334155; color:#64748b; cursor:not-allowed; box-shadow:none; transform:none; }
 
-  .btn-ghost { background:transparent; color:#FF9933; border:1px solid rgba(255,153,51,0.4); font-family:'JetBrains Mono',monospace; font-weight:500; font-size:10px; cursor:pointer; padding:8px 16px; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.08em; }
-  .btn-ghost:hover { border-color:#FF9933; background:rgba(255,153,51,0.08); }
-  .btn-ghost:disabled { color:#475569; border-color:rgba(255,255,255,0.08); cursor:not-allowed; }
+  .btn-ghost { background:transparent; color:#FF9933; border:1px solid rgba(255,153,51,0.5); font-family:'JetBrains Mono',monospace; font-weight:600; font-size:10px; cursor:pointer; padding:7px 14px; border-radius:4px; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.06em; }
+  .btn-ghost:hover { border-color:#FF9933; background:rgba(255,153,51,0.1); }
+  .btn-ghost:active { transform:scale(0.98); }
 
-  .btn-danger { background:transparent; color:#ef4444; border:1px solid rgba(239,68,68,0.4); font-family:'JetBrains Mono',monospace; font-weight:500; font-size:10px; cursor:pointer; padding:8px 16px; transition:all 0.15s; text-transform:uppercase; }
-  .btn-danger:hover { background:rgba(239,68,68,0.1); border-color:#ef4444; }
+  .btn-danger { background:rgba(239,68,68,0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.4); font-family:'JetBrains Mono',monospace; font-weight:600; font-size:10px; cursor:pointer; padding:7px 14px; border-radius:4px; transition:all 0.15s; text-transform:uppercase; }
+  .btn-danger:hover { background:rgba(239,68,68,0.25); border-color:#ef4444; color:#ffffff; }
 
-  input, select { background:#060e1f; border:1px solid rgba(255,153,51,0.25); color:white; font-family:'JetBrains Mono',monospace; font-size:11px; padding:8px 12px; outline:none; width:100%; }
+  input, select { background:#071322; border:1px solid #1c3c66; color:white; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; padding:8px 12px; outline:none; width:100%; border-radius:4px; }
   input:focus, select:focus { border-color:#FF9933; }
-  input::placeholder { color:#475569; }
+  input::placeholder { color:#64748b; }
 
-  .feed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; padding:24px; }
-  .feed-card { background:#0d1b2e; border:1px solid rgba(255,153,51,0.18); overflow:hidden; transition:transform 0.18s,box-shadow 0.18s,border-color 0.18s; cursor:pointer; }
-  .feed-card:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.5); border-color:rgba(255,153,51,0.5); }
-  .feed-img-wrap { position:relative; width:100%; aspect-ratio:4/3; overflow:hidden; background:#060e1f; }
-  .feed-img { width:100%; height:100%; object-fit:cover; transition:transform 0.3s; }
-  .feed-card:hover .feed-img { transform:scale(1.04); }
-  .feed-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(6,14,31,0.92) 0%,rgba(6,14,31,0.2) 45%,transparent 100%); pointer-events:none; }
+  .feed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:16px; padding:16px; }
+  @media (min-width: 640px) {
+    .feed-grid { grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:20px; padding:24px; }
+  }
 
-  .modal-overlay { position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.82); display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn 0.15s ease; }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  .modal-box { background:#0a1628; border:1px solid rgba(255,153,51,0.35); width:100%; max-width:860px; max-height:92vh; overflow-y:auto; position:relative; animation:slideUp 0.2s ease; }
-  @keyframes slideUp { from{transform:translateY(14px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .modal-overlay { position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:16px; }
+  .modal-box { background:#0a192f; border:1px solid #1c3c66; width:100%; max-width:820px; max-height:90vh; overflow-y:auto; border-radius:8px; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.6); }
 
-  .stat-card { border:1px solid rgba(255,153,51,0.18); background:#0a1628; padding:16px 20px; }
-  .vol-row { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer; transition:background 0.12s; }
-  .vol-row:hover { background:rgba(255,153,51,0.05); }
-  .vol-row.active { background:rgba(255,153,51,0.08); border-left:2px solid #FF9933; }
+  .stat-card { border:1px solid #1c3c66; background:#0f233d; padding:16px 20px; border-radius:6px; box-shadow:0 4px 12px rgba(5,15,29,0.5); }
+  .vol-row { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; transition:background 0.15s; }
+  .vol-row:hover { background:rgba(255,153,51,0.06); }
+  .vol-row.active { background:rgba(255,153,51,0.12); border-left:3px solid #FF9933; }
 
-  .section-label { font-size:9px; color:#FF9933; text-transform:uppercase; letter-spacing:0.18em; margin-bottom:12px; }
-  .divider { border:none; border-top:1px solid rgba(255,255,255,0.06); margin:16px 0; }
+  .section-label { font-size:10px; color:#FF9933; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.15em; font-weight:700; margin-bottom:12px; }
 `;
 
 // ─── EXPORT HELPER ────────────────────────────────────────────────────────────
@@ -105,13 +93,13 @@ const handleExcelExport = async () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `JanSahayak_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    a.download = `JanSahayak_Grievances_${new Date().toISOString().slice(0, 10)}.xlsx`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
   } catch (err) {
-    alert("Export failed: " + err.message);
+    alert("Export could not be generated: " + err.message);
   }
 };
 
@@ -121,50 +109,26 @@ function Navbar({ active, setView, counts }) {
   const items = [
     { id:"dashboard", label:"Dashboard", icon:"⬡" },
     { id:"assign",    label:"Assign",    icon:"👷", badge: counts.pending },
-    { id:"pending",   label:"Active",    icon:"⏳", badge: counts.assigned },
+    { id:"pending",   label:"In Progress", icon:"⏳", badge: counts.assigned },
     { id:"resolved",  label:"Resolved",  icon:"✅" },
     { id:"volunteers",label:"Volunteers",icon:"👥" },
   ];
+
   return (
-    <nav style={{ background:"#060e1f", borderBottom:"1px solid rgba(255,153,51,0.2)", position:"sticky", top:0, zIndex:100 }}>
+    <nav style={{ background:"#071324", borderBottom:"1px solid #1c3c66", position:"sticky", top:0, zIndex:100 }}>
       {showLogoutConfirm && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 500,
-          }}
-        >
-          <div
-            style={{
-              background: "#0a1628",
-              border: "1px solid rgba(255,153,51,0.4)",
-              padding: "24px",
-              width: "320px",
-              textAlign: "center",
-            }}
-          >
-            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>
-              Confirm Logout
+        <div className="modal-overlay">
+          <div className="modal-box" style={{ maxWidth: 360, padding: 24, textAlign: "center" }}>
+            <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "white" }} className="serif">
+              Sign Out of Authority Portal
             </div>
-
-            <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 18 }}>
-              Are you sure you want to logout?
+            <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 20 }}>
+              End current administrative session?
             </div>
-
             <div style={{ display: "flex", gap: 10 }}>
-              <button
-                className="btn-ghost"
-                style={{ flex: 1 }}
-                onClick={() => setShowLogoutConfirm(false)}
-              >
+              <button className="btn-ghost" style={{ flex: 1 }} onClick={() => setShowLogoutConfirm(false)}>
                 Cancel
               </button>
-
               <button
                 className="btn-danger"
                 style={{ flex: 1 }}
@@ -173,61 +137,64 @@ function Navbar({ active, setView, counts }) {
                   window.location.href = "/login";
                 }}
               >
-                Logout
+                Sign Out
               </button>
             </div>
           </div>
         </div>
       )}
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"0 24px", height:54 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <div className="w-9 h-9 rounded-full border border-amber-600 bg-amber-900/20 flex items-center justify-center overflow-hidden shrink-0">
-               <img src="/favicon.png" alt="logo" className="w-6 h-6 object-cover" />
+
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"8px 16px", minHeight:56, flexWrap:"wrap", gap:8 }}>
+        {/* Emblem & Title */}
+        <div style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer" }} onClick={() => setView("dashboard")}>
+          <div className="w-8 h-8 rounded-full border border-gov-saffron bg-gov-saffron/10 flex items-center justify-center overflow-hidden shrink-0">
+            <img src="/favicon.png" alt="logo" className="w-5 h-5 object-cover" />
           </div>
           <div>
-            <div style={{ fontSize:11, fontWeight:700, letterSpacing:"0.15em", textTransform:"uppercase", color:"white" }}>JanSahayak</div>
-            <div style={{ fontSize:8, color:"#475569", letterSpacing:"0.12em" }}>AUTHORITY PORTAL</div>
+            <div style={{ fontSize:12, fontWeight:800, letterSpacing:"0.1em", textTransform:"uppercase", color:"white" }}>JanSahayak</div>
+            <div style={{ fontSize:9, color:"#FF9933", letterSpacing:"0.1em", fontFamily:"'JetBrains Mono',monospace" }}>MUNICIPAL AUTHORITY</div>
           </div>
         </div>
-        <div style={{ display:"flex", gap:2 }}>
+
+        {/* Responsive Nav Tabs */}
+        <div style={{ display:"flex", gap:4, overflowX:"auto", maxWidth:"100%", padding:"2px 0" }}>
           {items.map(n => (
             <button key={n.id} onClick={() => setView(n.id)} style={{
-              background: active===n.id ? "rgba(255,153,51,0.12)" : "transparent",
-              border: active===n.id ? "1px solid rgba(255,153,51,0.45)" : "1px solid transparent",
-              color: active===n.id ? "#FF9933" : "#64748b",
-              fontFamily:"'JetBrains Mono',monospace", fontSize:9, fontWeight:700,
-              textTransform:"uppercase", letterSpacing:"0.1em",
-              padding:"6px 14px", cursor:"pointer", transition:"all 0.15s",
-              display:"flex", alignItems:"center", gap:6, position:"relative",
+              background: active===n.id ? "rgba(255,153,51,0.15)" : "transparent",
+              border: active===n.id ? "1px solid rgba(255,153,51,0.5)" : "1px solid transparent",
+              color: active===n.id ? "#FF9933" : "#94a3b8",
+              fontFamily:"'JetBrains Mono',monospace", fontSize:10, fontWeight:700,
+              textTransform:"uppercase", letterSpacing:"0.06em",
+              padding:"6px 12px", cursor:"pointer", transition:"all 0.15s",
+              display:"flex", alignItems:"center", gap:5, borderRadius:4, whiteSpace:"nowrap"
             }}>
               <span>{n.icon}</span>{n.label}
               {n.badge > 0 && (
-                <span style={{ background:"#FF9933", color:"#060e1f", fontSize:8, fontWeight:900, borderRadius:8, padding:"1px 5px", marginLeft:2 }}>{n.badge}</span>
+                <span style={{ background:"#FF9933", color:"#050f1d", fontSize:8, fontWeight:900, borderRadius:6, padding:"1px 5px", marginLeft:2 }}>
+                  {n.badge}
+                </span>
               )}
             </button>
           ))}
         </div>
 
-        {/* ── RIGHT SIDE: status dot + Export + Logout ── */}
-        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ fontSize:9, color:"#475569", fontFamily:"'JetBrains Mono',monospace", display:"flex", alignItems:"center", gap:6 }}>
-            <span style={{ color:"#22c55e" }}>●</span>Authority Portal
-          </div>
-
-          {/* ✅ EXPORT EXCEL BUTTON */}
+        {/* Actions */}
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <button
             onClick={handleExcelExport}
             style={{
-              background: "transparent",
-              border: "1px solid rgba(34,197,94,0.5)",
-              color: "#22c55e",
-              fontSize: 9,
+              background: "rgba(16,185,129,0.15)",
+              border: "1px solid rgba(16,185,129,0.4)",
+              color: "#34d399",
+              fontSize: 10,
               fontWeight: 700,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              padding: "6px 12px",
+              letterSpacing: "0.05em",
+              padding: "6px 10px",
               cursor: "pointer",
+              borderRadius: 4,
               fontFamily: "'JetBrains Mono',monospace",
+              whiteSpace: "nowrap"
             }}
           >
             📊 Export Excel
@@ -237,15 +204,17 @@ function Navbar({ active, setView, counts }) {
             onClick={() => setShowLogoutConfirm(true)}
             style={{
               background: "transparent",
-              border: "1px solid rgba(239,68,68,0.5)",
-              color: "#ef4444",
-              fontSize: 9,
+              border: "1px solid rgba(239,68,68,0.4)",
+              color: "#fca5a5",
+              fontSize: 10,
               fontWeight: 700,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              padding: "6px 12px",
+              letterSpacing: "0.05em",
+              padding: "6px 10px",
               cursor: "pointer",
+              borderRadius: 4,
               fontFamily: "'JetBrains Mono',monospace",
+              whiteSpace: "nowrap"
             }}
           >
             Logout
@@ -256,70 +225,69 @@ function Navbar({ active, setView, counts }) {
   );
 }
 
-// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+// ─── DASHBOARD VIEW ───────────────────────────────────────────────────────────
 function DashboardView({ setView, complaints, volunteers }) {
-  const resolved  = complaints.filter(c => c.status === "resolved");
-  const assigned  = complaints.filter(c => c.status === "assigned");
-  const pending   = complaints.filter(c => c.status === "pending");
+  const resolved   = complaints.filter(c => c.status === "resolved");
+  const assigned   = complaints.filter(c => c.status === "assigned");
+  const pending    = complaints.filter(c => c.status === "pending");
   const activeVols = volunteers.filter(v => !v.volunteerDetails?.isAvailable);
 
   const stats = [
-    { label:"Total Complaints", value: complaints.length,  icon:"📋", color:"white",    sub:"All time" },
-    { label:"Resolved",         value: resolved.length,    icon:"✅", color:"#22c55e",  sub:`${complaints.length ? Math.round(resolved.length/complaints.length*100) : 0}% resolution rate` },
-    { label:"Awaiting Assign",  value: pending.length,     icon:"⏳", color:"#f59e0b",  sub:"Need a volunteer" },
-    { label:"Active Tasks",     value: assigned.length,    icon:"🔧", color:"#60a5fa",  sub:"In progress now" },
-    { label:"Volunteers",       value: volunteers.length,  icon:"👷", color:"#a78bfa",  sub:`${activeVols.length} currently busy` },
-    { label:"Available Vols",   value: volunteers.length - activeVols.length, icon:"🟢", color:"#34d399", sub:"Ready to assign" },
+    { label:"Total Complaints", value: complaints.length,  icon:"📋", color:"white",    sub:"Registered grievances" },
+    { label:"Resolved",         value: resolved.length,    icon:"✅", color:"#10B981",  sub:`${complaints.length ? Math.round(resolved.length/complaints.length*100) : 0}% redressal rate` },
+    { label:"Awaiting Action",  value: pending.length,     icon:"⏳", color:"#FF9933",  sub:"Unassigned grievances" },
+    { label:"Active Assigned",  value: assigned.length,    icon:"🔧", color:"#60a5fa",  sub:"Work crew in progress" },
+    { label:"Total Volunteers", value: volunteers.length,  icon:"👷", color:"#a78bfa",  sub:`${activeVols.length} active in field` },
+    { label:"Available Staff",  value: volunteers.length - activeVols.length, icon:"🟢", color:"#34d399", sub:"Ready for assignment" },
   ];
 
   return (
-    <div style={{ padding:28 }}>
-      <div style={{ marginBottom:24 }}>
-        <div className="section-label">Overview</div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12 }}>
+    <div style={{ padding: "20px 16px", maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ marginBottom: 24 }}>
+        <div className="section-label">Municipal Grievance Matrix</div>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px, 1fr))", gap:14 }}>
           {stats.map((s,i) => (
             <div key={i} className="stat-card" style={{ display:"flex", alignItems:"flex-start", gap:14 }}>
               <span style={{ fontSize:22, marginTop:2 }}>{s.icon}</span>
               <div>
-                <div style={{ fontSize:9, color:"#475569", letterSpacing:"0.14em", textTransform:"uppercase" }}>{s.label}</div>
-                <div style={{ fontSize:30, fontWeight:900, color:s.color, fontFamily:"'JetBrains Mono',monospace", lineHeight:1.1 }}>{s.value}</div>
-                <div style={{ fontSize:9, color:"#334155", marginTop:3 }}>{s.sub}</div>
+                <div style={{ fontSize:10, color:"#94a3b8", letterSpacing:"0.08em", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace", fontWeight:600 }}>{s.label}</div>
+                <div style={{ fontSize:28, fontWeight:900, color:s.color, fontFamily:"'JetBrains Mono',monospace", lineHeight:1.1, marginTop:2 }}>{s.value}</div>
+                <div style={{ fontSize:10, color:"#64748b", marginTop:3 }}>{s.sub}</div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px, 1fr))", gap:14, marginBottom: 24 }}>
         {[
-          { id:"assign",    icon:"👷", label:"Assign Tasks",   sub:`${pending.length} awaiting assignment`,  color:"#FF9933" },
-          { id:"pending",   icon:"⏳", label:"Active Tasks",   sub:`${assigned.length} in progress`,         color:"#60a5fa" },
-          { id:"resolved",  icon:"✅", label:"Resolved",       sub:`${resolved.length} completed`,           color:"#22c55e" },
-          { id:"volunteers",icon:"👥", label:"Volunteer Mgmt", sub:`${volunteers.length} registered`,        color:"#a78bfa" },
+          { id:"assign",    icon:"👷", label:"Assign Field Tasks", sub:`${pending.length} awaiting deployment`,  color:"#FF9933" },
+          { id:"pending",   icon:"⏳", label:"Active Tasks in Progress", sub:`${assigned.length} currently active`, color:"#60a5fa" },
+          { id:"resolved",  icon:"✅", label:"Resolved History", sub:`${resolved.length} cases completed`,      color:"#10B981" },
+          { id:"volunteers",icon:"👥", label:"Volunteer Directory", sub:`${volunteers.length} verified members`,    color:"#a78bfa" },
         ].map(n => (
           <div key={n.id} className="card" onClick={() => setView(n.id)}
             style={{ padding:18, cursor:"pointer", display:"flex", alignItems:"center", gap:16 }}>
-            <span style={{ fontSize:28 }}>{n.icon}</span>
+            <span style={{ fontSize:26 }}>{n.icon}</span>
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:12, fontWeight:700, color:n.color }}>{n.label}</div>
-              <div style={{ fontSize:9, color:"#475569", marginTop:3 }}>{n.sub}</div>
+              <div style={{ fontSize:13, fontWeight:700, color:n.color }}>{n.label}</div>
+              <div style={{ fontSize:10, color:"#94a3b8", marginTop:2 }}>{n.sub}</div>
             </div>
-            <span style={{ color:"#FF9933", fontSize:16 }}>→</span>
+            <span style={{ color:"#FF9933", fontSize:16 }}>&rarr;</span>
           </div>
         ))}
       </div>
 
-      {/* Recent activity */}
-      {complaints.slice(0,5).length > 0 && (
-        <div style={{ marginTop:24 }}>
-          <div className="section-label">Recent Complaints</div>
+      {complaints.slice(0,6).length > 0 && (
+        <div>
+          <div className="section-label">Latest Registered Complaints</div>
           <div className="card" style={{ overflow:"hidden" }}>
-            {complaints.slice(0,5).map((c,i) => (
-              <div key={c._id} style={{ display:"flex", alignItems:"center", gap:14, padding:"10px 16px", borderBottom: i<4 ? "1px solid rgba(255,255,255,0.04)" : "none" }}>
-                <span style={{ fontSize:16 }}>{categoryIcon(c.category)}</span>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:11, fontWeight:700, color:"#f1f5f9", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.title}</div>
-                  <div style={{ fontSize:9, color:"#475569" }}>📍 {c.location} · {timeAgo(c.createdAt)}</div>
+            {complaints.slice(0,6).map((c,i) => (
+              <div key={c._id} style={{ display:"flex", alignItems:"center", gap:12, padding:"12px 16px", borderBottom: i<5 ? "1px solid rgba(255,255,255,0.04)" : "none", flexWrap:"wrap" }}>
+                <span style={{ fontSize:18 }}>{categoryIcon(c.category)}</span>
+                <div style={{ flex:1, minWidth:180 }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#f1f5f9" }} className="serif">{c.title}</div>
+                  <div style={{ fontSize:10, color:"#94a3b8", marginTop:2 }}>📍 {c.location} &bull; {timeAgo(c.createdAt)}</div>
                 </div>
                 <Badge label={c.status} className={statusColor(c.status)} />
               </div>
@@ -331,7 +299,7 @@ function DashboardView({ setView, complaints, volunteers }) {
   );
 }
 
-// ─── BID CARDS inside modal ───────────────────────────────────────────────────
+// ─── BID CARD ─────────────────────────────────────────────────────────────────
 function BidCard({ bid, rank, isAssigned, onAssign, canAssign, assigning }) {
   const vol = bid.volunteer;
   const score = Math.round(scoreApplicant(bid) * 100);
@@ -341,63 +309,51 @@ function BidCard({ bid, rank, isAssigned, onAssign, canAssign, assigning }) {
   return (
     <div className="card" style={{
       padding:16, position:"relative",
-      borderColor: isAssigned ? "rgba(34,197,94,0.55)" : isTop ? "rgba(255,153,51,0.6)" : undefined,
+      borderColor: isAssigned ? "rgba(16,185,129,0.6)" : isTop ? "rgba(255,153,51,0.6)" : undefined,
     }}>
       {isTop && !isAssigned && (
-        <div style={{ position:"absolute", top:-1, right:10, background:"#FF9933", color:"#060e1f", fontSize:8, fontWeight:900, padding:"2px 8px", letterSpacing:"0.1em" }}>BEST MATCH</div>
+        <div style={{ position:"absolute", top:0, right:12, background:"#FF9933", color:"#050f1d", fontSize:9, fontWeight:900, padding:"2px 8px", borderRadius:"0 0 4px 4px", fontFamily:"'JetBrains Mono',monospace" }}>RECOMMENDED MATCH</div>
       )}
       {isAssigned && (
-        <div style={{ position:"absolute", top:-1, right:10, background:"#22c55e", color:"#060e1f", fontSize:8, fontWeight:900, padding:"2px 8px" }}>ASSIGNED ✓</div>
+        <div style={{ position:"absolute", top:0, right:12, background:"#10B981", color:"#050f1d", fontSize:9, fontWeight:900, padding:"2px 8px", borderRadius:"0 0 4px 4px", fontFamily:"'JetBrains Mono',monospace" }}>ASSIGNED &check;</div>
       )}
 
-      {/* Volunteer header */}
-      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12, marginTop:4 }}>
         {bid.selfie
-          ? <img src={bid.selfie} alt="selfie" style={{ width:40, height:40, objectFit:"cover", border:"2px solid rgba(255,153,51,0.4)", flexShrink:0 }} />
-          : <div style={{ width:40, height:40, background:"#FF9933", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:900, color:"#060e1f", flexShrink:0 }}>{initials}</div>
+          ? <img src={bid.selfie} alt="selfie" style={{ width:42, height:42, objectFit:"cover", border:"2px solid rgba(255,153,51,0.4)", borderRadius:4, flexShrink:0 }} />
+          : <div style={{ width:42, height:42, background:"#FF9933", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:900, color:"#050f1d", borderRadius:4, flexShrink:0 }}>{initials}</div>
         }
         <div>
-          <div style={{ fontSize:13, fontWeight:700, fontFamily:"'Source Serif 4',serif", color:"white" }}>{vol?.name || "Unknown"}</div>
-          <div style={{ fontSize:9, color:"#64748b" }}>{vol?.email}</div>
-          <div style={{ fontSize:9, color:"#64748b", marginTop:1 }}>
-            ✅ {vol?.volunteerDetails?.totalTasksCompleted || 0} tasks completed
+          <div style={{ fontSize:13, fontWeight:700, color:"white" }} className="serif">{vol?.name || "Unknown"}</div>
+          <div style={{ fontSize:10, color:"#94a3b8" }}>{vol?.email}</div>
+          <div style={{ fontSize:10, color:"#34d399", marginTop:2 }}>
+            &check; {vol?.volunteerDetails?.totalTasksCompleted || 0} completed tasks
           </div>
         </div>
       </div>
 
-      {/* Metrics */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:12 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:10 }}>
         {[
           { label:"Bid Amount", value:`₹${bid.estimatedAmount?.toLocaleString()}`, color:"#60a5fa" },
           { label:"Est. Days",  value:`${bid.estimatedDays}d`,                     color:"#f59e0b" },
-          { label:"Score",      value:`${score}/100`,                              color: isTop ? "#FF9933" : "#94a3b8" },
+          { label:"Suitability",value:`${score}%`,                                 color: isTop ? "#FF9933" : "#94a3b8" },
         ].map((m,i) => (
-          <div key={i} style={{ background:"rgba(255,255,255,0.03)", padding:"8px 10px" }}>
-            <div style={{ fontSize:8, color:"#475569", textTransform:"uppercase", letterSpacing:"0.1em" }}>{m.label}</div>
-            <div style={{ fontSize:15, fontWeight:900, color:m.color }}>{m.value}</div>
+          <div key={i} style={{ background:"rgba(255,255,255,0.03)", padding:"8px 10px", borderRadius:4 }}>
+            <div style={{ fontSize:9, color:"#94a3b8", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace" }}>{m.label}</div>
+            <div style={{ fontSize:14, fontWeight:900, color:m.color, fontFamily:"'JetBrains Mono',monospace", marginTop:2 }}>{m.value}</div>
           </div>
         ))}
       </div>
 
-      {/* Bank details summary */}
-      <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", padding:"8px 10px", marginBottom:12, fontSize:9, color:"#64748b", lineHeight:1.7 }}>
-        🏦 {bid.bankDetails?.bankName} · A/C: ••••{bid.bankDetails?.accountNumber?.slice(-4)} · {bid.bankDetails?.accountHolder}
+      <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", padding:"8px 10px", marginBottom:12, fontSize:10, color:"#94a3b8", borderRadius:4 }}>
+        🏦 Bank: {bid.bankDetails?.bankName} &bull; A/C: ••••{bid.bankDetails?.accountNumber?.slice(-4)} &bull; {bid.bankDetails?.accountHolder}
       </div>
 
-      {/* Skills */}
-      {vol?.volunteerDetails?.skills?.length > 0 && (
-        <div style={{ display:"flex", gap:4, flexWrap:"wrap", marginBottom: canAssign && !isAssigned ? 12 : 0 }}>
-          {vol.volunteerDetails.skills.filter(Boolean).map(s => (
-            <Badge key={s} label={s} className="text-slate-400 bg-slate-900/20 border-slate-700/30" />
-          ))}
-        </div>
-      )}
-
       {canAssign && !isAssigned && (
-        <button className="btn-primary" style={{ width:"100%", marginTop:4 }}
+        <button className="btn-primary" style={{ width:"100%" }}
           disabled={assigning}
           onClick={() => onAssign(bid._id, bid.volunteer._id)}>
-          {assigning ? "Assigning..." : "Assign This Volunteer →"}
+          {assigning ? "Assigning..." : "Assign This Task &rarr;"}
         </button>
       )}
     </div>
@@ -462,77 +418,69 @@ function ComplaintModal({ complaint, onClose, onAssigned, onResolved }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
-        {/* Tricolor top */}
         <div className="tricolor" style={{ height:3 }} />
 
-        {/* Hero */}
         {complaint.photo ? (
-          <div style={{ width:"100%", height:220, overflow:"hidden", position:"relative" }}>
+          <div style={{ width:"100%", height:200, overflow:"hidden", position:"relative" }}>
             <img src={complaint.photo} alt="complaint" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-            <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,rgba(10,22,40,0.95) 0%,transparent 55%)" }} />
-            <div style={{ position:"absolute", bottom:16, left:20 }}>
-              <div style={{ fontSize:9, color:"#FF9933", letterSpacing:"0.15em", marginBottom:4 }}>
-                {complaint._id?.slice(-8).toUpperCase()}
+            <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,rgba(10,25,47,0.95) 0%,transparent 60%)" }} />
+            <div style={{ position:"absolute", bottom:16, left:18 }}>
+              <div style={{ fontSize:10, color:"#FF9933", letterSpacing:"0.15em", fontFamily:"'JetBrains Mono',monospace", fontWeight:700 }}>
+                #{complaint._id?.slice(-8).toUpperCase()}
               </div>
-              <div className="serif" style={{ fontSize:20, fontWeight:900, color:"white" }}>{complaint.title}</div>
+              <div className="serif" style={{ fontSize:18, fontWeight:700, color:"white" }}>{complaint.title}</div>
             </div>
-            <button onClick={onClose} style={{ position:"absolute", top:12, right:12, background:"rgba(0,0,0,0.6)", border:"1px solid rgba(255,255,255,0.2)", color:"white", width:32, height:32, borderRadius:"50%", cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ position:"absolute", top:12, right:12, background:"rgba(0,0,0,0.6)", border:"1px solid rgba(255,255,255,0.2)", color:"white", width:32, height:32, borderRadius:"50%", cursor:"pointer", fontSize:14 }}>&times;</button>
           </div>
         ) : (
-          <div style={{ padding:"20px 20px 0", display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+          <div style={{ padding:"18px 20px 0", display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
-              <div style={{ fontSize:9, color:"#FF9933", letterSpacing:"0.15em", marginBottom:4 }}>{complaint._id?.slice(-8).toUpperCase()}</div>
-              <div className="serif" style={{ fontSize:18, fontWeight:900, color:"white" }}>{complaint.title}</div>
+              <div style={{ fontSize:10, color:"#FF9933", letterSpacing:"0.15em", fontFamily:"'JetBrains Mono',monospace" }}>#{complaint._id?.slice(-8).toUpperCase()}</div>
+              <div className="serif" style={{ fontSize:18, fontWeight:700, color:"white", marginTop:2 }}>{complaint.title}</div>
             </div>
-            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)", color:"white", width:32, height:32, borderRadius:"50%", cursor:"pointer", fontSize:14, display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.12)", color:"white", width:30, height:30, borderRadius:"50%", cursor:"pointer", fontSize:14 }}>&times;</button>
           </div>
         )}
 
-        <div style={{ padding:20 }}>
-          {/* Meta */}
-          <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:12, alignItems:"center" }}>
-            <Badge label={categoryLabel(complaint.category)} className="text-blue-400 bg-blue-900/20 border-blue-700/40" />
+        <div style={{ padding: 20 }}>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginBottom:14, alignItems:"center" }}>
+            <Badge label={categoryLabel(complaint.category)} className="text-blue-400 bg-blue-950/40 border-blue-600/50" />
             <Badge label={complaint.status} className={statusColor(complaint.status)} />
-            <span style={{ fontSize:9, color:"#64748b" }}>📍 {complaint.location}</span>
-            <span style={{ fontSize:9, color:"#64748b" }}>🕐 {timeAgo(complaint.createdAt)}</span>
-            {complaint.postedBy?.name && <span style={{ fontSize:9, color:"#64748b" }}>👤 {complaint.postedBy.name}</span>}
+            <span style={{ fontSize:11, color:"#94a3b8" }}>📍 {complaint.location}</span>
+            <span style={{ fontSize:11, color:"#94a3b8" }}>🕐 {timeAgo(complaint.createdAt)}</span>
           </div>
 
-          <p style={{ fontSize:11, color:"#94a3b8", lineHeight:1.65, marginBottom:20 }}>{complaint.description}</p>
+          <p style={{ fontSize:12, color:"#cbd5e1", lineHeight:1.6, marginBottom:18 }}>{complaint.description}</p>
 
-          {/* Assigned volunteer info */}
           {complaint.assignedTo && (
-            <div style={{ background:"rgba(34,197,94,0.06)", border:"1px solid rgba(34,197,94,0.2)", padding:14, marginBottom:20, display:"flex", alignItems:"center", gap:12 }}>
+            <div style={{ background:"rgba(16,185,129,0.08)", border:"1px solid rgba(16,185,129,0.3)", padding:12, borderRadius:6, marginBottom:18, display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
               <span style={{ fontSize:20 }}>🛡️</span>
-              <div>
-                <div style={{ fontSize:10, color:"#22c55e", fontWeight:700 }}>Assigned to: {complaint.assignedTo?.name || "Volunteer"}</div>
-                <div style={{ fontSize:9, color:"#475569" }}>{complaint.assignedTo?.email}</div>
+              <div style={{ flex:1, minWidth:160 }}>
+                <div style={{ fontSize:12, color:"#34d399", fontWeight:700 }}>Assigned To: {complaint.assignedTo?.name || "Volunteer"}</div>
+                <div style={{ fontSize:10, color:"#94a3b8" }}>{complaint.assignedTo?.email}</div>
               </div>
               {complaint.status === "assigned" && (
-                <button className="btn-primary" style={{ marginLeft:"auto" }} onClick={handleResolve} disabled={resolving}>
-                  {resolving ? "Resolving..." : "✅ Mark Resolved"}
+                <button className="btn-primary" onClick={handleResolve} disabled={resolving}>
+                  {resolving ? "Resolving..." : "✅ Mark as Resolved"}
                 </button>
               )}
             </div>
           )}
 
-          {/* Bids section */}
           <div className="section-label">
-            Volunteer Applications — {bidsLoading ? "…" : `${bids.length} applied`}
+            Volunteer Applications ({bidsLoading ? "…" : bids.length})
           </div>
 
-          {bidsLoading && (
-            <div style={{ textAlign:"center", color:"#475569", fontSize:11, padding:24 }}>Loading bids…</div>
-          )}
+          {bidsLoading && <div style={{ textAlign:"center", color:"#94a3b8", fontSize:11, padding:20 }}>Loading bids…</div>}
 
           {!bidsLoading && bids.length === 0 && (
-            <div style={{ textAlign:"center", color:"#475569", fontSize:11, padding:24, border:"1px solid rgba(255,255,255,0.05)" }}>
-              No volunteer applications yet for this complaint.
+            <div style={{ textAlign:"center", color:"#94a3b8", fontSize:11, padding:24, border:"1px dashed #1c3c66", borderRadius:6 }}>
+              No volunteer applications submitted yet for this grievance.
             </div>
           )}
 
           {!bidsLoading && sorted.length > 0 && (
-            <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px, 1fr))", gap:12 }}>
               {sorted.map((bid, rank) => (
                 <BidCard
                   key={bid._id}
@@ -547,7 +495,6 @@ function ComplaintModal({ complaint, onClose, onAssigned, onResolved }) {
             </div>
           )}
         </div>
-        <div className="tricolor" style={{ height:3 }} />
       </div>
     </div>
   );
@@ -578,89 +525,68 @@ function AssignTaskView({ complaints, setComplaints, loading }) {
         />
       )}
 
-      <div style={{ padding:"14px 24px", display:"flex", alignItems:"center", gap:12, borderBottom:"1px solid rgba(255,153,51,0.1)", background:"#060e1f", position:"sticky", top:54, zIndex:50 }}>
-        <div style={{ fontSize:10, color:"#FF9933", textTransform:"uppercase", letterSpacing:"0.15em" }}>Complaint Feed</div>
-        <div style={{ display:"flex", gap:6 }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, borderBottom:"1px solid #1c3c66", background:"#071324", position:"sticky", top:56, zIndex:50, flexWrap:"wrap" }}>
+        <div style={{ fontSize:11, color:"#FF9933", textTransform:"uppercase", letterSpacing:"0.1em", fontFamily:"'JetBrains Mono',monospace", fontWeight:700 }}>Filter Tasks:</div>
+        <div style={{ display:"flex", gap:6, overflowX:"auto" }}>
           {["pending","assigned","resolved","all"].map(f => (
             <button key={f} onClick={() => setFilter(f)} style={{
-              fontSize:8, padding:"5px 10px", textTransform:"uppercase", letterSpacing:"0.08em",
+              fontSize:9, padding:"5px 12px", textTransform:"uppercase", letterSpacing:"0.08em",
               background: filter===f ? "#FF9933" : "transparent",
-              color: filter===f ? "#060e1f" : "#64748b",
-              border:`1px solid ${filter===f ? "#FF9933" : "rgba(255,255,255,0.1)"}`,
-              cursor:"pointer", fontFamily:"'JetBrains Mono',monospace", fontWeight:700,
+              color: filter===f ? "#050f1d" : "#94a3b8",
+              border:`1px solid ${filter===f ? "#FF9933" : "#1c3c66"}`,
+              borderRadius:4, cursor:"pointer", fontFamily:"'JetBrains Mono',monospace", fontWeight:700,
             }}>{f}</button>
           ))}
         </div>
-        <div style={{ marginLeft:"auto", fontSize:9, color:"#475569" }}>{displayed.length} complaints</div>
+        <div style={{ marginLeft:"auto", fontSize:10, color:"#94a3b8", fontFamily:"'JetBrains Mono',monospace" }}>{displayed.length} complaints</div>
       </div>
 
-      {loading && <div style={{ textAlign:"center", color:"#475569", padding:40, fontSize:11 }}>Loading complaints…</div>}
+      {loading && <div style={{ textAlign:"center", color:"#94a3b8", padding:40, fontSize:12 }}>Loading complaints…</div>}
 
       <div className="feed-grid">
-        {displayed.map(c => {
-          const accent = categoryAccent(c.category);
-          return (
-            <div key={c._id} className="feed-card" onClick={() => setModal(c)}>
-              <div className="feed-img-wrap">
-                {c.photo
-                  ? <img src={c.photo} className="feed-img" alt={c.title} />
-                  : <div style={{ width:"100%", height:"100%", background:"#0a1628", display:"flex", alignItems:"center", justifyContent:"center", fontSize:40 }}>{categoryIcon(c.category)}</div>
-                }
-                <div className="feed-overlay" />
-                <div style={{ position:"absolute", bottom:10, left:12, fontSize:9, color:"rgba(255,255,255,0.5)", letterSpacing:"0.1em" }}>
-                  #{c._id?.slice(-6).toUpperCase()}
-                </div>
-                <div style={{ position:"absolute", top:10, right:10 }}>
-                  <Badge label={c.status} className={statusColor(c.status)} />
-                </div>
+        {displayed.map(c => (
+          <div key={c._id} className="card" onClick={() => setModal(c)} style={{ overflow:"hidden", display:"flex", flexDirection:"column" }}>
+            {c.photo ? (
+              <div style={{ position:"relative", width:"100%", height:160, overflow:"hidden" }}>
+                <img src={c.photo} alt={c.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top,#0f233d 0%,transparent 60%)" }} />
+                <Badge label={c.status} className={`absolute top-3 right-3 ${statusColor(c.status)}`} />
+              </div>
+            ) : (
+              <div style={{ height:100, background:"#071322", display:"flex", alignItems:"center", justifyContent:"center", fontSize:28, position:"relative" }}>
+                {categoryIcon(c.category)}
+                <Badge label={c.status} className={`absolute top-3 right-3 ${statusColor(c.status)}`} />
+              </div>
+            )}
+
+            <div style={{ padding:16, flex:1, display:"flex", flexDirection:"column", justifyContent:"between" }}>
+              <div>
+                <div style={{ fontSize:9, color:"#FF9933", fontFamily:"'JetBrains Mono',monospace", fontWeight:700 }}>#{c._id?.slice(-6).toUpperCase()}</div>
+                <h3 style={{ fontSize:13, fontWeight:700, color:"white", marginTop:4 }} className="serif">{c.title}</h3>
+                <p style={{ fontSize:11, color:"#94a3b8", marginTop:4, overflow:"hidden", textOverflow:"ellipsis", display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical" }}>
+                  {c.description}
+                </p>
+                <div style={{ fontSize:10, color:"#64748b", marginTop:8 }}>📍 {c.location}</div>
               </div>
 
-              <div style={{ padding:"14px 16px 16px" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                  <span style={{ fontSize:13 }}>{categoryIcon(c.category)}</span>
-                  <span style={{ fontSize:9, color:accent, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em" }}>{categoryLabel(c.category)}</span>
-                </div>
-                <div className="serif" style={{ fontSize:14, fontWeight:700, color:"#f1f5f9", lineHeight:1.35, marginBottom:6 }}>{c.title}</div>
-                <div style={{ fontSize:9, color:"#64748b", marginBottom:8 }}>📍 {c.location} · {timeAgo(c.createdAt)}</div>
-                <div style={{ fontSize:10, color:"#94a3b8", lineHeight:1.55, marginBottom:12,
-                  display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden" }}>
-                  {c.description}
-                </div>
-
-                {c.assignedTo && (
-                  <div style={{ background:"rgba(34,197,94,0.07)", border:"1px solid rgba(34,197,94,0.18)", padding:"7px 10px", marginBottom:10, fontSize:10, color:"#22c55e" }}>
-                    🛡️ {c.assignedTo?.name || "Assigned"}
-                  </div>
-                )}
-
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                  <div style={{ fontSize:9, color:"#64748b" }}>
-                    {c.postedBy?.name ? `👤 ${c.postedBy.name}` : ""}
-                  </div>
-                  <button style={{ background:"transparent", color:"#FF9933", border:"1px solid rgba(255,153,51,0.5)", fontFamily:"'JetBrains Mono',monospace", fontSize:9, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.1em", padding:"6px 14px", cursor:"pointer" }}>
-                    View Details →
-                  </button>
-                </div>
+              <div style={{ marginTop:14, paddingTop:10, borderTop:"1px solid rgba(255,255,255,0.06)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                <span style={{ fontSize:10, color:"#94a3b8" }}>{timeAgo(c.createdAt)}</span>
+                <span style={{ fontSize:10, color:"#FF9933", fontWeight:700, fontFamily:"'JetBrains Mono',monospace" }}>Review &rarr;</span>
               </div>
             </div>
-          );
-        })}
-        {!loading && displayed.length === 0 && (
-          <div style={{ gridColumn:"1/-1", textAlign:"center", color:"#475569", padding:60, border:"1px solid rgba(255,255,255,0.05)", fontSize:11 }}>
-            No complaints in this category.
           </div>
-        )}
+        ))}
       </div>
     </>
   );
 }
+
+// ─── PENDING / ACTIVE TASKS VIEW ──────────────────────────────────────────────
 function PendingView({ complaints, setComplaints, loading }) {
   const active = complaints.filter(c => c.status === "assigned");
-  const [resolving, setResolving] = useState({});
 
   const handleResolve = async (complaintId) => {
-    if (!window.confirm("Mark this complaint as resolved?")) return;
-    setResolving(r => ({ ...r, [complaintId]: true }));
+    if (!window.confirm("Mark this grievance as resolved?")) return;
     try {
       const res = await fetch(`${API}/volunteer/complaint/${complaintId}/resolve`, {
         method: "PUT", headers: jsonHeaders(),
@@ -671,136 +597,65 @@ function PendingView({ complaints, setComplaints, loading }) {
         c._id === complaintId ? { ...c, status: "resolved", resolvedAt: new Date() } : c
       ));
     } catch (e) { alert(e.message); }
-    finally { setResolving(r => ({ ...r, [complaintId]: false })); }
   };
 
-  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "#475569", fontSize: 11 }}>Loading…</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "#94a3b8", fontSize: 12 }}>Loading active tasks…</div>;
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: "20px 16px", maxWidth: 1200, margin: "0 auto" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <div className="section-label" style={{ marginBottom: 4 }}>Active Tasks</div>
-          <div style={{ fontSize: 9, color: "#475569" }}>Assigned and in-progress complaints</div>
+          <div className="section-label">Assigned Work Orders</div>
+          <div style={{ fontSize: 11, color: "#94a3b8" }}>Municipal tasks currently being resolved in the field</div>
         </div>
-        <Badge label={`${active.length} active`} className="text-amber-400 bg-amber-900/20 border-amber-700/40" />
+        <Badge label={`${active.length} active`} className="text-blue-400 bg-blue-950/40 border-blue-600/50" />
       </div>
 
-      {active.length === 0 && (
-        <div style={{ textAlign: "center", color: "#475569", padding: 60, border: "1px solid rgba(255,255,255,0.05)", fontSize: 11 }}>
-          No active tasks right now.
+      {active.length === 0 ? (
+        <div style={{ textAlign: "center", color: "#94a3b8", padding: 60, border: "1px dashed #1c3c66", borderRadius: 8, fontSize: 12 }}>
+          No active work orders currently assigned.
         </div>
-      )}
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16 }}>
-        {active.map(c => {
-          const vol = c.assignedTo;
-          const bid = c.approvedBid;
-          const initials = vol?.name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "V";
-
-          return (
-            <div key={c._id} className="card" style={{ overflow: "hidden" }}>
-              {/* Photo / icon strip */}
-              <div style={{ position: "relative" }}>
-                {c.photo
-                  ? <img src={c.photo} alt={c.title} style={{ width: "100%", aspectRatio: "16/6", objectFit: "cover", display: "block", borderBottom: "1px solid rgba(255,153,51,0.1)" }} />
-                  : <div style={{ width: "100%", aspectRatio: "16/6", background: "#0d1b2e", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, borderBottom: "1px solid rgba(255,153,51,0.1)" }}>
-                      {categoryIcon(c.category)}
-                    </div>
-                }
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,rgba(10,22,40,0.7) 0%,transparent 60%)", pointerEvents: "none" }} />
-                <div style={{ position: "absolute", bottom: 8, left: 12, fontSize: 8, color: "#FF9933", letterSpacing: "0.1em", fontWeight: 700 }}>
-                  #{c._id?.slice(-6).toUpperCase()}
-                </div>
-                <div style={{ position: "absolute", top: 8, right: 10, display: "flex", gap: 4 }}>
-                  <Badge label={categoryLabel(c.category)} className="text-blue-400 bg-blue-900/20 border-blue-700/40" />
-                  <Badge label={c.status} className={statusColor(c.status)} />
-                </div>
-              </div>
-
-              <div style={{ padding: 18 }}>
-                {/* Title + meta */}
-                <div className="serif" style={{ fontSize: 14, fontWeight: 900, marginBottom: 4, color: "white" }}>{c.title}</div>
-                <div style={{ fontSize: 9, color: "#64748b", marginBottom: 6 }}>
-                  📍 {c.location} · {timeAgo(c.createdAt)}
-                  {c.postedBy?.name && ` · 👤 ${c.postedBy.name}`}
-                </div>
-
-                {c.description && (
-                  <p style={{ fontSize: 10, color: "#94a3b8", lineHeight: 1.6, marginBottom: 14,
-                    display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {c.description}
-                  </p>
-                )}
-
-                {/* Volunteer info */}
-                {vol && (
-                  <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", padding: 12, marginBottom: 14 }}>
-                    <div style={{ fontSize: 8, color: "#475569", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>Assigned Volunteer</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                      {bid?.selfie
-                        ? <img src={bid.selfie} alt="selfie" style={{ width: 36, height: 36, objectFit: "cover", border: "2px solid rgba(255,153,51,0.4)", flexShrink: 0 }} />
-                        : <div style={{ width: 36, height: 36, background: "#FF9933", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 900, color: "#060e1f", flexShrink: 0 }}>{initials}</div>
-                      }
-                      <div>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{vol.name || "Volunteer"}</div>
-                        <div style={{ fontSize: 9, color: "#64748b" }}>{vol.email}</div>
-                        {vol.phone && <div style={{ fontSize: 9, color: "#64748b" }}>📱 {vol.phone}</div>}
-                        <div style={{ fontSize: 9, color: "#475569", marginTop: 2 }}>
-                          ✅ {vol.volunteerDetails?.totalTasksCompleted || 0} tasks completed
-                        </div>
-                      </div>
-                    </div>
-
-                    {bid && (
-                      <>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 10 }}>
-                          <div>
-                            <div style={{ fontSize: 8, color: "#475569" }}>Agreed Amount</div>
-                            <div style={{ fontSize: 15, fontWeight: 900, color: "#60a5fa" }}>₹{bid.estimatedAmount?.toLocaleString() || "—"}</div>
-                          </div>
-                          <div>
-                            <div style={{ fontSize: 8, color: "#475569" }}>Est. Days</div>
-                            <div style={{ fontSize: 15, fontWeight: 900, color: "#f59e0b" }}>{bid.estimatedDays || "—"}d</div>
-                          </div>
-                          <div>
-                            <div style={{ fontSize: 8, color: "#475569" }}>Assigned On</div>
-                            <div style={{ fontSize: 10, fontWeight: 700, color: "#94a3b8", marginTop: 4 }}>
-                              {c.updatedAt ? new Date(c.updatedAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short" }) : "—"}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", padding: "8px 10px", fontSize: 9, color: "#64748b", lineHeight: 1.7 }}>
-                          🏦 {bid.bankDetails?.bankName} &nbsp;·&nbsp;
-                          A/C: ••••{bid.bankDetails?.accountNumber?.slice(-4)} &nbsp;·&nbsp;
-                          IFSC: {bid.bankDetails?.ifsc} &nbsp;·&nbsp;
-                          {bid.bankDetails?.accountHolder}
-                        </div>
-                      </>
-                    )}
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+          {active.map(c => (
+            <div key={c._id} className="card" style={{ overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div>
+                {c.photo && (
+                  <div style={{ height: 160, overflow: "hidden", position: "relative" }}>
+                    <img src={c.photo} alt={c.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top,#0f233d 0%,transparent 70%)" }} />
                   </div>
                 )}
+                <div style={{ padding: 16 }}>
+                  <div style={{ fontSize: 10, color: "#FF9933", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700 }}>#{c._id?.slice(-6).toUpperCase()}</div>
+                  <h3 style={{ fontSize: 14, fontWeight: 700, color: "white", marginTop: 4 }} className="serif">{c.title}</h3>
+                  <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 4, lineHeight: 1.5 }}>{c.description}</p>
+                  <div style={{ fontSize: 10, color: "#64748b", marginTop: 8 }}>📍 {c.location}</div>
 
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button className="btn-ghost" style={{ flex: 1 }}
-                    onClick={() => vol?.phone && window.open(`tel:${vol.phone}`)}>
-                    📞 {vol?.phone || "No phone"}
-                  </button>
-                  <button className="btn-primary" style={{ flex: 1 }}
-                    disabled={resolving[c._id]}
-                    onClick={() => handleResolve(c._id)}>
-                    {resolving[c._id] ? "Resolving…" : "✅ Mark Resolved"}
-                  </button>
+                  {c.assignedTo && (
+                    <div style={{ marginTop: 12, padding: 10, background: "#071322", borderRadius: 4, border: "1px solid #1c3c66" }}>
+                      <div style={{ fontSize: 10, color: "#34d399", fontWeight: 700 }}>👷 Assigned: {c.assignedTo.name}</div>
+                      <div style={{ fontSize: 9, color: "#94a3b8" }}>{c.assignedTo.email}</div>
+                    </div>
+                  )}
                 </div>
               </div>
+
+              <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 10, color: "#94a3b8" }}>Assigned {timeAgo(c.updatedAt)}</span>
+                <button className="btn-primary" onClick={() => handleResolve(c._id)}>
+                  Mark Resolved &check;
+                </button>
+              </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
+
+// ─── RESOLVED VIEW ────────────────────────────────────────────────────────────
 function ResolvedView({ complaints, loading }) {
   const [search, setSearch] = useState("");
   const resolved = complaints.filter(c => c.status === "resolved");
@@ -812,162 +667,60 @@ function ResolvedView({ complaints, loading }) {
       r.title?.toLowerCase().includes(q) ||
       r.location?.toLowerCase().includes(q) ||
       r._id?.toLowerCase().includes(q) ||
-      r.assignedTo?.name?.toLowerCase().includes(q) ||
-      r.postedBy?.name?.toLowerCase().includes(q)
+      r.assignedTo?.name?.toLowerCase().includes(q)
     );
   }, [resolved, search]);
 
-  const timeToResolve = (createdAt, resolvedAt) => {
-    if (!createdAt || !resolvedAt) return "—";
-    const days = Math.round((new Date(resolvedAt) - new Date(createdAt)) / 86400000);
-    if (days === 0) return "Same day";
-    return `${days}d`;
-  };
-
-  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "#475569", fontSize: 11 }}>Loading…</div>;
+  if (loading) return <div style={{ padding: 40, textAlign: "center", color: "#94a3b8", fontSize: 12 }}>Loading resolved history…</div>;
 
   return (
-    <div style={{ padding: 24 }}>
-      {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 20 }}>
-        {[
-          { label: "Total Resolved", value: resolved.length, color: "#22c55e" },
-          { label: "Pending Assign", value: complaints.filter(c => c.status === "pending").length, color: "#f59e0b" },
-          { label: "Active Tasks",   value: complaints.filter(c => c.status === "assigned").length, color: "#60a5fa" },
-        ].map((s, i) => (
-          <div key={i} className="stat-card">
-            <div style={{ fontSize: 9, color: "#475569", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>{s.label}</div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: s.color }}>{s.value}</div>
-          </div>
-        ))}
+    <div style={{ padding: "20px 16px", maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16, flexWrap:"wrap", gap:10 }}>
+        <div>
+          <div className="section-label">Resolved Grievance Ledger</div>
+          <div style={{ fontSize:11, color:"#94a3b8" }}>{resolved.length} total municipal issues successfully closed</div>
+        </div>
+        <div style={{ minWidth:240 }}>
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search resolved records…"
+          />
+        </div>
       </div>
 
-      {/* Search */}
-      <div style={{ marginBottom: 16 }}>
-        <input value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search by title, location, volunteer, reporter, or ID…"
-          style={{ maxWidth: 440 }} />
-      </div>
-
-      {/* Table */}
-      <div className="card" style={{ overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="card" style={{ overflowX:"auto" }}>
+        <table style={{ width:"100%", borderCollapse:"collapse", minWidth:600 }}>
           <thead>
-            <tr style={{ borderBottom: "1px solid rgba(255,153,51,0.2)", background: "rgba(255,153,51,0.05)" }}>
-              {["Photo", "Complaint", "Reported By", "Volunteer", "Bid & Payment", "Timeline"].map((h, i) => (
-                <th key={i} style={{ padding: "10px 14px", textAlign: "left", fontSize: 8, color: "#FF9933", textTransform: "uppercase", letterSpacing: "0.12em", fontWeight: 700, whiteSpace: "nowrap" }}>{h}</th>
+            <tr style={{ borderBottom:"1px solid #1c3c66", background:"rgba(255,153,51,0.05)" }}>
+              {["ID / Title", "Category", "Location", "Volunteer", "Date Resolved"].map((h, i) => (
+                <th key={i} style={{ padding:"10px 14px", textAlign:"left", fontSize:9, color:"#FF9933", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 && (
-              <tr><td colSpan={6} style={{ padding: 40, textAlign: "center", color: "#475569", fontSize: 11 }}>No resolved complaints found.</td></tr>
-            )}
-            {filtered.map((r, i) => {
-              const bid = r.approvedBid;
-              const vol = r.assignedTo;
-              const initials = vol?.name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "V";
-
-              return (
-                <tr key={r._id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)", verticalAlign: "top" }}>
-
-                  {/* Photo */}
-                  <td style={{ padding: "12px 14px" }}>
-                    {r.photo
-                      ? <img src={r.photo} alt={r.title} style={{ width: 72, height: 54, objectFit: "cover", border: "1px solid rgba(255,153,51,0.2)", display: "block" }} />
-                      : <div style={{ width: 72, height: 54, background: "#0d1b2e", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, border: "1px solid rgba(255,153,51,0.12)" }}>{categoryIcon(r.category)}</div>
-                    }
+            {filtered.length === 0 ? (
+              <tr><td colSpan={5} style={{ padding:30, textAlign:"center", color:"#94a3b8", fontSize:11 }}>No matching records found.</td></tr>
+            ) : (
+              filtered.map((r) => (
+                <tr key={r._id} style={{ borderBottom:"1px solid rgba(255,255,255,0.04)" }}>
+                  <td style={{ padding:"12px 14px" }}>
+                    <div style={{ fontSize:10, color:"#FF9933", fontFamily:"'JetBrains Mono',monospace", fontWeight:700 }}>#{r._id?.slice(-6).toUpperCase()}</div>
+                    <div style={{ fontSize:12, fontWeight:700, color:"white" }} className="serif">{r.title}</div>
                   </td>
-
-                  {/* Complaint */}
-                  <td style={{ padding: "12px 14px", maxWidth: 200 }}>
-                    <div style={{ fontSize: 9, color: "#FF9933", fontWeight: 700, marginBottom: 2 }}>#{r._id?.slice(-6).toUpperCase()}</div>
-                    <div style={{ display: "flex", gap: 4, marginBottom: 4, flexWrap: "wrap" }}>
-                      <Badge label={categoryLabel(r.category)} className="text-blue-400 bg-blue-900/20 border-blue-700/40" />
-                    </div>
-                    <div className="serif" style={{ fontSize: 11, fontWeight: 700, marginBottom: 3, color: "white", lineHeight: 1.35 }}>{r.title}</div>
-                    <div style={{ fontSize: 9, color: "#64748b", marginBottom: 4 }}>📍 {r.location}</div>
-                    {r.description && (
-                      <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.55,
-                        display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                        {r.description}
-                      </div>
-                    )}
+                  <td style={{ padding:"12px 14px" }}>
+                    <Badge label={categoryLabel(r.category)} className="text-blue-400 bg-blue-950/40 border-blue-600/50" />
                   </td>
-
-                  {/* Reported By */}
-                  <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                    {r.postedBy ? (
-                      <>
-                        <div style={{ fontSize: 10, fontWeight: 700, color: "white" }}>{r.postedBy.name || "—"}</div>
-                        <div style={{ fontSize: 9, color: "#64748b" }}>{r.postedBy.email}</div>
-                      </>
-                    ) : <span style={{ fontSize: 9, color: "#475569" }}>—</span>}
+                  <td style={{ padding:"12px 14px", fontSize:11, color:"#cbd5e1" }}>📍 {r.location}</td>
+                  <td style={{ padding:"12px 14px", fontSize:11, color:"#34d399" }}>
+                    {r.assignedTo?.name || "Direct Municipal Action"}
                   </td>
-
-                  {/* Volunteer */}
-                  <td style={{ padding: "12px 14px" }}>
-                    {vol ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        {bid?.selfie
-                          ? <img src={bid.selfie} alt="selfie" style={{ width: 30, height: 30, objectFit: "cover", border: "1px solid rgba(255,153,51,0.3)", flexShrink: 0 }} />
-                          : <div style={{ width: 30, height: 30, background: "#FF9933", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 900, color: "#060e1f", flexShrink: 0 }}>{initials}</div>
-                        }
-                        <div>
-                          <div style={{ fontSize: 10, fontWeight: 700, color: "white" }}>{vol.name || "—"}</div>
-                          <div style={{ fontSize: 9, color: "#64748b" }}>{vol.email}</div>
-                          {vol.phone && <div style={{ fontSize: 9, color: "#64748b" }}>📱 {vol.phone}</div>}
-                          <div style={{ fontSize: 9, color: "#475569", marginTop: 2 }}>
-                            ✅ {vol.volunteerDetails?.totalTasksCompleted || 0} tasks done
-                          </div>
-                        </div>
-                      </div>
-                    ) : <span style={{ fontSize: 9, color: "#475569" }}>—</span>}
+                  <td style={{ padding:"12px 14px", fontSize:10, color:"#94a3b8", fontFamily:"'JetBrains Mono',monospace" }}>
+                    {r.resolvedAt ? new Date(r.resolvedAt).toLocaleDateString("en-IN") : "Completed"}
                   </td>
-
-                  {/* Bid & Payment */}
-                  <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                    {bid && bid.estimatedAmount ? (
-                      <>
-                        <div style={{ fontSize: 14, fontWeight: 900, color: "#60a5fa", marginBottom: 2 }}>
-                          ₹{bid.estimatedAmount.toLocaleString()}
-                        </div>
-                        <div style={{ fontSize: 9, color: "#f59e0b", marginBottom: 6 }}>
-                          {bid.estimatedDays}d estimated
-                        </div>
-                        {bid.bankDetails?.bankName && (
-                          <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.65 }}>
-                            🏦 {bid.bankDetails.bankName}<br />
-                            A/C: ••••{bid.bankDetails.accountNumber?.slice(-4)}<br />
-                            IFSC: {bid.bankDetails.ifsc}<br />
-                            {bid.bankDetails.accountHolder}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <span style={{ fontSize: 9, color: "#475569" }}>No bid data</span>
-                    )}
-                  </td>
-
-                  {/* Timeline */}
-                  <td style={{ padding: "12px 14px", whiteSpace: "nowrap" }}>
-                    <div style={{ fontSize: 8, color: "#475569", marginBottom: 2 }}>Filed</div>
-                    <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 6 }}>
-                      {r.createdAt ? new Date(r.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
-                    </div>
-                    <div style={{ fontSize: 8, color: "#475569", marginBottom: 2 }}>Resolved</div>
-                    <div style={{ fontSize: 9, color: "#22c55e", marginBottom: 6 }}>
-                      {r.resolvedAt ? new Date(r.resolvedAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
-                    </div>
-                    <div style={{ fontSize: 8, color: "#475569", marginBottom: 2 }}>Duration</div>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#a78bfa" }}>
-                      {timeToResolve(r.createdAt, r.resolvedAt)}
-                    </div>
-                  </td>
-
                 </tr>
-              );
-            })}
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -975,7 +728,7 @@ function ResolvedView({ complaints, loading }) {
   );
 }
 
-// ─── VOLUNTEERS VIEW ──────────────────────────────────────────────────────────
+// ─── VOLUNTEERS DIRECTORY VIEW ────────────────────────────────────────────────
 function VolunteersView() {
   const [volunteers, setVolunteers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1000,96 +753,89 @@ function VolunteersView() {
     );
   }, [volunteers, search]);
 
-  if (loading) return <div style={{ padding:40, textAlign:"center", color:"#475569", fontSize:11 }}>Loading volunteers…</div>;
+  if (loading) return <div style={{ padding:40, textAlign:"center", color:"#94a3b8", fontSize:12 }}>Loading volunteer directory…</div>;
 
   return (
-    <div style={{ display:"grid", gridTemplateColumns:"340px 1fr", height:"calc(100vh - 57px)" }}>
-      {/* List */}
-      <div style={{ borderRight:"1px solid rgba(255,153,51,0.15)", display:"flex", flexDirection:"column", overflow:"hidden" }}>
-        <div style={{ padding:"12px 16px", borderBottom:"1px solid rgba(255,153,51,0.1)", background:"#0a1628", flexShrink:0 }}>
-          <div className="section-label">Volunteer Directory ({filtered.length})</div>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name, skill, email…" />
+    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(300px, 1fr))", gap:16, padding:"20px 16px", maxWidth:1200, margin:"0 auto" }}>
+      {/* Directory List */}
+      <div className="card" style={{ overflow:"hidden", display:"flex", flexDirection:"column", maxHeight:"80vh" }}>
+        <div style={{ padding:"12px 16px", borderBottom:"1px solid #1c3c66", background:"#071324" }}>
+          <div className="section-label">Verified Volunteers ({filtered.length})</div>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Filter by name or domain skill…" />
         </div>
         <div style={{ overflowY:"auto", flex:1 }}>
-          {filtered.map(v => {
-            const busy = !v.volunteerDetails?.isAvailable;
-            const initials = v.name?.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase() || "V";
-            return (
-              <div key={v._id}
-                className={`vol-row ${selected?._id === v._id ? "active" : ""}`}
-                onClick={() => setSelected(v)}
-                style={{ borderLeft: selected?._id===v._id ? "2px solid #FF9933" : "2px solid transparent" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                  <div style={{ width:36, height:36, background: busy ? "#334155" : "#FF9933", display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:900, color: busy ? "#64748b" : "#060e1f", flexShrink:0 }}>{initials}</div>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <div className="serif" style={{ fontSize:11, fontWeight:700, color:"white" }}>{v.name}</div>
-                    <div style={{ fontSize:9, color:"#64748b", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{v.email}</div>
-                    <div style={{ fontSize:9, color:"#475569", marginTop:2 }}>
-                      ✅ {v.volunteerDetails?.totalTasksCompleted || 0} tasks
-                    </div>
-                  </div>
-                  <Badge label={busy ? "busy" : "available"} className={busy ? "text-amber-400 bg-amber-900/20 border-amber-700/40" : "text-green-400 bg-green-900/20 border-green-700/40"} />
+          {filtered.map(v => (
+            <div
+              key={v._id}
+              className={`vol-row ${selected?._id === v._id ? "active" : ""}`}
+              onClick={() => setSelected(v)}
+            >
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ width:36, height:36, background:"#FF9933", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, color:"#050f1d", borderRadius:4, flexShrink:0 }}>
+                  {v.name?.slice(0,2).toUpperCase() || "VO"}
                 </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:"white" }} className="serif">{v.name}</div>
+                  <div style={{ fontSize:10, color:"#94a3b8", truncate:true }}>{v.email}</div>
+                </div>
+                <Badge label={v.volunteerDetails?.isAvailable ? "Free" : "Active"} className={v.volunteerDetails?.isAvailable ? "text-emerald-400 bg-emerald-950/40 border-emerald-600/40" : "text-amber-400 bg-amber-950/40 border-amber-600/40"} />
               </div>
-            );
-          })}
-          {filtered.length === 0 && (
-            <div style={{ padding:40, textAlign:"center", color:"#475569", fontSize:11 }}>No volunteers found.</div>
-          )}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Detail */}
-      <div style={{ overflowY:"auto", padding:24 }}>
+      {/* Selected Volunteer Detail */}
+      <div className="card" style={{ padding:20 }}>
         {!selected ? (
-          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100%", color:"#334155" }}>
-            <div style={{ fontSize:52, marginBottom:12 }}>👷</div>
-            <div style={{ fontSize:11, letterSpacing:"0.1em", textTransform:"uppercase" }}>Select a volunteer</div>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", height:"100%", color:"#64748b", minHeight:200 }}>
+            <span style={{ fontSize:40, marginBottom:8 }}>👷</span>
+            <span style={{ fontSize:12, fontFamily:"'JetBrains Mono',monospace", textTransform:"uppercase" }}>Select a volunteer to inspect profile</span>
           </div>
         ) : (
-          <>
-            <div className="card" style={{ padding:20, marginBottom:16 }}>
-              <div style={{ display:"flex", alignItems:"flex-start", gap:16 }}>
-                <div style={{ width:52, height:52, background:"#FF9933", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, fontWeight:900, color:"#060e1f", flexShrink:0 }}>
-                  {selected.name?.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase()}
-                </div>
-                <div style={{ flex:1 }}>
-                  <div className="serif" style={{ fontSize:20, fontWeight:900, color:"white" }}>{selected.name}</div>
-                  <div style={{ fontSize:9, color:"#64748b", marginTop:3 }}>{selected.email}</div>
-                  {selected.phone && <div style={{ fontSize:9, color:"#64748b" }}>📱 {selected.phone}</div>}
-                  <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginTop:10 }}>
-                    {selected.volunteerDetails?.skills?.filter(Boolean).map(s => (
-                      <Badge key={s} label={s} className="text-blue-400 bg-blue-900/20 border-blue-700/40" />
-                    ))}
-                  </div>
-                </div>
-                <Badge
-                  label={selected.volunteerDetails?.isAvailable ? "available" : "busy"}
-                  className={selected.volunteerDetails?.isAvailable ? "text-green-400 bg-green-900/20 border-green-700/40" : "text-amber-400 bg-amber-900/20 border-amber-700/40"}
-                />
+          <div>
+            <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:16 }}>
+              <div style={{ width:48, height:48, background:"#FF9933", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16, fontWeight:900, color:"#050f1d", borderRadius:4 }}>
+                {selected.name?.slice(0,2).toUpperCase()}
+              </div>
+              <div>
+                <h3 style={{ fontSize:16, fontWeight:700, color:"white" }} className="serif">{selected.name}</h3>
+                <p style={{ fontSize:11, color:"#94a3b8" }}>{selected.email}</p>
+                {selected.phone && <p style={{ fontSize:11, color:"#94a3b8" }}>📱 {selected.phone}</p>}
               </div>
             </div>
 
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:16 }}>
-              {[
-                { label:"Tasks Completed", value: selected.volunteerDetails?.totalTasksCompleted || 0, color:"#22c55e" },
-                { label:"Rating",          value: selected.volunteerDetails?.rating ? `${selected.volunteerDetails.rating}★` : "N/A", color:"#f59e0b" },
-                { label:"Status",          value: selected.volunteerDetails?.isAvailable ? "Free" : "Busy", color: selected.volunteerDetails?.isAvailable ? "#22c55e" : "#f59e0b" },
-              ].map((s,i) => (
-                <div key={i} className="stat-card">
-                  <div style={{ fontSize:9, color:"#475569", textTransform:"uppercase", letterSpacing:"0.1em", marginBottom:4 }}>{s.label}</div>
-                  <div style={{ fontSize:22, fontWeight:900, color:s.color }}>{s.value}</div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:16 }}>
+              <div style={{ background:"#071322", padding:12, borderRadius:4, border:"1px solid #1c3c66" }}>
+                <div style={{ fontSize:9, color:"#94a3b8", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace" }}>Tasks Completed</div>
+                <div style={{ fontSize:20, fontWeight:900, color:"#34d399", fontFamily:"'JetBrains Mono',monospace", marginTop:2 }}>
+                  {selected.volunteerDetails?.totalTasksCompleted || 0}
                 </div>
-              ))}
+              </div>
+              <div style={{ background:"#071322", padding:12, borderRadius:4, border:"1px solid #1c3c66" }}>
+                <div style={{ fontSize:9, color:"#94a3b8", textTransform:"uppercase", fontFamily:"'JetBrains Mono',monospace" }}>Status</div>
+                <div style={{ fontSize:14, fontWeight:700, color: selected.volunteerDetails?.isAvailable ? "#34d399" : "#FF9933", marginTop:4 }}>
+                  {selected.volunteerDetails?.isAvailable ? "Available" : "Assigned"}
+                </div>
+              </div>
             </div>
-          </>
+
+            <div>
+              <div className="section-label">Registered Skills</div>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                {selected.volunteerDetails?.skills?.filter(Boolean).map(s => (
+                  <Badge key={s} label={s} className="text-blue-400 bg-blue-950/40 border-blue-600/50" />
+                ))}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
   );
 }
 
-// ─── ROOT APP ─────────────────────────────────────────────────────────────────
+// ─── ROOT COMPONENT ───────────────────────────────────────────────────────────
 export default function AuthorityDashboard() {
   const [view, setView] = useState("dashboard");
   const [complaints, setComplaints] = useState([]);
@@ -1129,7 +875,7 @@ export default function AuthorityDashboard() {
   return (
     <>
       <style>{STYLES}</style>
-      <div style={{ minHeight:"100vh", background:"#060e1f" }}>
+      <div style={{ minHeight:"100vh", background:"#050f1d" }}>
         <div className="tricolor" style={{ height:3 }} />
         <Navbar active={view} setView={setView} counts={counts} />
         <div className="gov-grid" style={{ minHeight:"calc(100vh - 60px)" }}>

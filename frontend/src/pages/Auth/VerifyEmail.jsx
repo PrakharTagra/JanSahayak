@@ -14,7 +14,7 @@ export function VerifyEmail() {
   useEffect(() => {
     if (!token) {
       setStatus("error");
-      setMessage("No verification token found in the link.");
+      setMessage("No verification token found in the authorization link.");
       return;
     }
 
@@ -32,137 +32,135 @@ export function VerifyEmail() {
           setMessage(data.message);
         } else {
           setStatus("error");
-          setMessage(data.message || "Invalid verification link.");
+          setMessage(data.message || "Invalid or unauthorized verification token.");
         }
       } catch {
         setStatus("error");
-        setMessage("Something went wrong. Please try again.");
+        setMessage("Unable to reach verification service. Please retry in a few moments.");
       }
     })();
   }, [token]);
 
-  const handleResend = async () => {
-    // This only works if the user knows their email.
-    // For simplicity, redirect to a resend page or prompt.
-    navigate("/resend-verification");
-  };
-
   return (
-    <div className="min-h-screen bg-[#060e1f] text-white flex flex-col">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
-        .font-serif-display { font-family: 'Source Serif 4', Georgia, serif; }
-        .font-mono-gov      { font-family: 'JetBrains Mono', monospace; }
-        .tricolor-bar       { background: linear-gradient(to right, #FF9933 33.3%, white 33.3%, white 66.6%, #138808 66.6%); }
-      `}</style>
+    <div className="min-h-screen bg-gov-dark text-slate-100 flex flex-col justify-between selection:bg-amber-600 selection:text-white">
 
-      <div className="tricolor-bar h-1.5 w-full shrink-0" />
+      {/* Tricolor Top Bar */}
+      <div className="tricolor-bar-h h-1.5 w-full shrink-0" />
 
-      <header className="bg-[#0a1628] border-b border-amber-700/40 py-3 px-6 shrink-0">
-        <div
-          className="flex items-center gap-3 cursor-pointer w-fit"
-          onClick={() => navigate("/")}
-        >
-          <div className="w-9 h-9 rounded-full border border-amber-600 bg-amber-900/20 flex items-center justify-center overflow-hidden">
-            <img src={logo} alt="logo" className="w-6 h-6 object-cover" />
+      {/* Header */}
+      <header className="bg-gov-navy border-b border-gov-border py-3 px-4 sm:px-6 shrink-0">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div
+            className="flex items-center gap-3 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gov-saffron bg-gov-saffron/10 flex items-center justify-center overflow-hidden">
+              <img src={logo} alt="logo" className="w-6 h-6 object-cover" />
+            </div>
+            <div>
+              <p className="text-white font-bold font-serif text-sm sm:text-base leading-tight">JanSahayak</p>
+              <p className="text-gov-amber text-[10px] font-hindi">नागरिक शिकायत निवारण पोर्टल</p>
+            </div>
           </div>
-          <div>
-            <p className="text-white font-black font-serif-display text-base leading-tight">JanSahayak</p>
-            <p className="text-amber-700/80 text-[9px] tracking-wide" style={{ fontFamily: "serif" }}>
-              जन सहायक — नागरिक शिकायत निवारण पोर्टल
-            </p>
-          </div>
+
+          <button
+            onClick={() => navigate("/login")}
+            className="text-xs text-gov-amber border border-gov-border px-3 py-1.5 rounded hover:bg-gov-amber/10 transition font-mono uppercase tracking-wider active:scale-95"
+          >
+            Sign In
+          </button>
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
+      {/* Main Verification Card */}
+      <main className="flex-1 gov-pattern flex items-center justify-center px-4 py-10 sm:py-16">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-md border border-amber-700/40 bg-[#0a1628]/95 backdrop-blur-xl"
+          className="w-full max-w-md border border-gov-border bg-gov-card rounded-lg shadow-gov-card overflow-hidden"
         >
-          <div className="border-b border-amber-700/30 px-8 py-5 text-center">
-            <h2 className="text-xl font-black font-serif-display text-white tracking-tight">
+          <div className="border-b border-gov-border/80 px-6 py-4.5 text-center bg-[#071526]">
+            <h2 className="text-lg sm:text-xl font-bold font-serif text-white tracking-tight">
               Email Verification
             </h2>
-            <p className="text-slate-400 text-xs mt-1 font-mono-gov">ईमेल सत्यापन</p>
+            <p className="text-gov-slate text-xs mt-0.5 font-hindi">ईमेल सत्यापन प्रक्रिया</p>
           </div>
 
-          <div className="px-8 py-10 text-center">
+          <div className="p-6 sm:p-8 text-center">
             {/* Loading */}
             {status === "loading" && (
-              <div className="flex flex-col items-center gap-4">
-                <div className="w-10 h-10 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
-                <p className="text-slate-400 text-sm font-mono-gov">Verifying your email…</p>
+              <div className="flex flex-col items-center gap-4 py-6">
+                <div className="w-10 h-10 border-3 border-gov-amber border-t-transparent rounded-full animate-spin" />
+                <p className="text-slate-300 text-sm font-mono">Validating secure token…</p>
               </div>
             )}
 
             {/* Success */}
             {status === "success" && (
-              <div className="flex flex-col items-center gap-5">
-                <div className="text-5xl">✅</div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-16 h-16 rounded-full border-2 border-emerald-500 bg-emerald-950/40 flex items-center justify-center text-3xl text-emerald-400 shadow-inner">
+                  ✓
+                </div>
                 <div>
-                  <p className="text-green-400 font-bold font-mono-gov text-sm uppercase tracking-widest">
-                    Email Verified!
-                  </p>
-                  <p className="text-slate-400 text-xs mt-2 font-mono-gov leading-relaxed">
-                    Your account is now active. You can log in to JanSahayak.
+                  <h3 className="text-emerald-400 font-bold text-base">
+                    Email Verified Successfully!
+                  </h3>
+                  <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
+                    Your citizen profile has been activated. You can now access your dashboard and file civic grievances.
                   </p>
                 </div>
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full py-3 bg-amber-600 hover:bg-amber-500 transition font-bold tracking-widest uppercase text-sm font-mono-gov"
+                  className="btn-gov-primary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono shadow-gov-btn mt-2"
                 >
-                  Login to Portal →
+                  Proceed to Login &rarr;
                 </button>
               </div>
             )}
 
             {/* Expired */}
             {status === "expired" && (
-              <div className="flex flex-col items-center gap-5">
-                <div className="text-5xl">⏱</div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-16 h-16 rounded-full border-2 border-amber-500 bg-amber-950/40 flex items-center justify-center text-3xl text-amber-400 shadow-inner">
+                  ⏱
+                </div>
                 <div>
-                  <p className="text-amber-400 font-bold font-mono-gov text-sm uppercase tracking-widest">
-                    Link Expired
-                  </p>
-                  <p className="text-slate-400 text-xs mt-2 font-mono-gov leading-relaxed">
-                    {message}
+                  <h3 className="text-amber-400 font-bold text-base">
+                    Verification Link Expired
+                  </h3>
+                  <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
+                    {message || "This verification link has exceeded its validity period."}
                   </p>
                 </div>
                 <button
-                  onClick={handleResend}
-                  className="w-full py-3 border border-amber-700/50 text-amber-400 hover:bg-amber-600/10 transition font-bold tracking-widest uppercase text-sm font-mono-gov"
+                  onClick={() => navigate("/login")}
+                  className="btn-gov-secondary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono mt-2"
                 >
-                  Resend Verification Email
+                  Return to Login & Request New Link &rarr;
                 </button>
               </div>
             )}
 
             {/* Error */}
             {status === "error" && (
-              <div className="flex flex-col items-center gap-5">
-                <div className="text-5xl">✗</div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-16 h-16 rounded-full border-2 border-red-500 bg-red-950/40 flex items-center justify-center text-3xl text-red-400 shadow-inner">
+                  ✗
+                </div>
                 <div>
-                  <p className="text-red-400 font-bold font-mono-gov text-sm uppercase tracking-widest">
-                    Verification Failed
-                  </p>
-                  <p className="text-slate-400 text-xs mt-2 font-mono-gov leading-relaxed">
-                    {message}
+                  <h3 className="text-red-400 font-bold text-base">
+                    Verification Unsuccessful
+                  </h3>
+                  <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
+                    {message || "The verification link is invalid or has already been used."}
                   </p>
                 </div>
                 <button
-                  onClick={handleResend}
-                  className="w-full py-3 border border-amber-700/50 text-amber-400 hover:bg-amber-600/10 transition font-bold tracking-widest uppercase text-sm font-mono-gov"
-                >
-                  Resend Verification Email
-                </button>
-                <button
                   onClick={() => navigate("/login")}
-                  className="text-xs text-slate-500 hover:text-amber-400 font-mono-gov transition underline"
+                  className="btn-gov-secondary w-full py-3 rounded text-xs sm:text-sm font-bold uppercase tracking-wider font-mono mt-2"
                 >
-                  Back to Login
+                  Back to Sign In
                 </button>
               </div>
             )}
@@ -170,12 +168,11 @@ export function VerifyEmail() {
         </motion.div>
       </main>
 
-      <footer className="bg-[#060c18] border-t border-amber-700/20 py-3 px-6 text-center shrink-0">
-        <p className="text-[10px] text-slate-600 font-mono-gov">
-          © 2026 JanSahayak — Government of India
-        </p>
+      {/* Footer */}
+      <footer className="bg-[#050f1d] border-t border-gov-border py-2.5 px-4 text-center text-[10px] text-gov-slate font-mono shrink-0">
+        &copy; 2026 JanSahayak &bull; Government of India
       </footer>
-      <div className="tricolor-bar h-1 w-full shrink-0" />
+      <div className="tricolor-bar-h h-1 w-full shrink-0" />
     </div>
   );
 }
