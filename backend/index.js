@@ -140,7 +140,7 @@ if (process.env.VERCEL !== "1") {
 
       const mlServiceBase = (
         process.env.ML_SERVICE_URL ||
-        "https://jansahayak-ml-service.onrender.com"
+        "https://jansahayak-9afz.onrender.com"
       ).replace(/\/+$/, "");
       const mlHealthUrl = mlServiceBase.endsWith("/health") ? mlServiceBase : `${mlServiceBase}/health`;
 

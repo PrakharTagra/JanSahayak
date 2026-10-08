@@ -23,7 +23,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       contentType: req.file.mimetype || "image/jpeg",
     });
 
-    const mlUrl = (process.env.ML_SERVICE_URL || "https://jansahayak-ml-service.onrender.com").replace(/\/+$/, "");
+    const mlUrl = (process.env.ML_SERVICE_URL || "https://jansahayak-9afz.onrender.com").replace(/\/+$/, "");
     const targetEndpoint = mlUrl.endsWith("/predict") ? mlUrl : `${mlUrl}/predict`;
 
     const mlResponse = await axios.post(
