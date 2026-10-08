@@ -1,13 +1,23 @@
 const mongoose = require('mongoose');
 
-exports.connect = () => {
+let isConnected = false;
+
+exports.connect = async () => {
+    if (mongoose.connection.readyState >= 1) {
+        return mongoose.connection;
+    }
     if (!process.env.MONGODB_URL) {
         console.warn("⚠️ MONGODB_URL is not defined in environment variables. Database connection deferred.");
         return;
     }
-    mongoose.connect(process.env.MONGODB_URL, {
-        serverSelectionTimeoutMS: 5000,
-    })
-        .then(() => console.log("✅ Database Connected Successfully"))
-        .catch((err) => console.error("❌ Database connection error:", err.message));
+    try {
+        const conn = await mongoose.connect(process.env.MONGODB_URL, {
+            serverSelectionTimeoutMS: 5000,
+        });
+        isConnected = true;
+        console.log("✅ Database Connected Successfully");
+        return conn;
+    } catch (err) {
+        console.error("❌ Database connection error:", err.message);
+    }
 };
