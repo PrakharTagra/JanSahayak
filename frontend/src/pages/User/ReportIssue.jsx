@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import UserSidebar from "../../components/UserSidebar";
 
+const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+
 const CATEGORIES = [
   { value: "garbage", label: "Garbage & Waste Disposal" },
   { value: "bad_road", label: "Pothole & Bad Roads" },
@@ -163,7 +165,7 @@ export default function ReportIssue() {
         formData.append("photo", file);
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/complaint/create`, {
+      const response = await fetch(`${apiBase}/api/v1/complaint/create`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -517,7 +519,7 @@ export default function ReportIssue() {
                           const formData = new FormData();
                           formData.append("image", selectedFile);
 
-                          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/classify`, {
+                          const res = await fetch(`${apiBase}/api/v1/classify`, {
                             method: "POST",
                             body: formData,
                           });

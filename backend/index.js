@@ -93,7 +93,7 @@ app.use("/api/v1/reports", exportRoutes);
 app.use("/v1/reports", exportRoutes);
 
 // Health check endpoint
-app.get("/health", (req, res) => {
+app.get(["/health", "/api/health"], (req, res) => {
   const states = ["disconnected", "connected", "connecting", "disconnecting"];
   const dbStatus = states[mongoose.connection.readyState] || "unknown";
 
@@ -107,11 +107,11 @@ app.get("/health", (req, res) => {
 });
 
 // Default root route
-app.get("/", (req, res) => {
+app.get(["/", "/api"], (req, res) => {
   return res.status(200).json({
     success: true,
     message: "JanSahayak backend API is running successfully",
-    healthCheck: "/health",
+    healthCheck: "/api/health",
   });
 });
 

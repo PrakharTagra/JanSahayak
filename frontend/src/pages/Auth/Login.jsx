@@ -67,7 +67,8 @@ export function Login() {
       setLoading(true);
       setLoginError("");
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/login`, {
+      const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+      const res = await fetch(`${apiBase}/api/v1/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, role }),

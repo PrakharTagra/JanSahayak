@@ -23,14 +23,16 @@ export default function UserDashboard() {
       try {
         const token = localStorage.getItem("token");
 
+        const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+
         // Fetch stats
-        const statsRes = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/complaint/user/stats`, {
+        const statsRes = await fetch(`${apiBase}/api/v1/complaint/user/stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const statsData = await statsRes.json();
 
         // Fetch user complaints
-        const complaintsRes = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/complaint/my/complaints`, {
+        const complaintsRes = await fetch(`${apiBase}/api/v1/complaint/my/complaints`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const complaintsData = await complaintsRes.json();

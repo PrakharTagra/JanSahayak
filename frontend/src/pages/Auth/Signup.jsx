@@ -29,8 +29,9 @@ export function Signup() {
     }
     setLoading(true);
     setError("");
+    const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/signup`, {
+      const res = await fetch(`${apiBase}/api/v1/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -51,7 +52,8 @@ export function Signup() {
 
   const handleResend = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/auth/resend-verification`, {
+      const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+      const res = await fetch(`${apiBase}/api/v1/auth/resend-verification`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

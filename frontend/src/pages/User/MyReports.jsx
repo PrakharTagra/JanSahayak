@@ -27,7 +27,8 @@ export default function MyReports() {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/complaint/my/complaints`, {
+        const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+        const res = await fetch(`${apiBase}/api/v1/complaint/my/complaints`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

@@ -26,8 +26,9 @@ export function VerifyEmail() {
 
     (async () => {
       try {
+        const apiBase = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/auth/verify-email?token=${token}`
+          `${apiBase}/api/v1/auth/verify-email?token=${token}`
         );
         const data = await res.json();
 
